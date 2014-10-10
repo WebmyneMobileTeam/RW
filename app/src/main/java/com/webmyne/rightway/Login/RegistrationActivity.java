@@ -1,14 +1,19 @@
 package com.webmyne.rightway.Login;
 
-import android.app.Fragment;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.Model.CustomTypeface;
@@ -21,7 +26,7 @@ public class RegistrationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new BasicFormFragment())
                     .commit();
         }
@@ -42,7 +47,8 @@ public class RegistrationActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.registration, menu);
-        return true;
+
+        return false;
     }
 
     @Override
@@ -51,7 +57,16 @@ public class RegistrationActivity extends BaseActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_forward) {
+
+
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.container,new ImageFormFragment(),"imageFragment");
+            ft.addToBackStack("imageFragment");
+            ft.commit();
+
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -69,7 +84,7 @@ public class RegistrationActivity extends BaseActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_registration, container, false);
-
+            setHasOptionsMenu(true);
             return rootView;
         }
 
@@ -81,7 +96,38 @@ public class RegistrationActivity extends BaseActivity {
     }
 
 
+    public static class ImageFormFragment extends Fragment {
 
+        public ImageFormFragment() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+           setHasOptionsMenu(false);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_image_registration, container, false);
+
+
+
+            return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            ((RegistrationActivity)getActivity()).setActionBarTitle("TELL US ABOUT YOU");
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+           // super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
 
 
 }
