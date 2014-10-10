@@ -1,9 +1,11 @@
-package com.webmyne.rightway;
+package com.webmyne.rightway.Application;
 
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.webmyne.rightway.Login.RegistrationActivity;
+import com.webmyne.rightway.R;
 
-
-public class Launcher extends Activity {
+public class LauncherActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,33 @@ public class Launcher extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_launcher, container, false);
+
             return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            new CountDownTimer(2500, 1000) {
+
+                @Override
+                public void onFinish() {
+
+                    Intent i = new Intent(getActivity(), RegistrationActivity.class);
+                    startActivity(i);
+                    getActivity().finish();
+
+
+                }
+
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+            }.start();
+
+
         }
     }
 }

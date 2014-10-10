@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.webmyne.rightway"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
@@ -20,5 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/volley.jar')
+    compile files('libs/webmyne_animations.jar')
 }
