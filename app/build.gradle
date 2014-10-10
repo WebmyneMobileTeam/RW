@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/volley.jar')
     compile files('libs/webmyne_animations.jar')
+    compile 'com.android.support:support-v4:20.0.0'
 }

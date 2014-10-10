@@ -18,10 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".Login.RegistrationActivity"
             android:label="@string/title_activity_registration" >
         </activity>
+
     </application>
 
 </manifest>

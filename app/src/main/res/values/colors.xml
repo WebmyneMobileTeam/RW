@@ -3,4 +3,5 @@
 
     <color name="actionbar">#62aa60</color>
     <color name="activity_background">#eaeaea</color>
+    <color name="divider">#cecece</color>
 </resources>
