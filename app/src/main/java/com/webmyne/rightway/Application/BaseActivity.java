@@ -44,11 +44,13 @@ public class BaseActivity extends FragmentActivity {
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.actionbar)));
         getActionBar().setDisplayShowCustomEnabled(true);
-        txtHeader.setTextColor(Color.WHITE);
+        txtHeader.setTextColor(Color.BLACK);
         txtHeader.setSingleLine(true);
         txtHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         getActionBar().setCustomView(txtHeader, acBarParams);
         txtHeader.setMaxWidth((int)(getResources().getDisplayMetrics().widthPixels/2));
+
+
 
     }
     // Check Internet Connection

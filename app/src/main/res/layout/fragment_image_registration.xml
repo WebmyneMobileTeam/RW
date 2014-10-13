@@ -4,11 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/activity_background"
     tools:context="com.webmyne.rightway.Login.RegistrationActivity.BasicFormFragment">
 
 
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SKIP AND CONTINUE"
+        android:textColor="#000"
+        android:background="@color/actionbar"
+        android:textSize="@dimen/text_size_medium"
+        app:customTypeface="rbold"
+        tools:ignore="MissingPrefix"
+        android:gravity="center"
+        android:padding="8dp" />
+
+
+
+    <ImageView
+        android:id="@+id/imgProfilePic"
+        android:layout_margin="@dimen/activity_margin"
+        android:layout_above="@id/btnRegister"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_none_profile"
+        android:scaleType="centerInside" />
 
 
 

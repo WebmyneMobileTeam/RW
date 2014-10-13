@@ -24,4 +24,5 @@ dependencies {
     compile files('libs/volley.jar')
     compile files('libs/webmyne_animations.jar')
     compile 'com.android.support:support-v4:20.0.0'
+    compile files('libs/image-chooser-library-1.3.1.jar')
 }
