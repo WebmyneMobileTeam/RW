@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RightWay</string>
+    <string name="app_name">CabKab</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_forward">Next</string>
     <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="bookfragment">bookfragment</string>
+    <string name="contactusfragment">contact us</string>
+    <string name="mybookingfragment">My Booking</string>
+    <string name="mynotificationfragment">My Notification</string>
+    <string name="profileFragment">Profile Fragment</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="open_drawer">Open Drawer</string>
 
 </resources>

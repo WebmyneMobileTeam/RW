@@ -25,6 +25,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.webmyne.rightway.Application.BaseActivity;
+import com.webmyne.rightway.Application.DrawerActivity;
 import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.R;
 
@@ -232,6 +233,9 @@ public class RegistrationActivity extends BaseActivity {
 
                 case R.id.btnRegister:
 
+                    Intent i = new Intent(getActivity(), DrawerActivity.class);
+                    startActivity(i);
+
                     if(isProfilePicAdded == true){
 
                     }else{
@@ -260,7 +264,6 @@ public class RegistrationActivity extends BaseActivity {
                 public void run() {
 
                     if (image != null) {
-
                         imgProfilePic.setImageURI(Uri.parse(new File(image
                                 .getFileThumbnail()).toString()));
 
