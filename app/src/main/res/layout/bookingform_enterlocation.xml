@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+
+
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+
+        android:layout_height="0dp">
+
+        <EditText
+            android:id="@+id/edEnterLocation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Enter location"
+            app:customTypeface="@string/normal"
+            tools:ignore="MissingPrefix"
+            android:textSize="22sp"
+            android:background="@null"
+            android:gravity="left"
+            android:padding="8dp"/>
+
+        <Spinner
+            android:layout_marginLeft="@dimen/activity_margin"
+            android:layout_marginRight="@dimen/activity_margin"
+            android:id="@+id/spinnerForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"></Spinner>
+
+
+
+        </ViewFlipper>
+
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        app:customTypeface="@string/bold"
+        tools:ignore="MissingPrefix"
+        android:text="PICK UP HERE"
+        android:background="@color/actionbar"
+        android:textSize="@dimen/text_size_medium"
+        android:gravity="center"
+        android:padding="8dp" />
+
+
+</LinearLayout>

@@ -2,12 +2,16 @@ package com.webmyne.rightway.Application;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.webmyne.rightway.Model.CustomTypeface;
+import com.webmyne.rightway.Model.MapController;
+import com.webmyne.rightway.R;
 
 
 /**
@@ -54,6 +58,15 @@ public class MyApplication extends Application {
             db_wrapper.createDataBase();
         }catch(Exception e){e.printStackTrace();}*/
 
+        try {
+            MapController.initialize(this);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+
+            Toast.makeText(this,
+                    R.string.common_google_play_services_enable_text,
+                    Toast.LENGTH_SHORT).show();
+        }
 	
     }
     

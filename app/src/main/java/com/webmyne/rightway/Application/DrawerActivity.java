@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.webmyne.rightway.Bookings.BookCabFragment;
 import com.webmyne.rightway.ContactUs.ContactUsFragment;
+import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.MyNotifications.MyNotificationFragment;
 import com.webmyne.rightway.Profile.ProfileFragment;
@@ -35,12 +37,17 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS"};
     private boolean isPupil;
-    private static String BOOKCAB = "bookcab";
-    private static String MYBOOKING = "mybooking";
-    private static String PROFILE = "profile";
-    private static String CONTACTUS = "contactus";
-    private static String MYNOTIFICATION = "mynotification";
+    public static String BOOKCAB = "bookcab";
+    public static String MYBOOKING = "mybooking";
+    public static String PROFILE = "profile";
+    public static String CONTACTUS = "contactus";
+    public static String MYNOTIFICATION = "mynotification";
 
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return CustomTypeface.getInstance().createView(name, context, attrs);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
                     BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
                     if (manager.findFragmentByTag(BOOKCAB) == null) {
+
                         ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
                     }
                     txtHeader.setText("BOOKING");
