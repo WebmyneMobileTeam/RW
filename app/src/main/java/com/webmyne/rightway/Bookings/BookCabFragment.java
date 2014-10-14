@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -41,7 +43,7 @@ import java.util.List;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
-    private MyPageAdapter adapter;
+    public MyPageAdapter adapter;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -49,9 +51,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private String mParam2;
     private MapView mv;
     private MapController mc;
-    private NonSwipeableViewPager viewPager;
+    public NonSwipeableViewPager viewPager;
     private String[] count = {"1","1","1","1","1","1","1","1","1"};
-    private String[] titles = {"WANT TO BOOK A CAB?",
+    private static String[] titles = {"WANT TO BOOK A CAB?",
             "SELECT PICKUP TIME",
             "PICKUP PLACE NOTE",
             "WHERE YOU WANT TO GO?",
@@ -155,12 +157,30 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         super.onResume();
         mv.onResume();
 
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-        Log.e("Resume called ",""+titles.length);
-        adapter = new MyPageAdapter(getActivity().getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
-        Log.e("Adapter after resume ",""+adapter);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Log.e("Resume called ",""+titles.length);
+                        adapter = new MyPageAdapter(getActivity().getSupportFragmentManager());
+                        adapter.notifyDataSetChanged();
+
+                        viewPager.setAdapter(null);
+                        viewPager.setAdapter(adapter);
+
+                        Log.e("Adapter after resume ",""+adapter);
+                    }
+                });
+
+            }
+        });
+
+
+
 
     }
 
@@ -219,8 +239,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
             case R.id.imgPreviousForm:
 
-                BookCabFragment fragment = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
-                fragment.setPreviousView();
+                BookCabFragment fragment1 = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
+                fragment1.setPreviousView();
+
 
                 break;
 
@@ -259,16 +280,25 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
 
-    public class MyPageAdapter  extends FragmentPagerAdapter {
+    public static class MyPageAdapter  extends FragmentStatePagerAdapter {
 
         public MyPageAdapter(FragmentManager fm) {
             super(fm);
         }
 
-        @Override
 
+
+
+        @Override
         public Fragment getItem(int position) {
-            return BookingFormFragment.newInstance(position,titles[position]);
+
+            BookingFormFragment fragment = new BookingFormFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_PARAM1,position);
+            args.putString(ARG_PARAM2,titles[position]);
+            fragment.setArguments(args);
+
+            return fragment;
 
         }
 

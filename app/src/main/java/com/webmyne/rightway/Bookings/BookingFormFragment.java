@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ public class BookingFormFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private int pos;
     private String title;
-    BookCabFragment fragment;
+    BookCabFragment fragmentBook;
 
     // variables
     private EditText edEnterLocation;
@@ -76,12 +77,13 @@ public class BookingFormFragment extends Fragment {
 
             case 0:
 
+                Log.e("Position : ",""+pos);
                 btnSubmit.setText("PICK UP HERE");
 
                 break;
 
             case 1:
-
+                Log.e("Position : ",""+pos);
                Calendar mcurrentTime = Calendar.getInstance();
                final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                final int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -112,34 +114,40 @@ public class BookingFormFragment extends Fragment {
 
 
             case 2:
+                Log.e("Position : ",""+pos);
                 edEnterLocation.setHint("Take a note");
                 btnSubmit.setText("NEXT");
                 break;
 
 
             case 3:
+                Log.e("Position : ",""+pos);
                 btnSubmit.setText("NEXT");
                 break;
 
             case 4:
+                Log.e("Position : ",""+pos);
                 viewFlipper.showNext();
                 btnSubmit.setText("NEXT");
                 break;
 
 
             case 5:
+                Log.e("Position : ",""+pos);
                 viewFlipper.showNext();
                 btnSubmit.setText("NEXT");
                 break;
 
 
             case 6:
+                Log.e("Position : ",""+pos);
                 viewFlipper.showNext();
                 btnSubmit.setText("NEXT");
                 break;
 
 
             case 7:
+                Log.e("Position : ",""+pos);
                 edEnterLocation.setText("");
                 edEnterLocation.setHint("");
                 btnSubmit.setText("REQUEST A TRIP");
@@ -162,7 +170,7 @@ public class BookingFormFragment extends Fragment {
             public void onClick(View v) {
 
 
-             fragment.setNextView();
+                fragmentBook.setNextView();
             }
         });
 
@@ -173,7 +181,7 @@ public class BookingFormFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        fragment = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
+        fragmentBook = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
     }
 
     public void onButtonPressed(Uri uri) {

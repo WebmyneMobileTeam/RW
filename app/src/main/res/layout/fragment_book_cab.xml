@@ -71,13 +71,15 @@
             android:background="#d1d1d1"></View>
 
 
-        <com.webmyne.rightway.CustomComponents.NonSwipeableViewPager
+       <com.webmyne.rightway.CustomComponents.NonSwipeableViewPager
             android:id="@+id/nonSwipableViewPagerForm"
             android:layout_width="match_parent"
-            android:background="@color/actionbar"
+
             android:layout_height="match_parent">
 
         </com.webmyne.rightway.CustomComponents.NonSwipeableViewPager>
+
+
 
 
     </LinearLayout>
