@@ -40,6 +40,7 @@ public class RegistrationActivity extends BaseActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new BasicFormFragment())
+                    .addToBackStack(null)
                     .commit();
         }
 
@@ -74,6 +75,7 @@ public class RegistrationActivity extends BaseActivity {
 
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction ft = manager.beginTransaction();
+
             ft.replace(R.id.container,new ImageFormFragment(),"imageFragment");
             ft.addToBackStack("imageFragment");
             ft.commit();
@@ -120,6 +122,7 @@ public class RegistrationActivity extends BaseActivity {
 
 
         public ImageFormFragment() {
+
         }
 
         @Override

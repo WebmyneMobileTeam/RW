@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -54,6 +55,7 @@ public class MapController {
 	private ArrayList<Marker> markers;
 	private OnCameraChangeListener ccListener;
 	private LocationClient lClient;
+
 
 	/**
 	 * initialize Google Maps
@@ -126,12 +128,16 @@ public class MapController {
 		lClient = new LocationClient(context, new ConnectionCallbacks() {
 			@Override
 			public void onDisconnected() {
+
+
+
 			}
 
 			@Override
 			public void onConnected(Bundle connectionHint) {
 				if (callback != null) {
 					callback.changed(map, lClient.getLastLocation(), true);
+
 				}
 
 				LocationRequest request = LocationRequest.create()
@@ -167,6 +173,7 @@ public class MapController {
 		}, new OnConnectionFailedListener() {
 			@Override
 			public void onConnectionFailed(ConnectionResult result) {
+
 			}
 		});
 

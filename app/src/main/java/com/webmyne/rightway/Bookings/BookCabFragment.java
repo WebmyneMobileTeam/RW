@@ -3,6 +3,7 @@ package com.webmyne.rightway.Bookings;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -43,6 +45,7 @@ import java.util.List;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
+
     public MyPageAdapter adapter;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,7 +56,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private MapController mc;
     public NonSwipeableViewPager viewPager;
     private String[] count = {"1","1","1","1","1","1","1","1","1"};
-    private static String[] titles = {"WANT TO BOOK A CAB?",
+    private static String[] titles = {"PICK UP LOCATION",
             "SELECT PICKUP TIME",
             "PICKUP PLACE NOTE",
             "WHERE YOU WANT TO GO?",
@@ -84,11 +87,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -129,9 +128,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             }
         });
 
-
-
-
         return view;
     }
 
@@ -139,10 +135,19 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
         mv.onCreate(savedInstanceState);
         mc = new MapController(mv.getMap());
-        mc.moveToMyLocation();
+
         mc.whenMapClick(this);
+/*        mc.startTrackMyLocation(new MapController.ChangeMyLocation() {
+            @Override
+            public void changed(GoogleMap map, Location location,
+                                boolean lastLocation) {
+                Toast.makeText(getActivity(), location.toString(),
+                        Toast.LENGTH_SHORT).show();
+              //   mc.moveToMyLocation();
 
 
+            }
+        });*/
     }
 
     @Override
@@ -157,6 +162,12 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         super.onResume();
         mv.onResume();
 
+        mc.startTrackMyLocation(mc.getMap(),2000,0, MapController.TrackType.TRACK_TYPE_NONE,new MapController.ChangeMyLocation() {
+            @Override
+            public void changed(GoogleMap map, Location location, boolean lastLocation) {
+
+            }
+        });
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -178,15 +189,12 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
             }
         });
-
-
-
-
     }
 
     @Override
     public void onPause() {
         mv.onPause();
+        mc.stopTrackMyLocation();
         super.onPause();
     }
 
@@ -236,12 +244,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     public void onClick(View v) {
         switch (v.getId()){
 
-
             case R.id.imgPreviousForm:
-
                 BookCabFragment fragment1 = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
                 fragment1.setPreviousView();
-
 
                 break;
 
@@ -285,8 +290,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         public MyPageAdapter(FragmentManager fm) {
             super(fm);
         }
-
-
 
 
         @Override
