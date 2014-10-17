@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 
 import com.webmyne.rightway.Bookings.BookCabFragment;
 import com.webmyne.rightway.ContactUs.ContactUsFragment;
+import com.webmyne.rightway.DrawerLibrary.ActionBarDrawerToggle;
+import com.webmyne.rightway.DrawerLibrary.DrawerArrowDrawable;
 import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.MyNotifications.MyNotificationFragment;
@@ -31,10 +34,11 @@ import com.webmyne.rightway.Profile.ProfileFragment;
 import com.webmyne.rightway.R;
 
 public class DrawerActivity extends BaseActivity implements AdapterView.OnItemClickListener {
-
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerArrowDrawable drawerArrow;
     private DrawerLayout drawer;
     private ListView leftDrawerList;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    //    private ActionBarDrawerToggle actionBarDrawerToggle;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS"};
     private boolean isPupil;
     public static String BOOKCAB = "bookcab";
@@ -59,10 +63,10 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         FragmentTransaction ft = manager.beginTransaction();
 
 
-            BookCabFragment fragmentBooking = BookCabFragment.newInstance("", "");
-            if (manager.findFragmentByTag(BOOKCAB) == null) {
-                ft.replace(R.id.main_content, fragmentBooking,BOOKCAB).commit();
-            }
+        BookCabFragment fragmentBooking = BookCabFragment.newInstance("", "");
+        if (manager.findFragmentByTag(BOOKCAB) == null) {
+            ft.replace(R.id.main_content, fragmentBooking,BOOKCAB).commit();
+        }
 
 
         // header
@@ -86,23 +90,29 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
     private void initDrawer() {
 
-
-
-        drawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, drawer, R.drawable.ic_navigation_drawer, R.string.open_drawer, R.string.close_drawer) {
+        drawerArrow = new DrawerArrowDrawable(this) {
+            @Override
+            public boolean isLayoutRtl() {
+                return false;
+            }
+        };
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer,drawerArrow, R.string.drawer_open,R.string.drawer_close) {
 
             public void onDrawerClosed(View view) {
-
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
             }
-
         };
-        drawer.setDrawerListener(actionBarDrawerToggle);
+        drawer.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
     @Override
@@ -114,73 +124,70 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         FragmentTransaction ft = manager.beginTransaction();
         //drawer items for pupil
 
-            switch (position) {
+        switch (position) {
 
-                case 0:
+            case 0:
 
-                    BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
-                    if (manager.findFragmentByTag(BOOKCAB) == null) {
+                BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
+                if (manager.findFragmentByTag(BOOKCAB) == null) {
 
-                        ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
-                    }
-                    txtHeader.setText("BOOKING");
-                    break;
+                    ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
+                }
+                txtHeader.setText("BOOKING");
+                break;
 
-                case 1:
-                    MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
-                    if (manager.findFragmentByTag(MYBOOKING) == null) {
-                        ft.replace(R.id.main_content, fragmentMyBooking,MYBOOKING).commit();
-                    }
-                    txtHeader.setText("MY BOOKINGS");
-                    break;
+            case 1:
+                MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+                if (manager.findFragmentByTag(MYBOOKING) == null) {
+                    ft.replace(R.id.main_content, fragmentMyBooking,MYBOOKING).commit();
+                }
+                txtHeader.setText("MY BOOKINGS");
+                break;
 
-                case 2:
-                    ProfileFragment fragmentProfile = ProfileFragment.newInstance("", "");
-                    if (manager.findFragmentByTag(PROFILE) == null) {
-                        ft.replace(R.id.main_content, fragmentProfile,PROFILE).commit();
-                    }
-                    txtHeader.setText("MY PROFILE");
-                    break;
+            case 2:
+                ProfileFragment fragmentProfile = ProfileFragment.newInstance("", "");
+                if (manager.findFragmentByTag(PROFILE) == null) {
+                    ft.replace(R.id.main_content, fragmentProfile,PROFILE).commit();
+                }
+                txtHeader.setText("MY PROFILE");
+                break;
 
-                case 3:
-                    ContactUsFragment fragmentcontactus = ContactUsFragment.newInstance("", "");
-                    if (manager.findFragmentByTag(CONTACTUS) == null) {
-                        ft.replace(R.id.main_content, fragmentcontactus,CONTACTUS).commit();
-                    }
-                    txtHeader.setText("CONTACT US");
-                    break;
+            case 3:
+                ContactUsFragment fragmentcontactus = ContactUsFragment.newInstance("", "");
+                if (manager.findFragmentByTag(CONTACTUS) == null) {
+                    ft.replace(R.id.main_content, fragmentcontactus,CONTACTUS).commit();
+                }
+                txtHeader.setText("CONTACT US");
+                break;
 
-                case 4:
-                    MyNotificationFragment fragmentmynotification = MyNotificationFragment.newInstance("", "");
-                    if (manager.findFragmentByTag(MYNOTIFICATION) == null) {
-                        ft.replace(R.id.main_content, fragmentmynotification,MYNOTIFICATION).commit();
-                    }
-                    txtHeader.setText("NOTIFICATIONS");
-                    break;
+            case 4:
+                MyNotificationFragment fragmentmynotification = MyNotificationFragment.newInstance("", "");
+                if (manager.findFragmentByTag(MYNOTIFICATION) == null) {
+                    ft.replace(R.id.main_content, fragmentmynotification,MYNOTIFICATION).commit();
+                }
+                txtHeader.setText("NOTIFICATIONS");
+                break;
 
 
-            }
+        }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                actionBarDrawerToggle.onOptionsItemSelected(item);
+                mDrawerToggle.onOptionsItemSelected(item);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        actionBarDrawerToggle.syncState();
-
-
+        mDrawerToggle.syncState();
     }
-
 
     //region Drawer code
     // Navigation Drawer Adapter
