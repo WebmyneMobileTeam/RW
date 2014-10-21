@@ -10,6 +10,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.webmyne.rightway.Model.CustomTypeface;
+import com.webmyne.rightway.Model.DatabaseHelper;
 import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.R;
 
@@ -19,7 +20,6 @@ import com.webmyne.rightway.R;
  * This class includes the integration of Volly [third party framework for calling webservices]
  */
 public class MyApplication extends Application {
-
 
     /**
      * Log or request TAG
@@ -39,7 +39,7 @@ public class MyApplication extends Application {
     /**
      * A class that helps to store database file from assets to
      */
-   // private DatabaseWrapper db_wrapper;
+    private DatabaseHelper db_wrapper;
 
     @Override
     public void onCreate() {
@@ -53,10 +53,10 @@ public class MyApplication extends Application {
         CustomTypeface.getInstance().registerTypeface("rlight", getAssets(), "RLight.ttf");
 
 
-     /*   db_wrapper = new DatabaseWrapper(this.getApplicationContext());
+       db_wrapper = new DatabaseHelper(this.getApplicationContext());
         try {
             db_wrapper.createDataBase();
-        }catch(Exception e){e.printStackTrace();}*/
+        }catch(Exception e){e.printStackTrace();}
 
         try {
             MapController.initialize(this);

@@ -17,6 +17,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,7 +48,6 @@ import java.util.List;
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
 
-    public MyPageAdapter adapter;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -76,6 +77,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         fragment.setArguments(args);
         return fragment;
     }
+
     public BookCabFragment() {
         // Required empty public constructor
     }
@@ -95,59 +97,22 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_book_cab, container, false);
         mv = (MapView)view.findViewById(R.id.map);
-        btnPrevious = (ImageView)view.findViewById(R.id.imgPreviousForm);
-        btnPrevious.setOnClickListener(this);
-        btnPrevious.setVisibility(View.INVISIBLE);
-        headerTitleForm = (TextView)view.findViewById(R.id.headerTitleForm);
-
-
+        setHasOptionsMenu(true);
         setView(savedInstanceState);
-        viewPager = (NonSwipeableViewPager)view.findViewById(R.id.nonSwipableViewPagerForm);
-
-        setHeaderTitle(titles[0]);
-
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i2) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                if(i == 0){
-                  btnPrevious.setVisibility(View.INVISIBLE);
-                }else{
-                    btnPrevious.setVisibility(View.VISIBLE);
-                }
-                setHeaderTitle(titles[i]);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
 
         return view;
     }
 
-    private void setView(Bundle savedInstanceState) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_bookcab,menu);
+    }
 
+    private void setView(Bundle savedInstanceState) {
         mv.onCreate(savedInstanceState);
         mc = new MapController(mv.getMap());
-
         mc.whenMapClick(this);
-/*        mc.startTrackMyLocation(new MapController.ChangeMyLocation() {
-            @Override
-            public void changed(GoogleMap map, Location location,
-                                boolean lastLocation) {
-                Toast.makeText(getActivity(), location.toString(),
-                        Toast.LENGTH_SHORT).show();
-              //   mc.moveToMyLocation();
-
-
-            }
-        });*/
     }
 
     @Override
@@ -168,27 +133,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
             }
         });
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Log.e("Resume called ",""+titles.length);
-                        adapter = new MyPageAdapter(getActivity().getSupportFragmentManager());
-                        adapter.notifyDataSetChanged();
-
-                        viewPager.setAdapter(null);
-                        viewPager.setAdapter(adapter);
-
-                        Log.e("Adapter after resume ",""+adapter);
-                    }
-                });
-
-            }
-        });
     }
 
     @Override
@@ -201,7 +146,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onDestroy() {
         mv.onDestroy();
-
         super.onDestroy();
     }
 
@@ -224,18 +168,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         mv.onSaveInstanceState(outState);
     }
 
-
-    public void setNextView(){
-
-        viewPager.setCurrentItem(viewPager.getCurrentItem()+1,true);
-    }
-
-    public void setPreviousView(){
-
-        viewPager.setCurrentItem(viewPager.getCurrentItem()-1,true);
-
-    }
-
     public void setHeaderTitle(String title){
         headerTitleForm.setText(title);
     }
@@ -243,12 +175,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-
-            case R.id.imgPreviousForm:
-                BookCabFragment fragment1 = (BookCabFragment)getActivity().getSupportFragmentManager().findFragmentByTag(DrawerActivity.BOOKCAB);
-                fragment1.setPreviousView();
-
-                break;
 
         }
     }
@@ -285,34 +211,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
 
-    public static class MyPageAdapter  extends FragmentStatePagerAdapter {
-
-        public MyPageAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-
-        @Override
-        public Fragment getItem(int position) {
-
-            BookingFormFragment fragment = new BookingFormFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_PARAM1,position);
-            args.putString(ARG_PARAM2,titles[position]);
-            fragment.setArguments(args);
-
-            return fragment;
-
-        }
-
-
-        @Override
-
-        public int getCount() {
-            return 8;
-
-        }
-    }
 
 
 
