@@ -74,10 +74,11 @@ public class LauncherActivity extends Activity {
                 @Override
                 public void onFinish() {
 
+                    try{
                     Intent i = new Intent(getActivity(), RegistrationActivity.class);
                     startActivity(i);
                     getActivity().finish();
-
+                }catch(Exception e){}
 
                 }
 

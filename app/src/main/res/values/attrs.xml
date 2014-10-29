@@ -29,4 +29,9 @@
             <attr name="customTypefaceIgnoreParents" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="CustomHeaderView">
+        <attr name="titleText" format="string"/>
+    </declare-styleable>
+
+
 </resources>

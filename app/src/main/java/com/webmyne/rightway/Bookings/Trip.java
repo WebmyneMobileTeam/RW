@@ -5,7 +5,7 @@ package com.webmyne.rightway.Bookings;
  */
 public class Trip {
 
-    public int id = 0;
+    public int id;
 
     public String customer_name;
 
@@ -35,16 +35,17 @@ public class Trip {
 
     public String payment_method;
 
+    public String status;
+
     public Trip() {
 
     }
 
-    public Trip(int id, String customer_name, String customer_mobile, String pickup_latitude,
+    public Trip(String customer_name, String customer_mobile, String pickup_latitude,
                 String pickup_longitude, String pickup_location, String drop_latitude,
                 String drop_longitude, String drop_location, String driver_id, String pick_time,
-                String drop_time, String cost, String tip, String payment_method) {
+                String drop_time, String cost, String tip, String payment_method, String status) {
 
-        this.id = id;
         this.customer_name = customer_name;
         this.customer_mobile = customer_mobile;
         this.pickup_latitude = pickup_latitude;
@@ -59,5 +60,6 @@ public class Trip {
         this.cost = cost;
         this.tip = tip;
         this.payment_method = payment_method;
+        this.status = status;
     }
 }

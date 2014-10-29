@@ -143,7 +143,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
               //  BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
                 if (manager.findFragmentByTag(BOOKCAB) == null) {
-
                     ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
                 }
                 txtHeader.setText("BOOKING");
@@ -219,9 +218,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         }
 
         public int getCount() {
-
             return leftSliderData.length;
-
         }
 
         public Object getItem(int position) {
@@ -248,6 +245,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 holder = new ViewHolder();
                 holder.txtDrawerItem = (TextView) convertView.findViewById(R.id.txtDrawerItem);
                 convertView.setTag(holder);
+
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }

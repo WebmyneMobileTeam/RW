@@ -7,25 +7,53 @@
     tools:context="com.webmyne.rightway.Bookings.BookCabFragment">
 
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
+    <FrameLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            app:customTypeface="@string/bold"
+            tools:ignore="MissingPrefix"
+            android:text="12.4 kms"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/txtDistance"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="#aa494949"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="@dimen/text_size_medium" />
+
+
+    </FrameLayout>
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
+        <AutoCompleteTextView
+            android:id="@+id/edPickUpLocation"
             app:customTypeface="rnormal"
             tools:ignore="MissingPrefix"
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Pickup"
-           android:paddingBottom="4dp"
+            android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:paddingRight="@dimen/activity_margin"
             android:paddingLeft="@dimen/activity_margin"
@@ -53,7 +81,7 @@
             android:paddingLeft="@dimen/activity_margin"
             android:textSize="@dimen/text_size_medium"
             android:gravity="left"
-           />
+            />
 
         <View
             android:layout_width="match_parent"
@@ -62,7 +90,8 @@
             android:layout_marginRight="@dimen/activity_margin"
             android:background="@color/divider"></View>
 
-        <EditText
+        <AutoCompleteTextView
+            android:id="@+id/edDropOffLocation"
             app:customTypeface="rnormal"
             tools:ignore="MissingPrefix"
             android:background="@null"
@@ -97,25 +126,37 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/txtPickUpTime"
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="4dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:drawableLeft="@drawable/ic_access_time_black_24dp"
+                android:drawablePadding="@dimen/activity_margin"
                 app:customTypeface="rnormal"
                 tools:ignore="MissingPrefix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="One"
-                android:padding="4dp"
-                android:gravity="center"
+                android:hint="Pickup time"
+                android:gravity="left|center_vertical"
                 android:textSize="@dimen/text_size_medium"
                 android:background="#fff"
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/txtDriver"
+                android:drawableLeft="@drawable/ic_local_taxi_black_24dp"
                 app:customTypeface="rnormal"
                 tools:ignore="MissingPrefix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="One"
-                android:padding="4dp"
-                android:gravity="center"
+                android:hint="Driver"
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="4dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:drawablePadding="@dimen/activity_margin"
+                android:gravity="left|center_vertical"
                 android:layout_marginLeft="1dp"
                 android:textSize="@dimen/text_size_medium"
                 android:background="#fff"
@@ -135,29 +176,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/divider"
-
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/txtTip"
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="4dp"
+                android:paddingTop="4dp"
+                android:drawableLeft="@drawable/ic_action_tip"
+                android:drawablePadding="@dimen/activity_margin"
                 app:customTypeface="rnormal"
                 tools:ignore="MissingPrefix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="One"
-                android:padding="4dp"
-                android:gravity="center"
+                android:hint="Tip"
+                android:gravity="left|center_vertical"
                 android:textSize="@dimen/text_size_medium"
                 android:background="#fff"
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/txtPayment"
                 app:customTypeface="rnormal"
                 tools:ignore="MissingPrefix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="One"
-                android:padding="4dp"
-                android:gravity="center"
+                android:hint="Payment"
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="4dp"
+                android:paddingTop="4dp"
+                android:drawablePadding="@dimen/activity_margin"
+                android:drawableLeft="@drawable/ic_action_payment_method"
+
+                android:gravity="left|center_vertical"
                 android:layout_marginLeft="1dp"
                 android:textSize="@dimen/text_size_medium"
                 android:background="#fff"
@@ -166,7 +217,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
-
 </LinearLayout>
