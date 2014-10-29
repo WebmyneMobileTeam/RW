@@ -3,6 +3,7 @@ package com.webmyne.rightway.Login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -235,7 +236,10 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
 
                 case R.id.btnRegister:
-
+                    SharedPreferences preferences = getActivity().getSharedPreferences("is_registered",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("registration", true);
+                    editor.commit();
                     Intent i = new Intent(getActivity(), DrawerActivity.class);
                     startActivity(i);
 
