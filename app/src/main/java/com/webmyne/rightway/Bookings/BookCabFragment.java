@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -31,10 +33,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -62,6 +66,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
+
+
+    private String SENDER_ID = "APA91bF7Mu1e1M8nKWKYeOODcPJm0coqF6TEEEvl-bb6TDmEBvbYU5m9y0IE1Olnt0ZyQM4p3ccNhHx6nUUnKE91g9QXBDirFz1HxtAw-CDtufxiLPHaxRH-ll37FnnsHD5KAmhlw6QulKKzhKmZoBxzWmNdtR9qHdETiv9epIwQ5inqLqOuC5Q";
 
     private static final String LOG_TAG = "RiteWay Book Cab";
 
@@ -107,6 +114,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private TextView txtDriver;
 
     private ArrayList<String> availableDrivers;
+    private GoogleCloudMessaging gcm;
 
 
 
@@ -172,6 +180,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 isPickUpLocationAdded = false;
+                if(pickup_latlng != null){
+                    mc.animateTo(pickup_latlng.latitude,pickup_latlng.longitude);
+                }
                 return false;
             }
         });
@@ -179,13 +190,25 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         edDropOffLocation.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                isPickUpLocationAdded = true;
+
+                if(pickup_latlng == null){
+                    Toast.makeText(getActivity(), "Set Pick up location first", Toast.LENGTH_SHORT).show();
+                    edDropOffLocation.setEnabled(false);
+                }else{
+                    isPickUpLocationAdded = true;
+                    if(dropoff_latlng != null){
+                        mc.animateTo(dropoff_latlng.latitude,dropoff_latlng.longitude);
+                    }
+                }
+
                 return false;
             }
         });
         edDropOffLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,final int position, long id) {
+
+                hideKeyBoard(edDropOffLocation);
 
                 new AsyncTask<Void,Void,Void>() {
 
@@ -201,6 +224,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         //  Toast.makeText(getActivity(),ll.latitude+"    :   "+ll.longitude, Toast.LENGTH_SHORT).show();
+
+
+
+
                         displayMarkers();
 
                     }
@@ -210,12 +237,11 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         });
 
 
-
-
-
         edPickUpLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,final int position, long id) {
+
+                hideKeyBoard(edPickUpLocation);
 
                 new AsyncTask<Void,Void,Void>() {
 
@@ -234,7 +260,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                       //  Toast.makeText(getActivity(),ll.latitude+"    :   "+ll.longitude, Toast.LENGTH_SHORT).show();
 
                         displayMarkers();
-
+                        edDropOffLocation.setEnabled(true);
 
                     }
                 }.execute();
@@ -247,12 +273,17 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         return view;
     }
 
+    private void hideKeyBoard(AutoCompleteTextView ed) {
+
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(ed.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 
 
     private void displayMarkers() {
 
         mc.clearMarkers();
-
+        displayAvailableDrivers();
 
         if(pickup_latlng != null) {
 
@@ -301,7 +332,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.menu_bookcab,menu);
 
     }
@@ -324,6 +354,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                     @Override
                     public void complete() {
+
+
                         Toast.makeText(getActivity(), "Perfect", Toast.LENGTH_SHORT).show();
                     }
 
@@ -334,11 +366,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 }).validate(arrayList);
 
                 break;
-
-
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -347,6 +375,49 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         mc = new MapController(mv.getMap());
         mc.whenMapClick(this);
 
+        new CountDownTimer(1500, 1000) {
+
+            @Override
+            public void onFinish() {
+
+            int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
+            mc.animateTo(mc.getMyLocation().getLatitude(),mc.getMyLocation().getLongitude(),zoom);
+            }
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+
+            }
+        }.start();
+
+        displayAvailableDrivers();
+
+
+    }
+
+    public void displayAvailableDrivers() {
+
+        double[] lats = {22.31107351,22.30184236,22.31808083,22.31494445};
+        double[] lngs = {73.17499638,73.18465233,73.18671227,73.18267822};
+
+        ArrayList<LatLng> cabs = new ArrayList<LatLng>();
+
+        for(int i=0;i<lats.length;i++){
+            LatLng latLng = new LatLng(lats[i],lngs[i]);
+            cabs.add(latLng);
+        }
+
+        for(LatLng latLng : cabs){
+
+            MarkerOptions opts = new MarkerOptions();
+            opts.position(latLng);
+            opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
+            opts.title("Driver");
+            opts.snippet("");
+            addMarker(opts);
+
+        }
 
     }
 
@@ -786,11 +857,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 if(zipcode != null){
                     result.append(zipcode);
                 }
-
-
-
-
-
 
             }
         } catch (IOException e) {

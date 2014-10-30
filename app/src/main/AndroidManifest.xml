@@ -12,8 +12,6 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
-
-
     <permission
         android:name="com.webmyne.rightway.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -31,6 +29,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
     <permission android:name="com.webmyne.rightway.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
     <uses-permission android:name="com.webmyne.rightway.permission.C2D_MESSAGE" />
@@ -79,6 +78,7 @@
                 <category android:name="com.webmyne.rightway" />
             </intent-filter>
         </receiver>
+
         <service android:name=".GCM.GcmMessageHandler" />
 
     </application>
