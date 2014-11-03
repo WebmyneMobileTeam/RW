@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'webmyne'
+            keyPassword 'webmyne'
+            storeFile file('C:/Users/Dhruvil/.android/webmyne.jks')
+            storePassword 'webmyne'
+        }
+    }
     compileSdkVersion 'Google Inc.:Google APIs:14'
     buildToolsVersion "20.0.0"
-
     defaultConfig {
         applicationId "com.webmyne.rightway"
         minSdkVersion 14

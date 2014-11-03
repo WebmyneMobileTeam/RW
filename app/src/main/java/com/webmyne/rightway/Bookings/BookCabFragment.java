@@ -89,6 +89,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             "HOW YOU WILL DO PAYMENT?",
             "TIP PERCENTAGE",
             "" };
+
     private ImageView btnPrevious;
     private TextView headerTitleForm;
     private boolean isPickUpLocationAdded = false;
@@ -224,9 +225,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         //  Toast.makeText(getActivity(),ll.latitude+"    :   "+ll.longitude, Toast.LENGTH_SHORT).show();
-
-
-
 
                         displayMarkers();
 
@@ -444,6 +442,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     @Override
     public void onPause() {
+
+        Toast.makeText(getActivity(), "pause called", Toast.LENGTH_SHORT).show();
         mv.onPause();
         mc.stopTrackMyLocation();
         super.onPause();
