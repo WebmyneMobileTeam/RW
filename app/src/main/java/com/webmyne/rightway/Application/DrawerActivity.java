@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.webmyne.rightway.Bookings.BookCabFragment;
 import com.webmyne.rightway.ContactUs.ContactUsFragment;
+import com.webmyne.rightway.CurrentTrip.FragmentCurrentTrip;
 import com.webmyne.rightway.DrawerLibrary.ActionBarDrawerToggle;
 import com.webmyne.rightway.DrawerLibrary.DrawerArrowDrawable;
 import com.webmyne.rightway.Model.CustomTypeface;
@@ -43,21 +44,22 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerLayout drawer;
     private ListView leftDrawerList;
     //    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS"};
+    private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","CURRENT TRIP"};
     private boolean isPupil;
     public static String BOOKCAB = "bookcab";
     public static String MYBOOKING = "mybooking";
     public static String PROFILE = "profile";
     public static String CONTACTUS = "contactus";
     public static String MYNOTIFICATION = "mynotification";
+    public static String CURRENT_TRIP = "current_trip";
+
 
     BookCabFragment fragmentBookCab;
     MyBookingFragment fragmentMyBooking;
     ProfileFragment fragmentProfile;
     ContactUsFragment fragmentcontactus;
     MyNotificationFragment fragmentmynotification;
-
-
+    FragmentCurrentTrip fragmentCurrentTrip;
 
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
@@ -78,7 +80,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
          fragmentProfile = ProfileFragment.newInstance("", "");
          fragmentcontactus = ContactUsFragment.newInstance("", "");
          fragmentmynotification = MyNotificationFragment.newInstance("", "");
-
+        fragmentCurrentTrip=FragmentCurrentTrip.newInstance("","");
         if (manager.findFragmentByTag(BOOKCAB) == null) {
             ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
         }
@@ -184,6 +186,15 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 txtHeader.setText("NOTIFICATIONS");
                 break;
 
+            case 5:
+
+                // MyNotificationFragment fragmentmynotification = MyNotificationFragment.newInstance("", "");
+                if (manager.findFragmentByTag(CURRENT_TRIP) == null) {
+                    ft.replace(R.id.main_content, fragmentCurrentTrip,CURRENT_TRIP).commit();
+                }
+                txtHeader.setText("CURRENT TRIP");
+                break;
+
         }
     }
 
@@ -263,4 +274,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
 }

@@ -1,13 +1,334 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.webmyne.rightway.Profile.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:background="@color/activity_background"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+<ScrollView
+android:layout_alignParentTop="true"
+    android:layout_above="@+id/txtUpdate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/profileFragment" />
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <com.webmyne.rightway.CustomComponents.CircularImageView
+            android:id="@+id/profileImage"
+            android:layout_margin="8dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:border_color="#EEEEEE"
+            app:border_width="4dp"
+            app:shadow="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/sample_profile"
 
-</FrameLayout>
+       />
+        <LinearLayout
+
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_name"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Name"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp"/>
+
+            <!-- -->
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_marginTop="16dp"
+                android:layout_height="1dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_mobile"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Mobile"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
+
+
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_email"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Email"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+
+                android:layout_height="1dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_marginTop="@dimen/activity_margin"
+                android:layout_height="1dp"/>
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="City"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
+
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="State"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
+
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="ZipCode"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+        <TextView
+            android:id="@+id/txtUpdate"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:text="UPDATE"
+            android:textColor="@android:color/black"
+            app:customTypeface="@string/bold"
+            tools:ignore="MissingPrefix"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:background="@color/actionbar"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>

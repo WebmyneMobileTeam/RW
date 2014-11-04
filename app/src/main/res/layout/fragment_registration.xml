@@ -301,49 +301,49 @@
             android:layout_height="1dp"/>
 
 
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:layout_height="1dp"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@color/divider"-->
+            <!--android:layout_marginTop="@dimen/activity_margin"-->
+            <!--android:layout_height="1dp"/>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:padding="@dimen/activity_margin"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="#fff"-->
+            <!--android:padding="@dimen/activity_margin"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal">-->
 
-            <ImageView
-                android:src="@drawable/ic_star"
-                android:contentDescription="@string/app_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerInside" />
+            <!--<ImageView-->
+                <!--android:src="@drawable/ic_star"-->
+                <!--android:contentDescription="@string/app_name"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:scaleType="centerInside" />-->
 
-            <EditText
-                android:layout_marginLeft="@dimen/activity_margin"
-                android:background="@null"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="Preferred Driver if any"
-                app:customTypeface="rnormal"
-                tools:ignore="MissingPrefix"
-                android:singleLine="true"
-                android:imeOptions="actionDone"
-                android:textSize="@dimen/text_size_medium"
-                android:gravity="center_vertical"
-                />
+            <!--<EditText-->
+                <!--android:layout_marginLeft="@dimen/activity_margin"-->
+                <!--android:background="@null"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:hint="Preferred Driver if any"-->
+                <!--app:customTypeface="rnormal"-->
+                <!--tools:ignore="MissingPrefix"-->
+                <!--android:singleLine="true"-->
+                <!--android:imeOptions="actionDone"-->
+                <!--android:textSize="@dimen/text_size_medium"-->
+                <!--android:gravity="center_vertical"-->
+                <!--/>-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
 
 
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_height="1dp"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@color/divider"-->
+            <!--android:layout_height="1dp"/>-->
 
         <!-- -->
 

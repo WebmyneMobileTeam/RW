@@ -1,6 +1,7 @@
 package com.webmyne.rightway.MyNotifications;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,35 +9,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.webmyne.rightway.R;
 
+import java.util.ArrayList;
+
 public class MyNotificationFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyNotificationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+    ArrayList<String> notificationList=new ArrayList<String>();
+    ListView lvCustomerNotifications;
+     NotificationAdapter notificationAdapter;
     public static MyNotificationFragment newInstance(String param1, String param2) {
         MyNotificationFragment fragment = new MyNotificationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
     public MyNotificationFragment() {
@@ -46,36 +36,69 @@ public class MyNotificationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        notificationList.add("One");
+        notificationList.add("Two");
+        notificationList.add("Three");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_notification, container, false);
+        View rootView=inflater.inflate(R.layout.fragment_my_notification, container, false);
+        notificationAdapter=new NotificationAdapter(getActivity(),notificationList);
+        lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
+        lvCustomerNotifications.setAdapter(notificationAdapter);
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public class NotificationAdapter extends BaseAdapter {
+
+        Context context;
+
+        LayoutInflater inflater;
+
+        ArrayList<String> notificationList;
+
+
+        public NotificationAdapter(Context context, ArrayList<String> notificationList) {
+
+            this.context = context;
+            this.notificationList = notificationList;
+        }
+
+        public int getCount() {
+            return notificationList.size();
+        }
+
+        public Object getItem(int position) {
+            return notificationList.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        class ViewHolder {
+
+
+        }
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            final ViewHolder holder;
+            LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.item_notification, parent, false);
+                holder = new ViewHolder();
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            return convertView;
+
+        }
 
     }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-
-
 }

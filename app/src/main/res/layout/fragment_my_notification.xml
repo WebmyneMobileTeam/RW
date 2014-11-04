@@ -2,12 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/activity_margin"
+    android:paddingBottom="@dimen/activity_margin"
+    android:background="@color/activity_background"
     tools:context="com.webmyne.rightway.MyNotifications.MyNotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:background="@android:color/white"
+        android:id="@+id/lvCustomerNotifications"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/mynotificationfragment" />
+        android:divider="@color/activity_background"
+        android:dividerHeight="16dp" />
+
 
 </FrameLayout>

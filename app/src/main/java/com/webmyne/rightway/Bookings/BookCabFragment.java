@@ -167,8 +167,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         txtPickUpTime = (TextView)view.findViewById(R.id.txtPickUpTime);
         txtPickUpTime.setOnClickListener(this);
 
-        txtPayment = (TextView)view.findViewById(R.id.txtPayment);
-        txtPayment.setOnClickListener(this);
+//        txtPayment = (TextView)view.findViewById(R.id.txtPayment);
+//        txtPayment.setOnClickListener(this);
 
         txtTip = (TextView)view.findViewById(R.id.txtTip);
         txtTip.setOnClickListener(this);
@@ -494,11 +494,11 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                 break;
 
-            case R.id.txtPayment:
-
-                showPaymentDialog();
-
-                break;
+//            case R.id.txtPayment:
+//
+//                showPaymentDialog();
+//
+//                break;
 
             case R.id.txtDriver:
 
@@ -528,27 +528,27 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     }
 
-    private void showPaymentDialog() {
-
-        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        listDialog.setCancelable(true);
-        listDialog.setCanceledOnTouchOutside(true);
-        listDialog.title("CHOOSE PAYMENT METHOD");
-        ArrayList<String> methods = new ArrayList<String>();
-        methods.add("Credit Card");
-        methods.add("Cash");
-
-        listDialog.setItems(methods);
-        listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
-            @Override
-            public void selected(String value) {
-
-                txtPayment.setText(value);
-
-            }
-        });
-        listDialog.show();
-    }
+//    private void showPaymentDialog() {
+//
+//        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+//        listDialog.setCancelable(true);
+//        listDialog.setCanceledOnTouchOutside(true);
+//        listDialog.title("CHOOSE PAYMENT METHOD");
+//        ArrayList<String> methods = new ArrayList<String>();
+//        methods.add("Credit Card");
+//        methods.add("Cash");
+//
+//        listDialog.setItems(methods);
+//        listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
+//            @Override
+//            public void selected(String value) {
+//
+//                txtPayment.setText(value);
+//
+//            }
+//        });
+//        listDialog.show();
+//    }
 
     private void showTipDialog() {
 

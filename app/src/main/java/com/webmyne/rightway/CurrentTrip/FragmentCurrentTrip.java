@@ -1,4 +1,4 @@
-package com.webmyne.rightway.Profile;
+package com.webmyne.rightway.CurrentTrip;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -11,15 +11,15 @@ import android.view.ViewGroup;
 
 import com.webmyne.rightway.R;
 
+public class FragmentCurrentTrip extends Fragment {
 
-public class ProfileFragment extends Fragment {
-
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
+    public static FragmentCurrentTrip newInstance(String param1, String param2) {
+        FragmentCurrentTrip fragment = new FragmentCurrentTrip();
 
         return fragment;
     }
-    public ProfileFragment() {
+
+    public FragmentCurrentTrip() {
         // Required empty public constructor
     }
 
@@ -32,8 +32,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView=inflater.inflate(R.layout.fragment_profile, container, false);
+        View rootView= inflater.inflate(R.layout.fragment_current_trip, container, false);
         return rootView;
     }
+
 
 }
