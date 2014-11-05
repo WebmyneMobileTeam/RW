@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.webmyne.rightway.Login.RegistrationActivity" >
+
+    <item android:id="@+id/action_filter"
+        android:title="Filter"
+           android:icon="@drawable/ic_filter"
+        android:orderInCategory="100"
+        android:showAsAction="always" >
+        <menu>
+
+            <item
+                android:id="@+id/currentWeek"
+                android:title="Sort by Current Week" />
+            <item
+                android:id="@+id/lastWeek"
+                android:title="Sort by Last Week" />
+            <item
+                android:id="@+id/currentMonth"
+                android:title="Sort by Current Month" />
+            <item
+                android:id="@+id/lastMonth"
+                android:title="Sort by Last Month" />
+
+        </menu>
+        </item>
+</menu>

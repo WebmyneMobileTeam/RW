@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/activity_background"
+    >
+    <!--<TextView-->
+        <!--android:id="@+id/txtDateSelection"-->
+        <!--android:padding="4dp"-->
+        <!--android:layout_alignParentTop="true"-->
+       <!--android:layout_alignParentRight="true"-->
+        <!--android:textSize="@dimen/text_size_small"-->
+        <!--android:textColor="@color/actionbar"-->
+        <!--app:customTypeface="@string/normal"-->
+        <!--tools:ignore="MissingPrefix"-->
+        <!--android:text="Filtered By Current Week"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+<!--/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/viewDivider"-->
+        <!--android:layout_below="@+id/txtDateSelection"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="@color/actionbar"-->
+        <!--android:layout_height="1dp"/>-->
+    <ListView
+        android:layout_marginTop="@dimen/activity_margin"
+        android:layout_marginBottom="@dimen/activity_margin"
+        android:background="@android:color/white"
+        android:id="@+id/ordersHistoryList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="@dimen/activity_margin"
+        android:drawSelectorOnTop="true"
+        android:divider="@color/activity_background">
+    </ListView>
+
+
+
+
+</RelativeLayout>

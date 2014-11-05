@@ -6,6 +6,7 @@
     <color name="activity_background">#eaeaea</color>
     <color name="divider">#cecece</color>
     <color name="ldrawer_color">#000000</color>
-
+    <color name="background_tab_pressed">#66cecece</color>
+    <color name="background_tab">#fafafa</color>
 
 </resources>

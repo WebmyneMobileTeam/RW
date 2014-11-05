@@ -329,7 +329,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+
         inflater.inflate(R.menu.menu_bookcab,menu);
 
     }

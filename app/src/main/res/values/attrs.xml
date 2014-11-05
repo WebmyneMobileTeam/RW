@@ -30,7 +30,8 @@
     </declare-styleable>
 
     <declare-styleable name="CustomHeaderView">
-        <attr name="titleText" format="string"/>
+        <attr name="titleText" format="string" localization="suggested" />
+
     </declare-styleable>
 
     <declare-styleable name="CircularImageView">

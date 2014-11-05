@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -39,6 +41,7 @@ public class MyNotificationFragment extends Fragment {
         notificationList.add("One");
         notificationList.add("Two");
         notificationList.add("Three");
+
     }
 
     @Override
@@ -48,7 +51,16 @@ public class MyNotificationFragment extends Fragment {
         notificationAdapter=new NotificationAdapter(getActivity(),notificationList);
         lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
         lvCustomerNotifications.setAdapter(notificationAdapter);
+        setHasOptionsMenu(true);
         return rootView;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.filter,menu);
+
     }
 
     public class NotificationAdapter extends BaseAdapter {

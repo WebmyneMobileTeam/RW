@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+>
+
+
+    <com.webmyne.rightway.CustomComponents.CustomHeaderView
+        android:layout_width="match_parent"
+        app:customTypeface="@string/bold"
+        tools:ignore="MissingPrefix"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/activity_margin"
+        app:titleText="Customer Information"
+        android:layout_height="100dp">
+    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
+
+    <com.webmyne.rightway.CustomComponents.CustomHeaderView
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:customTypeface="@string/bold"
+        tools:ignore="MissingPrefix"
+        android:layout_marginTop="@dimen/activity_margin"
+        app:titleText="Trip Information"
+
+        android:layout_height="100dp">
+    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
+
+    <com.webmyne.rightway.CustomComponents.CustomHeaderView
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:customTypeface="@string/bold"
+        tools:ignore="MissingPrefix"
+        android:layout_marginTop="@dimen/activity_margin"
+        app:titleText="Payment Information"
+        android:layout_height="100dp">
+    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
+
+</LinearLayout>

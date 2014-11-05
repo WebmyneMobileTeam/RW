@@ -1,7 +1,5 @@
 package com.webmyne.rightway.CurrentTrip;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -11,15 +9,15 @@ import android.view.ViewGroup;
 
 import com.webmyne.rightway.R;
 
-public class FragmentCurrentTrip extends Fragment {
+public class FragmentCurrentTripMap extends Fragment {
 
-    public static FragmentCurrentTrip newInstance(String param1, String param2) {
-        FragmentCurrentTrip fragment = new FragmentCurrentTrip();
+    public static FragmentCurrentTripMap newInstance(String param1, String param2) {
+        FragmentCurrentTripMap fragment = new FragmentCurrentTripMap();
 
         return fragment;
     }
 
-    public FragmentCurrentTrip() {
+    public FragmentCurrentTripMap() {
         // Required empty public constructor
     }
 

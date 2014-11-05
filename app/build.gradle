@@ -9,7 +9,7 @@ android {
             storePassword 'webmyne'
         }
     }
-    compileSdkVersion 'Google Inc.:Google APIs:14'
+    compileSdkVersion 20
     buildToolsVersion "20.0.0"
     defaultConfig {
         applicationId "com.webmyne.rightway"
