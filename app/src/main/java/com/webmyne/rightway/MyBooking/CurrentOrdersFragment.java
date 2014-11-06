@@ -41,14 +41,10 @@ public class CurrentOrdersFragment extends Fragment {
         currentOrdersList.add("three");
         currentOrdersList.add("four");
         currentOrdersList.add("five");
-        setHasOptionsMenu(false);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
     }
+
+
 
 
     @Override

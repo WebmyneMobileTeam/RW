@@ -14,14 +14,17 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.R;
 
 import java.util.ArrayList;
 
-public class CanceledOrdersFragment extends Fragment {
+public class CanceledOrdersFragment extends Fragment implements ListDialog.setSelectedListner {
     ListView ordersCanceledListView;
     OrdersCanceledAdapter ordersCanceledAdapter;
     ArrayList<String> ordersCanceledList =new ArrayList<String>();
+    TextView txtDateSelectionForOrderCancel;
+    ArrayList<String> dateSelectionArray=new ArrayList<String>();
     public static CanceledOrdersFragment newInstance(String param1, String param2) {
         CanceledOrdersFragment fragment = new CanceledOrdersFragment();
 
@@ -40,7 +43,11 @@ public class CanceledOrdersFragment extends Fragment {
         ordersCanceledList.add("three");
         ordersCanceledList.add("four");
         ordersCanceledList.add("five");
-        setHasOptionsMenu(true);
+
+        dateSelectionArray.add("Current Week");
+        dateSelectionArray.add("Last Week");
+        dateSelectionArray.add("Current Month");
+        dateSelectionArray.add("Last Month");
     }
 
 
@@ -49,17 +56,20 @@ public class CanceledOrdersFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View  convertView= inflater.inflate(R.layout.fragment_canceled_orders, container, false);
+        txtDateSelectionForOrderCancel=(TextView)convertView.findViewById(R.id.txtDateSelectionForOrderCancel);
+        txtDateSelectionForOrderCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
         ordersCanceledListView =(ListView)convertView.findViewById(R.id.canceledOrdersList);
         ordersCanceledAdapter =new OrdersCanceledAdapter(getActivity(), ordersCanceledList);
         ordersCanceledListView.setAdapter(ordersCanceledAdapter);
         return convertView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.filter,menu);
-    }
     public class OrdersCanceledAdapter extends BaseAdapter {
 
         Context context;
@@ -123,4 +133,21 @@ public class CanceledOrdersFragment extends Fragment {
 
     }
 
+    public void showDialog() {
+
+        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        listDialog.setCancelable(true);
+        listDialog.setCanceledOnTouchOutside(true);
+        listDialog.title("SELECT DATE FILTER");
+        listDialog.setItems(dateSelectionArray);
+        listDialog.setSelectedListner(this);
+        listDialog.show();
+    }
+
+    @Override
+    public void selected(String value) {
+
+        txtDateSelectionForOrderCancel.setText("Filtered By "+value);
+
+    }
 }

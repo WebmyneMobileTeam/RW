@@ -7,9 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
+import com.google.ads.mediation.customevent.CustomEvent;
 import com.webmyne.rightway.Application.BaseActivity;
+import com.webmyne.rightway.CustomComponents.CustomHeaderView;
 import com.webmyne.rightway.R;
 
 
@@ -24,7 +27,7 @@ public class OrderDetailActivity extends BaseActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-        txtHeader.setText("ORDER DETAILS");
+        txtHeader.setText("TRIP DETAILS");
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -58,8 +61,6 @@ public class OrderDetailActivity extends BaseActivity {
     public static class PlaceholderFragment extends Fragment {
 
 
-
-
         public PlaceholderFragment() {
         }
 
@@ -67,13 +68,13 @@ public class OrderDetailActivity extends BaseActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_order_detail, container, false);
+
 
             return rootView;
         }
@@ -83,8 +84,6 @@ public class OrderDetailActivity extends BaseActivity {
             super.onResume();
 
         }
-
-
 
     }
 }

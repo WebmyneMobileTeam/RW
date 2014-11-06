@@ -1,0 +1,49 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.webmyne.riteway_driver.settings.SettingsFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <!-- Update Interval Time -->
+        <LinearLayout
+            android:id="@+id/linearIntervalTime"
+            android:background="@drawable/background_tab"
+            android:clickable="true"
+            android:padding="@dimen/activity_margin"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                app:customTypeface="@string/bold"
+                tools:ignore="MissingPrefix"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_medium"
+                android:text="Update Interval Time" />
+            <TextView
+                android:id="@+id/txtUpdateTime"
+                android:layout_width="match_parent"
+                app:customTypeface="@string/normal"
+                tools:ignore="MissingPrefix"
+                android:textSize="@dimen/text_size_small"
+                android:layout_height="match_parent"
+                android:textColor="@android:color/darker_gray"
+                android:text="5 minutes" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
+    </LinearLayout>
+</ScrollView>

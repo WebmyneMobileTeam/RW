@@ -29,6 +29,7 @@ import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.MyNotifications.MyNotificationFragment;
 import com.webmyne.rightway.Profile.ProfileFragment;
 import com.webmyne.rightway.R;
+import com.webmyne.rightway.Settings.SettingsFragment;
 
 public class DrawerActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
@@ -181,11 +182,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
             case 6:
 
-                FragmentCurrentTripMap fragmentCurrentTripMaps = FragmentCurrentTripMap.newInstance("", "");
+                SettingsFragment settingsFragment = SettingsFragment.newInstance("", "");
                 if (manager.findFragmentByTag(SETTINGS) == null) {
-                    ft.replace(R.id.main_content, fragmentCurrentTripMaps,SETTINGS).commit();
+                    ft.replace(R.id.main_content, settingsFragment,SETTINGS).commit();
                 }
-                txtHeader.setText("CURRENT TRIP");
+                txtHeader.setText("SETTING");
                 break;
 
         }
@@ -235,6 +236,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         public class ViewHolder {
             TextView txtDrawerItem;
+            TextView txtBadgeValue;
         }
 
 
@@ -248,10 +250,16 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 convertView = mInflater.inflate(R.layout.item_drawer, parent, false);
                 holder = new ViewHolder();
                 holder.txtDrawerItem = (TextView) convertView.findViewById(R.id.txtDrawerItem);
+                holder.txtBadgeValue=(TextView) convertView.findViewById(R.id.txtBadgeValue);
                 convertView.setTag(holder);
 
             } else {
                 holder = (ViewHolder) convertView.getTag();
+            }
+            if(position==4){
+                holder.txtBadgeValue.setVisibility(View.VISIBLE);
+            } else {
+                holder.txtBadgeValue.setVisibility(View.GONE);
             }
             holder.txtDrawerItem.setText(leftSliderData[position]);
             return convertView;

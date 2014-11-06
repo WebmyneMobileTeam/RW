@@ -22,17 +22,20 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 
+import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.R;
 
 import java.util.ArrayList;
 
 
-public class OrdersHistoryFragment extends Fragment {
+public class OrdersHistoryFragment extends Fragment implements ListDialog.setSelectedListner{
 
     ListView ordersHistoryListView;
     OrdersHistoryAdapter ordersHistoryAdapter;
+    TextView txtDateSelection;
     ArrayList<String> ordersHistoryList =new ArrayList<String>();
-    String[] dateSelectionArray = { "Current Week", "Last Week", "Current Month", "Last Month" };
+    ArrayList<String> dateSelectionArray=new ArrayList<String>();
+
 //    Spinner dateSelection;
     public static OrdersHistoryFragment newInstance(String param1, String param2) {
         OrdersHistoryFragment fragment = new OrdersHistoryFragment();
@@ -50,11 +53,12 @@ public class OrdersHistoryFragment extends Fragment {
         ordersHistoryList.add("three");
         ordersHistoryList.add("four");
         ordersHistoryList.add("five");
-        setHasOptionsMenu(true);
 
+        dateSelectionArray.add("Current Week");
+        dateSelectionArray.add("Last Week");
+        dateSelectionArray.add("Current Month");
+        dateSelectionArray.add("Last Month");
     }
-
-
 
 
     @Override
@@ -68,7 +72,13 @@ public class OrdersHistoryFragment extends Fragment {
 //        ArrayAdapter spinnerAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,dateSelectionArray);
 //        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        dateSelection.setAdapter(spinnerAdapter);
-
+        txtDateSelection=(TextView)convertView.findViewById(R.id.txtDateSelection);
+        txtDateSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
         ordersHistoryListView =(ListView)convertView.findViewById(R.id.ordersHistoryList);
         ordersHistoryAdapter =new OrdersHistoryAdapter(getActivity(), ordersHistoryList);
         ordersHistoryListView.setAdapter(ordersHistoryAdapter);
@@ -77,23 +87,7 @@ public class OrdersHistoryFragment extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.filter,menu);
-
-    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        return super.onOptionsItemSelected(item);
-//
-//        switch (item.getItemId()) {
-//            case R.id.currentWeek:
-//
-//                break;
-//        }
-//    }
 
     public class OrdersHistoryAdapter extends BaseAdapter {
 
@@ -157,5 +151,24 @@ public class OrdersHistoryFragment extends Fragment {
         }
 
     }
+
+    public void showDialog() {
+
+        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        listDialog.setCancelable(true);
+        listDialog.setCanceledOnTouchOutside(true);
+        listDialog.title("SELECT DATE FILTER");
+        listDialog.setItems(dateSelectionArray);
+        listDialog.setSelectedListner(this);
+        listDialog.show();
+    }
+
+    @Override
+    public void selected(String value) {
+
+        txtDateSelection.setText("Filtered By "+value);
+
+    }
+
 
 }

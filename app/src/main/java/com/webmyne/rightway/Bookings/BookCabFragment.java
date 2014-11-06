@@ -379,7 +379,11 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             public void onFinish() {
 
             int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
-            mc.animateTo(mc.getMyLocation().getLatitude(),mc.getMyLocation().getLongitude(),zoom);
+                try {
+                    mc.animateTo(mc.getMyLocation().getLatitude(), mc.getMyLocation().getLongitude(), zoom);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

@@ -1,41 +1,300 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
->
+
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+<ScrollView
+    android:layout_above="@+id/txtCancelTrip"
+    android:id="@+id/scrolledDetials"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <com.webmyne.rightway.CustomComponents.CustomHeaderView
+            android:id="@+id/tripInfo"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:customTypeface="@string/bold"
+            tools:ignore="MissingPrefix"
+            android:layout_marginTop="@dimen/activity_margin"
+            app:titleText="Trip Information"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+
+                android:paddingTop="@dimen/activity_margin"
+                android:paddingBottom="@dimen/activity_margin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/header_back"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Driver Name"
+                        android:layout_toLeftOf="@+id/txtTripDateAndTime"
+                        android:layout_alignParentLeft="true"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/bold"
+                        tools:ignore="MissingPrefix"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_size_medium" />
+                    <TextView
+
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/txtTripDateAndTime"
+                        android:text="3:00PM"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/light"
+                        tools:ignore="MissingPrefix"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="@dimen/text_size_small" />
+                    </RelativeLayout>
 
 
-    <com.webmyne.rightway.CustomComponents.CustomHeaderView
-        android:layout_width="match_parent"
+
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Pickup: Ajwa Road, Kamla Nagar, Vadodara, Gujarat"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/bold"
+                    android:textStyle="bold"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_size_medium" />
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Drop-off: Alkapuri Side Railway Station Entrance, Alkapuri, Vadodara, Gujarat"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/bold"
+                    android:textStyle="bold"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_size_medium" />
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Pickup At: Near Kamlanagar Talav"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/normal"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="#414141"
+                    android:textSize="@dimen/text_size_medium" />
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Pickup Time: 12:00AM"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/light"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="#414141"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Trip Date: 11/06/14"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/light"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="#414141"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <RelativeLayout
+                    android:paddingLeft="16dp"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="Distance: 1.03 kms"
+                        android:layout_toLeftOf="@+id/txtTripStatus"
+                        android:layout_alignParentLeft="true"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/light"
+                        tools:ignore="MissingPrefix"
+                        android:layout_height="wrap_content"
+                        android:textColor="#414141"
+                        android:textSize="@dimen/text_size_medium"/>
+
+
+                    <TextView
+
+                        android:id="@+id/txtTripStatus"
+                        android:text="In Progress"
+                        android:padding="8dp"
+                        android:layout_toLeftOf="@+id/statusRightDivider"
+                        android:layout_marginRight="-1dp"
+                        android:background="@drawable/header_back"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/light"
+                        tools:ignore="MissingPrefix"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textSize="@dimen/text_size_medium" />
+
+                    <TextView
+                        android:id="@+id/statusRightDivider"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="4dp"
+                        android:layout_alignBottom="@+id/txtTripStatus"
+                        android:padding="8dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/actionbar"
+                        ></TextView>
+                    </RelativeLayout>
+
+            </LinearLayout>
+
+        </com.webmyne.rightway.CustomComponents.CustomHeaderView>
+
+        <com.webmyne.rightway.CustomComponents.CustomHeaderView
+            android:id="@+id/paymentInfo"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:customTypeface="@string/bold"
+            tools:ignore="MissingPrefix"
+            android:layout_marginTop="@dimen/activity_margin"
+            app:titleText="Payment Information"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+
+                android:paddingTop="@dimen/activity_margin"
+                android:paddingBottom="@dimen/activity_margin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/header_back"
+                android:orientation="vertical">
+
+            <TextView
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingRight="@dimen/activity_margin"
+                android:text="Trip Fare: 100 $"
+                android:layout_width="wrap_content"
+                app:customTypeface="@string/normal"
+
+                tools:ignore="MissingPrefix"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_medium"/>
+
+                <TextView
+                    android:paddingLeft="@dimen/activity_margin"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:text="Trip Fee: 2 $"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/normal"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <TextView
+                    android:paddingLeft="@dimen/activity_margin"
+                    android:paddingRight="@dimen/activity_margin"
+                    android:text="Tip Percentage: 2%"
+                    android:layout_width="wrap_content"
+                    app:customTypeface="@string/normal"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_size_medium"/>
+
+
+
+                <RelativeLayout
+                    android:paddingLeft="@dimen/activity_margin"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                   >
+
+                    <TextView
+                        android:text="Total Amount: 104 $"
+                        android:layout_toLeftOf="@+id/paymentType"
+                        android:layout_alignParentLeft="true"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/bold"
+                        android:textStyle="bold"
+                        tools:ignore="MissingPrefix"
+                        android:layout_height="wrap_content"
+                        android:textColor="#414141"
+                        android:textSize="@dimen/text_size_medium"/>
+
+
+                    <TextView
+
+                        android:id="@+id/paymentType"
+                        android:text="Credit Card"
+                        android:padding="8dp"
+                        android:layout_toLeftOf="@+id/paymentTypeRightDivider"
+                        android:layout_marginRight="-1dp"
+                        android:background="@drawable/header_back"
+                        android:layout_width="wrap_content"
+                        app:customTypeface="@string/light"
+                        tools:ignore="MissingPrefix"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textSize="@dimen/text_size_medium" />
+
+                    <TextView
+                        android:id="@+id/paymentTypeRightDivider"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="4dp"
+                        android:layout_alignBottom="@+id/paymentType"
+                        android:padding="8dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/actionbar"
+                        ></TextView>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </com.webmyne.rightway.CustomComponents.CustomHeaderView>
+
+    </LinearLayout>
+</ScrollView>
+
+    <TextView
+
+        android:id="@+id/txtCancelTrip"
+        android:padding="4dp"
+        android:gravity="center"
+        android:background="@color/actionbar"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
         app:customTypeface="@string/bold"
         tools:ignore="MissingPrefix"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_margin"
-        app:titleText="Customer Information"
-        android:layout_height="100dp">
-    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
-
-    <com.webmyne.rightway.CustomComponents.CustomHeaderView
+        android:text="Cancel Trip"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        app:customTypeface="@string/bold"
-        tools:ignore="MissingPrefix"
-        android:layout_marginTop="@dimen/activity_margin"
-        app:titleText="Trip Information"
+        android:layout_height="wrap_content"
+        />
 
-        android:layout_height="100dp">
-    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
-
-    <com.webmyne.rightway.CustomComponents.CustomHeaderView
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        app:customTypeface="@string/bold"
-        tools:ignore="MissingPrefix"
-        android:layout_marginTop="@dimen/activity_margin"
-        app:titleText="Payment Information"
-        android:layout_height="100dp">
-    </com.webmyne.rightway.CustomComponents.CustomHeaderView>
-
-</LinearLayout>
+</RelativeLayout>

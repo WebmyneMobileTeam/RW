@@ -17,15 +17,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.R;
 
 import java.util.ArrayList;
 
-public class MyNotificationFragment extends Fragment {
+public class MyNotificationFragment extends Fragment implements ListDialog.setSelectedListner {
 
     ArrayList<String> notificationList=new ArrayList<String>();
     ListView lvCustomerNotifications;
      NotificationAdapter notificationAdapter;
+    TextView txtDateSelectionForNotification;
+    ArrayList<String> dateSelectionArray=new ArrayList<String>();
     public static MyNotificationFragment newInstance(String param1, String param2) {
         MyNotificationFragment fragment = new MyNotificationFragment();
 
@@ -42,12 +45,23 @@ public class MyNotificationFragment extends Fragment {
         notificationList.add("Two");
         notificationList.add("Three");
 
+        dateSelectionArray.add("Current Week");
+        dateSelectionArray.add("Last Week");
+        dateSelectionArray.add("Current Month");
+        dateSelectionArray.add("Last Month");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_my_notification, container, false);
+        txtDateSelectionForNotification=(TextView)rootView.findViewById(R.id.txtDateSelectionForNotification);
+        txtDateSelectionForNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
         notificationAdapter=new NotificationAdapter(getActivity(),notificationList);
         lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
         lvCustomerNotifications.setAdapter(notificationAdapter);
@@ -56,12 +70,7 @@ public class MyNotificationFragment extends Fragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.filter,menu);
-
-    }
 
     public class NotificationAdapter extends BaseAdapter {
 
@@ -111,6 +120,24 @@ public class MyNotificationFragment extends Fragment {
             return convertView;
 
         }
+
+    }
+
+    public void showDialog() {
+
+        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        listDialog.setCancelable(true);
+        listDialog.setCanceledOnTouchOutside(true);
+        listDialog.title("SELECT DATE FILTER");
+        listDialog.setItems(dateSelectionArray);
+        listDialog.setSelectedListner(this);
+        listDialog.show();
+    }
+
+    @Override
+    public void selected(String value) {
+
+        txtDateSelectionForNotification.setText("Filtered By "+value);
 
     }
 }

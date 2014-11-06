@@ -35,14 +35,11 @@ public class MyBookingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
+
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
