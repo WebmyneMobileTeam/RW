@@ -1,7 +1,9 @@
 package com.webmyne.rightway.MyBooking;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.google.ads.mediation.customevent.CustomEvent;
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.CustomComponents.CustomHeaderView;
+import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.R;
 
 
@@ -31,6 +34,10 @@ public class OrderDetailActivity extends BaseActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return CustomTypeface.getInstance().createView(name, context, attrs);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -65,7 +65,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
         notificationAdapter=new NotificationAdapter(getActivity(),notificationList);
         lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
         lvCustomerNotifications.setAdapter(notificationAdapter);
-        setHasOptionsMenu(true);
+
         return rootView;
     }
 

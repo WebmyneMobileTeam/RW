@@ -1,10 +1,31 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.webmyne.rightway.CurrentTrip.FragmentCurrentTripMap">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.webmyne.riteway_driver.trip.CurrentTripFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="Current Trip" />
-
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:visibility="visible"
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/txtgetReceipt"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_gravity="bottom|left"
+        android:background="@color/actionbar"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        app:customTypeface="@string/bold"
+        tools:ignore="MissingPrefix"
+        android:text="GET RECEIPT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </FrameLayout>

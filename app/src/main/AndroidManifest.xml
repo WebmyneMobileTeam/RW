@@ -66,10 +66,9 @@
             android:name="com.webmyne.rightway.Application.DrawerActivity"
             android:label="@string/title_activity_drawer" >
         </activity>
-        <activity
-            android:name=".MyBooking.OrderDetailActivity"
-       >
+        <activity android:name="com.webmyne.rightway.MyBooking.OrderDetailActivity" >
         </activity>
+
         <receiver
             android:name="com.webmyne.rightway.GCM.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -82,6 +81,10 @@
 
         <service android:name="com.webmyne.rightway.GCM.GcmMessageHandler" />
 
+        <activity
+            android:name="com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackActivity"
+            android:label="@string/title_activity_receipt_and_feedback" >
+        </activity>
     </application>
 
 </manifest>

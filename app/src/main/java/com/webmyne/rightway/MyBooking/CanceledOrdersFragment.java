@@ -2,6 +2,7 @@ package com.webmyne.rightway.MyBooking;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -120,8 +121,8 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
 //                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
 //                    complexPreferences.putObject("searched_play",beanSearchList.get(position));
 //                    complexPreferences.commit();
-//                    Intent i=new Intent(getActivity(), PlayInfoActivity.class);
-//                    startActivity(i);
+                    Intent i=new Intent(getActivity(), OrderDetailActivity.class);
+                    startActivity(i);
 
 
                 }

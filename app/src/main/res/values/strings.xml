@@ -19,5 +19,6 @@
     <string name="normal">rnormal</string>
     <string name="light">rlight</string>
     <string name="title_activity_current_trip">CurrentTripActivity</string>
+    <string name="title_activity_receipt_and_feedback">ReceiptAndFeedbackActivity</string>
 
 </resources>

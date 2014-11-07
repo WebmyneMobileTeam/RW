@@ -3,6 +3,7 @@ package com.webmyne.rightway.MyBooking;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -139,8 +140,8 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
 //                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
 //                    complexPreferences.putObject("searched_play",beanSearchList.get(position));
 //                    complexPreferences.commit();
-//                    Intent i=new Intent(getActivity(), PlayInfoActivity.class);
-//                    startActivity(i);
+                    Intent i=new Intent(getActivity(), OrderDetailActivity.class);
+                    startActivity(i);
 
 
                 }

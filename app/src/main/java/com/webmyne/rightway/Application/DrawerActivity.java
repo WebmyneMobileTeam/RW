@@ -51,10 +51,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
 
 
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return CustomTypeface.getInstance().createView(name, context, attrs);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +77,10 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         Log.e("onResume ", "in drawer activty");
     }
 
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return CustomTypeface.getInstance().createView(name, context, attrs);
+    }
     private void initFields() {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -186,7 +186,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 if (manager.findFragmentByTag(SETTINGS) == null) {
                     ft.replace(R.id.main_content, settingsFragment,SETTINGS).commit();
                 }
-                txtHeader.setText("SETTING");
+                txtHeader.setText("SETTINGS");
                 break;
 
         }
