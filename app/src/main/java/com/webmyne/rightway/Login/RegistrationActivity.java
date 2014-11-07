@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,8 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -27,8 +28,12 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.Application.DrawerActivity;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -60,46 +65,34 @@ public class RegistrationActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.registration, menu);
+
 
         return false;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_forward) {
 
-
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction ft = manager.beginTransaction();
-
-            ft.replace(R.id.container,new ImageFormFragment(),"imageFragment");
-            ft.addToBackStack("imageFragment");
-            ft.commit();
-
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class BasicFormFragment extends Fragment {
 
+        private EditText etCustomerName,etCustomerMobile,etCustomerEmail,etCustomerCity,etCustomerState,etCustomerZipcode;
         public BasicFormFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_registration, container, false);
             setHasOptionsMenu(true);
+            View rootView = inflater.inflate(R.layout.fragment_registration, container, false);
+            etCustomerName=(EditText)rootView.findViewById(R.id.etCustomerName);
+            etCustomerMobile=(EditText)rootView.findViewById(R.id.etCustomerMobile);
+            etCustomerEmail=(EditText)rootView.findViewById(R.id.etCustomerEmail);
+            etCustomerCity=(EditText)rootView.findViewById(R.id.etCustomerCity);
+            etCustomerState=(EditText)rootView.findViewById(R.id.etCustomerState);
+            etCustomerZipcode=(EditText)rootView.findViewById(R.id.etCustomerZipcode);
+
             return rootView;
         }
 
@@ -107,6 +100,40 @@ public class RegistrationActivity extends BaseActivity {
         public void onResume() {
             super.onResume();
             ((RegistrationActivity)getActivity()).setActionBarTitle("TELL US ABOUT YOU");
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            super.onCreateOptionsMenu(menu, inflater);
+            getActivity().getMenuInflater().inflate(R.menu.registration, menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.action_forward) {
+                Customer customerInfo=new Customer();
+                customerInfo.Name=etCustomerName.getText().toString().trim()+"";
+                customerInfo.Mobile=etCustomerMobile.getText().toString().trim()+"";
+                customerInfo.Email=etCustomerEmail.getText().toString().trim()+"";
+                customerInfo.City=etCustomerCity.getText().toString().trim()+"";
+                customerInfo.State=etCustomerState.getText().toString().trim();
+                customerInfo.ZipCode=etCustomerZipcode.getText().toString().trim();
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
+                complexPreferences.putObject("customer_registration", customerInfo);
+                complexPreferences.commit();
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+
+                ft.replace(R.id.container, new ImageFormFragment(), "imageFragment");
+                ft.addToBackStack("imageFragment");
+                ft.commit();
+
+
+
+            }
+            return true;
+
         }
     }
 
@@ -236,10 +263,33 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
 
                 case R.id.btnRegister:
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
+                    Customer customer = complexPreferences.getObject("customer_registration", Customer.class);
+                    customer.ProfilePicture="";
+                    JSONObject customerObject=new JSONObject();
+                    try {
+                        customerObject.put("CustomerID", "0");
+                        customerObject.put("CustomerIMEI_Number", customer.Name+"");
+                        customerObject.put("NotificationID", customer.NotificationID+"");
+                        customerObject.put("DeviceType", customer.DeviceType+"");
+                        customerObject.put("Name", customer.Name+"");
+                        customerObject.put("Mobile", customer.Mobile+"");
+                        customerObject.put("Email", customer.Email+"");
+                        customerObject.put("City", customer.City+"");
+                        customerObject.put("State", customer.State+"");
+                        customerObject.put("ZipCode", customer.ZipCode+"");
+                        customerObject.put("ProfilePicture", customer.ProfilePicture+"");
+
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    Log.e("Customer Info: ",customerObject+"");
                     SharedPreferences preferences = getActivity().getSharedPreferences("is_registered",MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("registration", true);
                     editor.commit();
+
+
                     Intent i = new Intent(getActivity(), DrawerActivity.class);
                     startActivity(i);
 

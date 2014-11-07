@@ -45,6 +45,7 @@
             android:scaleType="centerInside" />
 
         <EditText
+            android:id="@+id/etCustomerName"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
@@ -92,6 +93,7 @@
 
 
         <EditText
+            android:id="@+id/etCustomerMobile"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
@@ -140,6 +142,7 @@
 
 
         <EditText
+            android:id="@+id/etCustomerEmail"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
@@ -186,6 +189,7 @@
 
 
         <EditText
+            android:id="@+id/etCustomerCity"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
@@ -233,6 +237,7 @@
 
 
         <EditText
+            android:id="@+id/etCustomerState"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
@@ -280,6 +285,7 @@
 
 
         <EditText
+            android:id="@+id/etCustomerZipcode"
             android:layout_marginLeft="@dimen/activity_margin"
             android:background="@null"
             android:layout_width="match_parent"
