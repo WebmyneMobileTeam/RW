@@ -1,9 +1,8 @@
 package com.webmyne.rightway.Bookings;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,7 +10,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,29 +23,36 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.webmyne.rightway.Application.MyApplication;
+import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.CustomComponents.ListDialog;
-import com.webmyne.rightway.CustomComponents.NonSwipeableViewPager;
+import com.webmyne.rightway.Login.Customer;
 import com.webmyne.rightway.MapNavigator.Navigator;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.MapController;
+import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.R;
 
 import org.json.JSONArray;
@@ -56,42 +61,41 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
-
-    private String SENDER_ID = "APA91bF7Mu1e1M8nKWKYeOODcPJm0coqF6TEEEvl-bb6TDmEBvbYU5m9y0IE1Olnt0ZyQM4p3ccNhHx6nUUnKE91g9QXBDirFz1HxtAw-CDtufxiLPHaxRH-ll37FnnsHD5KAmhlw6QulKKzhKmZoBxzWmNdtR9qHdETiv9epIwQ5inqLqOuC5Q";
-
+    float distance;
+    ArrayList<String> driverNames = new ArrayList<String>();
+    ArrayList<String> selectedDriverId = new ArrayList<String>();
+    ArrayList<LatLng> cabs = new ArrayList<LatLng>();
+    private ProgressDialog progressDialog;
     private static final String LOG_TAG = "RiteWay Book Cab";
+    private String selectedDriver;
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
     private MapView mv;
     private MapController mc;
-    public NonSwipeableViewPager viewPager;
-    private String[] count = {"1","1","1","1","1","1","1","1","1"};
-    private static String[] titles = {"PICK UP LOCATION",
-            "SELECT PICKUP TIME",
-            "PICKUP PLACE NOTE",
-            "WHERE YOU WANT TO GO?",
-            "PICK DRIVER",
-            "HOW YOU WILL DO PAYMENT?",
-            "TIP PERCENTAGE",
-            "" };
-
-    private ImageView btnPrevious;
-    private TextView headerTitleForm;
+//    public NonSwipeableViewPager viewPager;
+//    private String[] count = {"1","1","1","1","1","1","1","1","1"};
+//    private static String[] titles = {"PICK UP LOCATION",
+//            "SELECT PICKUP TIME",
+//            "PICKUP PLACE NOTE",
+//            "WHERE YOU WANT TO GO?",
+//            "PICK DRIVER",
+//            "HOW YOU WILL DO PAYMENT?",
+//            "TIP PERCENTAGE",
+//            "" };
+//
+//    private ImageView btnPrevious;
+//    private TextView headerTitleForm;
     private boolean isPickUpLocationAdded = false;
 
     private AutoCompleteTextView edPickUpLocation;
@@ -113,18 +117,15 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private TextView txtTip;
     private TextView txtPayment;
     private TextView txtDriver;
-
-    private ArrayList<String> availableDrivers;
+    private EditText etPickupNote;
+    private ArrayList<Driver> availableDrivers;
     private GoogleCloudMessaging gcm;
-
+    private Customer customerProfile;
 
 
     public static BookCabFragment newInstance(String param1, String param2) {
         BookCabFragment fragment = new BookCabFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -135,21 +136,15 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
+        customerProfile=complexPreferences.getObject("customer_profile_data", Customer.class);
+        getActiveDriversList();
 
-        availableDrivers = new ArrayList<String>();
-        availableDrivers.add("Driver 1");
-        availableDrivers.add("Driver 2");
-        availableDrivers.add("Driver 3");
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_book_cab, container, false);
@@ -157,7 +152,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
         edPickUpLocation = (AutoCompleteTextView)view.findViewById(R.id.edPickUpLocation);
         edDropOffLocation = (AutoCompleteTextView)view.findViewById(R.id.edDropOffLocation);
-
+        etPickupNote=(EditText)view.findViewById(R.id.etPickupNote);
         edPickUpLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.auto_complete_item));
         edDropOffLocation.setAdapter(new PlacesAutoCompleteAdapter(getActivity(), R.layout.auto_complete_item));
 
@@ -266,9 +261,60 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         });
 
         setHasOptionsMenu(true);
+
+
         setView(savedInstanceState);
 
         return view;
+    }
+
+    public void getActiveDriversList() {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(true);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                new CallWebService(AppConstants.getActiveDrivers, CallWebService.TYPE_JSONARRAY) {
+
+                    @Override
+                    public void response(String response) {
+                        Type listType = new TypeToken<List<Driver>>() {
+                        }.getType();
+                        availableDrivers= new GsonBuilder().create().fromJson(response, listType);
+
+                        for(int i=0;i<availableDrivers.size();i++) {
+                            Log.e("DriverID", availableDrivers.get(i).DriverID+"");
+                            Log.e("FirstName", availableDrivers.get(i).FirstName+"");
+                            Log.e("LastName", availableDrivers.get(i).LastName+"");
+                            Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
+                            Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
+
+                        }
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+                        Log.e("error response: ",error+"");
+                    }
+                }.start();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                progressDialog.dismiss();
+//                displayAvailableDrivers();
+            }
+        }.execute();
+
     }
 
     private void hideKeyBoard(AutoCompleteTextView ed) {
@@ -316,13 +362,13 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             lTo.setLatitude(dropoff_latlng.latitude);
             lTo.setLongitude(dropoff_latlng.longitude);
 
-            float distance = lFrom.distanceTo(lTo)/1000;
+            distance= lFrom.distanceTo(lTo)/1000;
 
             // display distance to map
              if(!txtDistance.isShown()){
                  txtDistance.setVisibility(View.VISIBLE);
              }
-             txtDistance.setText(String.format("%.2f kms",distance));
+             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("%.2f $", distance*0.6214*10));
         }
 
     }
@@ -352,9 +398,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                     @Override
                     public void complete() {
+                        postBookRequest();
 
-
-                        Toast.makeText(getActivity(), "Perfect", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -367,6 +412,82 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void postBookRequest() {
+
+
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(true);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                JSONObject tripObject = new JSONObject();
+                try {
+
+                    tripObject.put("TripID", "0");
+                    tripObject.put("CustomerID", customerProfile.CustomerID+"");
+                    tripObject.put("DriverID",selectedDriver+ "");
+                    tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
+                    tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
+                    tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
+                    tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
+                    tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
+                    tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
+                    tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
+                    tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
+                    tripObject.put("TripDate", (new Date().getTime()/1000)+"");
+                    tripObject.put("TipPercentage", txtTip.getText().toString().trim()+"");
+                    tripObject.put("TripFare", String.format("%.2f $", distance*0.6214*10));
+                    tripObject.put("TripFee", "2$");
+                    tripObject.put("TripDistance", String.format("%.2f kms", distance)+"");
+                    tripObject.put("PaymentType", "");
+                    tripObject.put("TripStatus", "In Progress");
+                    Log.e("tripObject: ",tripObject+"");
+
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jobj) {
+                        String response = jobj.toString();
+                        Log.e("response continue: ", response + "");
+                        ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
+                        Log.e("response: ", responseMessage.Response +"");
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("error response: ",error+"");
+                    }
+                });
+                MyApplication.getInstance().addToRequestQueue(req);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
+
+            }
+        }.execute();
+    }
+
+
 
     private void setView(Bundle savedInstanceState) {
         mv.onCreate(savedInstanceState);
@@ -381,6 +502,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
                 try {
                     mc.animateTo(mc.getMyLocation().getLatitude(), mc.getMyLocation().getLongitude(), zoom);
+                    displayAvailableDrivers();
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -393,29 +515,34 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             }
         }.start();
 
-        displayAvailableDrivers();
+
 
 
     }
 
     public void displayAvailableDrivers() {
 
-        double[] lats = {22.31107351,22.30184236,22.31808083,22.31494445};
-        double[] lngs = {73.17499638,73.18465233,73.18671227,73.18267822};
+        try {
+            Log.e("availableDrivers size ",availableDrivers.size()+"");
+            for (int i = 0; i < availableDrivers.size(); i++) {
+                if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
+                    cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
+                    driverNames.add(availableDrivers.get(i).FirstName+" "+availableDrivers.get(i).LastName);
+                    selectedDriverId.add(availableDrivers.get(i).DriverID);
+                }
+            }
 
-        ArrayList<LatLng> cabs = new ArrayList<LatLng>();
-
-        for(int i=0;i<lats.length;i++){
-            LatLng latLng = new LatLng(lats[i],lngs[i]);
-            cabs.add(latLng);
+        } catch(NullPointerException e){
+            e.printStackTrace();
         }
 
-        for(LatLng latLng : cabs){
+
+        for(int i=0;i<cabs.size();i++){
 
             MarkerOptions opts = new MarkerOptions();
-            opts.position(latLng);
+            opts.position(cabs.get(i));
             opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
-            opts.title("Driver");
+            opts.title(driverNames.get(i));
             opts.snippet("");
             addMarker(opts);
 
@@ -447,7 +574,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onPause() {
 
-        Toast.makeText(getActivity(), "pause called", Toast.LENGTH_SHORT).show();
+
         mv.onPause();
         mc.stopTrackMyLocation();
         super.onPause();
@@ -478,9 +605,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         mv.onSaveInstanceState(outState);
     }
 
-    public void setHeaderTitle(String title){
-        headerTitleForm.setText(title);
-    }
+//    public void setHeaderTitle(String title){
+//        headerTitleForm.setText(title);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -519,13 +646,22 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         listDialog.setCancelable(true);
         listDialog.setCanceledOnTouchOutside(true);
         listDialog.title("CHOOSE DRIVER");
-        listDialog.setItems(availableDrivers);
+
+            listDialog.setItems(driverNames);
+
         listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
             @Override
             public void selected(String value) {
 
                 txtDriver.setText(value);
 
+                for(int i=0;i<driverNames.size();i++){
+                    if(driverNames.get(i).contains(value) ){
+
+                        selectedDriver=availableDrivers.get(i).DriverID;
+                    }
+                }
+                Log.e("selectedDriver: ",selectedDriver+"");
             }
         });
         listDialog.show();
@@ -561,6 +697,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         listDialog.setCanceledOnTouchOutside(true);
         listDialog.title("CHOOSE TIP");
         ArrayList<String> tips = new ArrayList<String>();
+        tips.add("0%");
         tips.add("2%");
         tips.add("5%");
         tips.add("10%");
@@ -590,6 +727,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             public void selected(String value) {
 
                 txtPickUpTime.setText(value);
+
             }
         });
         dialog.show();

@@ -1,28 +1,42 @@
 package com.webmyne.rightway.MyBooking;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.VolleyError;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.Login.Customer;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.PagerSlidingTabStrip;
 import com.webmyne.rightway.R;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MyBookingFragment extends Fragment {
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
     private MyPagerAdapter adapter;
+    public ArrayList<Trip> tripArrayList=new ArrayList<Trip>();
+    ProgressDialog progressDialog;
+    Customer customerDetails;
     public static MyBookingFragment newInstance(String param1, String param2) {
         MyBookingFragment fragment = new MyBookingFragment();
         return fragment;
@@ -36,9 +50,65 @@ public class MyBookingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getTripList();
 
     }
 
+    public void getTripList() {
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
+        customerDetails =complexPreferences.getObject("customer_profile_data", Customer.class);
+
+        Log.e("list: ",AppConstants.getTripList+customerDetails.CustomerID +"");
+
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(true);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                new CallWebService(AppConstants.getTripList+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
+
+                    @Override
+                    public void response(String response) {
+
+                        Type listType=new TypeToken<List<Trip>>(){
+                        }.getType();
+                        tripArrayList = new GsonBuilder().create().fromJson(response, listType);
+
+                        for(int i=0;i<tripArrayList.size();i++){
+                            Log.e("trip list: ",tripArrayList.get(i).TripID+"");
+                        }
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+
+                        Log.e("error: ",error+"");
+
+                    }
+                }.start();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                progressDialog.dismiss();
+            }
+
+
+        }.execute();
+
+
+    }
 
 
     @Override

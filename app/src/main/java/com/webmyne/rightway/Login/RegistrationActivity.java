@@ -1,14 +1,17 @@
 package com.webmyne.rightway.Login;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -22,13 +25,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.GsonBuilder;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.Application.DrawerActivity;
+import com.webmyne.rightway.Application.MyApplication;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.R;
 
@@ -43,14 +53,14 @@ public class RegistrationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new BasicFormFragment())
                     .addToBackStack(null)
                     .commit();
         }
-
-
     }
 
     public void setActionBarTitle(String title){
@@ -128,9 +138,6 @@ public class RegistrationActivity extends BaseActivity {
                 ft.replace(R.id.container, new ImageFormFragment(), "imageFragment");
                 ft.addToBackStack("imageFragment");
                 ft.commit();
-
-
-
             }
             return true;
 
@@ -139,13 +146,15 @@ public class RegistrationActivity extends BaseActivity {
 
 
     public static class ImageFormFragment extends Fragment implements View.OnClickListener,ImageChooserListener{
-
+        ProgressDialog progressDialog;
         private ImageChooserManager imageChooserManager;
         private ImageView imgProfilePic;
         private Button btnRegister;
         private int chooserType;
         private String filePath;
         private boolean isProfilePicAdded = false;
+
+        Customer customerResponse;
 
 
 
@@ -263,51 +272,13 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
 
                 case R.id.btnRegister:
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
-                    Customer customer = complexPreferences.getObject("customer_registration", Customer.class);
-                    customer.ProfilePicture="";
-                    JSONObject customerObject=new JSONObject();
-                    try {
-                        customerObject.put("CustomerID", "0");
-                        customerObject.put("CustomerIMEI_Number", customer.Name+"");
-                        customerObject.put("NotificationID", customer.NotificationID+"");
-                        customerObject.put("DeviceType", customer.DeviceType+"");
-                        customerObject.put("Name", customer.Name+"");
-                        customerObject.put("Mobile", customer.Mobile+"");
-                        customerObject.put("Email", customer.Email+"");
-                        customerObject.put("City", customer.City+"");
-                        customerObject.put("State", customer.State+"");
-                        customerObject.put("ZipCode", customer.ZipCode+"");
-                        customerObject.put("ProfilePicture", customer.ProfilePicture+"");
-
-                    } catch (JSONException e){
-                        e.printStackTrace();
-                    }
-                    Log.e("Customer Info: ",customerObject+"");
-                    SharedPreferences preferences = getActivity().getSharedPreferences("is_registered",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean("registration", true);
-                    editor.commit();
-
-
-                    Intent i = new Intent(getActivity(), DrawerActivity.class);
-                    startActivity(i);
-
-                    if(isProfilePicAdded == true){
-
-                    }else{
-
-                    }
-
+                    postRegistrationData();
                     break;
 
                 case R.id.imgProfilePic:
 
                     getActivity().openContextMenu(imgProfilePic);
                     break;
-
-
-
             }
 
         }
@@ -364,12 +335,117 @@ public class RegistrationActivity extends BaseActivity {
 
         private void reinitializeImageChooser() {
 
-            imageChooserManager = new ImageChooserManager(this, chooserType,
-                    "cabkab", true);
+            imageChooserManager = new ImageChooserManager(this, chooserType,"cabkab", true);
             imageChooserManager.setImageChooserListener(this);
             imageChooserManager.reinitialize(filePath);
         }
-    }
+        public void postRegistrationData() {
+
+            new AsyncTask<Void,Void,Void>(){
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    progressDialog=new ProgressDialog(getActivity());
+                    progressDialog.setCancelable(true);
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
+                }
+
+                protected Void doInBackground(Void... params) {
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
+                    Customer customer = complexPreferences.getObject("customer_registration", Customer.class);
+                    customer.ProfilePicture="temp_path.jpg";
+                    customer.DeviceType="android";
+
+                    TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                    customer.CustomerIMEI_Number= telephonyManager.getDeviceId();
+
+                    SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+                    customer.NotificationID=sharedPreferences.getString("GCM_ID","");
+
+                    JSONObject customerObject=new JSONObject();
+                    try {
+                        customerObject.put("CustomerID", "0");
+                        customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
+                        customerObject.put("NotificationID", customer.NotificationID+"");
+                        customerObject.put("DeviceType", customer.DeviceType+"");
+                        customerObject.put("Name", customer.Name+"");
+                        customerObject.put("Mobile", customer.Mobile+"");
+                        customerObject.put("Email", customer.Email+"");
+                        customerObject.put("City", customer.City+"");
+                        customerObject.put("State", customer.State+"");
+                        customerObject.put("ZipCode", customer.ZipCode+"");
+                        customerObject.put("ProfilePicture", customer.ProfilePicture+"");
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    Log.e("Customer Info: ",customerObject+"");
+
+                    JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject jobj) {
+                            String response = jobj.toString();
+                            Log.e("response continue: ", response + "");
+                           customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
 
 
-}
+
+                            Log.e("CustomerID",customerResponse.CustomerID+"");
+                            Log.e("CustomerIMEI_Number",customerResponse.CustomerIMEI_Number+"");
+                            Log.e("NotificationID",customerResponse.NotificationID+"");
+                            Log.e("DeviceType",customerResponse.DeviceType+"");
+                            Log.e("Name",customerResponse.Name+"");
+                            Log.e("Mobile",customerResponse.Mobile+"");
+                            Log.e("Email",customerResponse.Email+"");
+                            Log.e("City",customerResponse.City+"");
+                            Log.e("State",customerResponse.State+"");
+                            Log.e("ZipCode",customerResponse.ZipCode+"");
+                            Log.e("DeviceType", customerResponse.ZipCode + "");
+                            Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
+                            handleCustomerRegistrationData();
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("error response: ",error+"");
+                        }
+                    });
+                    MyApplication.getInstance().addToRequestQueue(req);
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+
+                    super.onPostExecute(aVoid);
+
+
+                }
+            }.execute();
+        }
+
+        public void handleCustomerRegistrationData() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
+                    complexPreferences.putObject("customer_profile_data", customerResponse);
+                    complexPreferences.commit();
+
+                    SharedPreferences preferences = getActivity().getSharedPreferences("is_registered",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("registration", true);
+                    editor.commit();
+                    progressDialog.dismiss();
+                    Intent i = new Intent(getActivity(), DrawerActivity.class);
+                    startActivity(i);
+                }
+            });
+        }
+
+    }// end of fragment
+
+}// end of activity

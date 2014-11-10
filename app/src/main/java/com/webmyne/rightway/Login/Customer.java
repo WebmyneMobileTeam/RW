@@ -1,20 +1,33 @@
 package com.webmyne.rightway.Login;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by dhruvil on 21-10-2014.
  */
 public class Customer {
 
+    @SerializedName("CustomerID")
     public String CustomerID;
+    @SerializedName("CustomerIMEI_Number")
     public String CustomerIMEI_Number;
+    @SerializedName("NotificationID")
     public String NotificationID;
+    @SerializedName("DeviceType")
     public String DeviceType;
+    @SerializedName("Name")
     public String Name;
+    @SerializedName("Mobile")
     public String Mobile;
+    @SerializedName("Email")
     public String Email;
+    @SerializedName("City")
     public String City;
+    @SerializedName("State")
     public String State;
+    @SerializedName("ZipCode")
     public String ZipCode;
+    @SerializedName("ProfilePicture")
     public String ProfilePicture;
 
     public Customer(){

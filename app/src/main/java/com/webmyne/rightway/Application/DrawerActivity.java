@@ -267,8 +267,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         }
 
     }
-    //</editor-fold>
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

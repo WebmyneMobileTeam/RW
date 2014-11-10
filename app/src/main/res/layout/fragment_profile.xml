@@ -71,7 +71,7 @@ android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
-                    />
+                    android:id="@+id/txtCustomerName" />
 
             </LinearLayout>
 
@@ -115,7 +115,7 @@ android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
-                    />
+                    android:id="@+id/txtCustomerMobile" />
 
             </LinearLayout>
 
@@ -163,7 +163,7 @@ android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
-                    />
+                    android:id="@+id/txtCustomerEmail" />
 
             </LinearLayout>
 
@@ -209,6 +209,7 @@ android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
+                    android:id="@+id/txtCustomerCity"
                     />
 
             </LinearLayout>
@@ -256,6 +257,7 @@ android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
+                    android:id="@+id/txtCustomerState"
                     />
 
             </LinearLayout>
@@ -304,6 +306,7 @@ android:layout_alignParentTop="true"
 
                     android:textSize="@dimen/text_size_medium"
                     android:gravity="center_vertical"
+                    android:id="@+id/txtCustomerZipCode"
                     />
 
             </LinearLayout>

@@ -48,8 +48,8 @@ public class LauncherActivity extends Activity {
         String regid;
 
 
-       // String PROJECT_NUMBER = "92884720384";
-       String PROJECT_NUMBER = "766031645889";
+         String PROJECT_NUMBER = "92884720384";
+//       String PROJECT_NUMBER = "766031645889";
 
         public PlaceholderFragment() {
         }
@@ -127,13 +127,11 @@ public class LauncherActivity extends Activity {
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-
                     try {
                         if (gcm == null) {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
                         }
                         regid = gcm.register(PROJECT_NUMBER);
-
                         //..........................................
 
                         String msg = "";
@@ -176,6 +174,12 @@ public class LauncherActivity extends Activity {
                             });
                             alert.show();
                         } else {
+
+                            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            editor.putString("GCM_ID",regid);
+                            editor.commit();
+
                             Intent i = new Intent(getActivity(), RegistrationActivity.class);
                             startActivity(i);
                             getActivity().finish();
@@ -187,6 +191,10 @@ public class LauncherActivity extends Activity {
                 }
             }.execute();
         } // end of getRegId
+
+
+
+
     } // end of fragment
 
 

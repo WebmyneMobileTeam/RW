@@ -81,7 +81,7 @@
             android:paddingLeft="@dimen/activity_margin"
             android:textSize="@dimen/text_size_medium"
             android:gravity="left"
-            />
+            android:id="@+id/etPickupNote" />
 
         <View
             android:layout_width="match_parent"
