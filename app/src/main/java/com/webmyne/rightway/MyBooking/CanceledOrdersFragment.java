@@ -21,7 +21,10 @@ import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CanceledOrdersFragment extends Fragment implements ListDialog.setSelectedListner {
     ListView ordersCanceledListView;
@@ -43,8 +46,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferenceTrips=new SharedPreferenceTrips();
-        ordersCanceledList=sharedPreferenceTrips.loadTrip(getActivity());
+
 
         dateSelectionArray.add("Current Week");
         dateSelectionArray.add("Last Week");
@@ -55,9 +57,23 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     @Override
     public void onResume() {
         super.onResume();
+        try {
         sharedPreferenceTrips=new SharedPreferenceTrips();
-        ordersCanceledAdapter =new OrdersCanceledAdapter(getActivity(), ordersCanceledList);
-        ordersCanceledListView.setAdapter(ordersCanceledAdapter);
+            sharedPreferenceTrips=new SharedPreferenceTrips();
+            ordersCanceledList=sharedPreferenceTrips.loadTrip(getActivity());
+            ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
+            for(Trip trip: ordersCanceledList){
+                if(trip.TripStatus.contains("Cancel")){
+                    filteredCurruntOrderList.add(trip);
+                }
+            }
+            if(ordersCanceledList !=null) {
+                ordersCanceledAdapter = new OrdersCanceledAdapter(getActivity(), filteredCurruntOrderList);
+                ordersCanceledListView.setAdapter(ordersCanceledAdapter);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -113,7 +129,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_canceled_orders, parent, false);
                 holder = new ViewHolder();
-//                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderCanceledCname);
+                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderCanceledCname);
                 holder.orderHistoryDate=(TextView)convertView.findViewById(R.id.orderCanceledDate);
                 holder.orderHistoryPickupLocation=(TextView)convertView.findViewById(R.id.orderCanceledPickupLocation);
                 holder.orderHistoryDropoffLocation=(TextView)convertView.findViewById(R.id.orderCanceledDropoffLocation);
@@ -124,11 +140,12 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.orderHistoryDate.setText(currentOrdersList.get(position).TripDate);
+            holder.orderHistoryCname.setText(currentOrdersList.get(position).DriverName);
+            holder.orderHistoryDate.setText(getFormatedDate(currentOrdersList.get(position)));
             holder.orderHistoryPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
             holder.orderHistoryDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
             holder.orderHistoryStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
-//            holder.canceledOrdersFareAmount.setText(currentOrdersList.get(position).TripFare);
+            holder.canceledOrdersFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -145,6 +162,36 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
 
 
         }
+
+        public String getFormatedDate(Trip currentTrip) {
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+            Date date = float2Date(dateinFloat);
+            return  format.format(date);
+        }
+        public  java.util.Date float2Date(float nbSeconds) {
+            java.util.Date date_origine;
+            java.util.Calendar date = java.util.Calendar.getInstance();
+            java.util.Calendar origine = java.util.Calendar.getInstance();
+            origine.set(1970, Calendar.JANUARY, 1);
+            date_origine = origine.getTime();
+            date.setTime(date_origine);
+            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+            return date.getTime();
+        }
+        public double getTotal(Trip currentTrip) {
+            Double total;
+            if(Integer.parseInt(currentTrip.TipPercentage)>0){
+                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+                total= Double.parseDouble(currentTrip.TripFare)+tip;
+            } else {
+                total=Double.parseDouble(currentTrip.TripFare);
+            }
+            total=total+Double.parseDouble(currentTrip.TripFee);
+            return total;
+        }
+
 
     }
 

@@ -36,6 +36,8 @@ import com.webmyne.rightway.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -87,6 +89,7 @@ public class OrderDetailActivity extends BaseActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+
         ProgressDialog progressDialog;
         Trip currentTrip;
         TextView currentTripDriverName, currentTripPickup, currentTripDropoff, currentTripPickupNote, currentTripDate, currentTripTime,
@@ -137,20 +140,49 @@ public class OrderDetailActivity extends BaseActivity {
             super.onResume();
             ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
             currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
-//            currentTripDriverName.setText(currentTrip.DriverID);
+            currentTripDriverName.setText(currentTrip.DriverName);
             currentTripPickup.setText(currentTrip.PickupAddress);
             currentTripDropoff.setText(currentTrip.DropOffAddress);
             currentTripPickupNote.setText(currentTrip.PickupNote);
-            currentTripDate.setText(currentTrip.TripDate);
+            currentTripDate.setText(getFormatedDate());
             currentTripTime.setText(currentTrip.PickupTime);
-            currentTripDistance.setText(currentTrip.TripDistance);
+            currentTripDistance.setText(currentTrip.TripDistance+" kms");
             currentTripPaymentType.setText(currentTrip.PaymentType);
-            currentTripFare.setText(currentTrip.TripFare);
-            currentTripTip.setText(currentTrip.TipPercentage);
-            currentTripFee.setText(currentTrip.TripFee);
-
-//            txtTotalAmount.setText();
+            currentTripFare.setText("$ "+currentTrip.TripFare);
+            currentTripTip.setText(currentTrip.TipPercentage+" %");
+            currentTripFee.setText("$ "+currentTrip.TripFee);
+            txtTotalAmount.setText(String.format("$ %.2f", getTotal())+"");
             txtTripStatus.setText(currentTrip.TripStatus);
+        }
+
+        public String getFormatedDate() {
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+            Date date = float2Date(dateinFloat);
+            return  format.format(date);
+        }
+        public static java.util.Date float2Date(float nbSeconds) {
+            java.util.Date date_origine;
+            java.util.Calendar date = java.util.Calendar.getInstance();
+            java.util.Calendar origine = java.util.Calendar.getInstance();
+            origine.set(1970, Calendar.JANUARY, 1);
+            date_origine = origine.getTime();
+            date.setTime(date_origine);
+            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+            return date.getTime();
+        }
+
+        public double getTotal() {
+            Double total;
+            if(Integer.parseInt(currentTrip.TipPercentage)>0){
+                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+                total= Double.parseDouble(currentTrip.TripFare)+tip;
+            } else {
+                total=Double.parseDouble(currentTrip.TripFare);
+            }
+            total=total+Double.parseDouble(currentTrip.TripFee);
+            return total;
         }
 
         public void cancelTrip() {
@@ -169,6 +201,7 @@ public class OrderDetailActivity extends BaseActivity {
                     JSONObject tripObject = new JSONObject();
                     try {
                         tripObject.put("TripID",currentTrip.TripID+"");
+                        tripObject.put("DriverNotificationID",currentTrip.DriverNotificationID+"");
                         tripObject.put("DriverID", currentTrip.DriverID+"");
                         tripObject.put("TripStatus", "Canceled By Customer");
                         Log.e("tripObject: ",tripObject+"");
@@ -204,7 +237,7 @@ public class OrderDetailActivity extends BaseActivity {
                     super.onPostExecute(aVoid);
                     progressDialog.dismiss();
                     Toast.makeText(getActivity(), "Trip Canceled Successfully", Toast.LENGTH_SHORT).show();
-
+                    getActivity().finish();
                 }
             }.execute();
 

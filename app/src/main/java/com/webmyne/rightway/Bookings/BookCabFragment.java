@@ -3,6 +3,7 @@ package com.webmyne.rightway.Bookings;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -66,6 +67,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,12 +77,14 @@ import java.util.Locale;
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
     float distance;
-    ArrayList<String> driverNames = new ArrayList<String>();
-    ArrayList<String> selectedDriverId = new ArrayList<String>();
+     ArrayList<String> driverNames = new ArrayList<String>();;
+    String selectedTip;
+    ArrayList<String> selectedDriverNotificationId = new ArrayList<String>();
     ArrayList<LatLng> cabs = new ArrayList<LatLng>();
     private ProgressDialog progressDialog;
     private static final String LOG_TAG = "RiteWay Book Cab";
     private String selectedDriver;
+    private String selectedDriverNotification;
 
     private MapView mv;
     private MapController mc;
@@ -291,11 +296,30 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                         for(int i=0;i<availableDrivers.size();i++) {
                             Log.e("DriverID", availableDrivers.get(i).DriverID+"");
+                            Log.e("DriverNotificationID", availableDrivers.get(i).DriverNotificationID+"");
                             Log.e("FirstName", availableDrivers.get(i).FirstName+"");
                             Log.e("LastName", availableDrivers.get(i).LastName+"");
                             Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
                             Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
 
+                        }
+
+                        try {
+                            Log.e("availableDrivers size ",availableDrivers.size()+"");
+
+
+                            for (int i = 0; i < availableDrivers.size(); i++) {
+                                if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
+                                    cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
+                                    driverNames.add(availableDrivers.get(i).FirstName+" "+availableDrivers.get(i).LastName);
+
+
+
+                                }
+                            }
+
+                        } catch(NullPointerException e){
+                            e.printStackTrace();
                         }
                     }
 
@@ -429,7 +453,14 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             @Override
             protected Void doInBackground(Void... params) {
                 JSONObject tripObject = new JSONObject();
+
+
+                SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+                String GCM_ID=sharedPreferences.getString("GCM_ID","");
                 try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    String stringDate=dateFormat.format(new Date());
+                    Date date =dateFormat.parse(stringDate) ;
 
                     tripObject.put("TripID", "0");
                     tripObject.put("CustomerID", customerProfile.CustomerID+"");
@@ -442,17 +473,23 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
                     tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
                     tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
-                    tripObject.put("TripDate", (new Date().getTime()/1000)+"");
-                    tripObject.put("TipPercentage", txtTip.getText().toString().trim()+"");
-                    tripObject.put("TripFare", String.format("%.2f $", distance*0.6214*10));
-                    tripObject.put("TripFee", "2$");
-                    tripObject.put("TripDistance", String.format("%.2f kms", distance)+"");
+                    tripObject.put("TripDate", (date.getTime()/1000)+"");
+                    tripObject.put("TipPercentage", selectedTip+"");
+                    tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
+                    tripObject.put("TripFee", "2");
+                    tripObject.put("TripDistance", String.format("%.2f", distance)+"");
                     tripObject.put("PaymentType", "");
                     tripObject.put("TripStatus", "In Progress");
+                    tripObject.put("CustomerName", "");
+                    tripObject.put("DriverName", "");
+                    tripObject.put("CustomerNotificationID", GCM_ID);
+                    tripObject.put("DriverNotificationID", selectedDriverNotification);
                     Log.e("tripObject: ",tripObject+"");
 
 
                 }catch(JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
@@ -522,19 +559,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     public void displayAvailableDrivers() {
 
-        try {
-            Log.e("availableDrivers size ",availableDrivers.size()+"");
-            for (int i = 0; i < availableDrivers.size(); i++) {
-                if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
-                    cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
-                    driverNames.add(availableDrivers.get(i).FirstName+" "+availableDrivers.get(i).LastName);
-                    selectedDriverId.add(availableDrivers.get(i).DriverID);
-                }
-            }
 
-        } catch(NullPointerException e){
-            e.printStackTrace();
-        }
 
 
         for(int i=0;i<cabs.size();i++){
@@ -656,9 +681,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 txtDriver.setText(value);
 
                 for(int i=0;i<driverNames.size();i++){
-                    if(driverNames.get(i).contains(value) ){
+                    if(driverNames.get(i).equalsIgnoreCase(value) ){
 
                         selectedDriver=availableDrivers.get(i).DriverID;
+                        selectedDriverNotification=availableDrivers.get(i).DriverNotificationID;
                     }
                 }
                 Log.e("selectedDriver: ",selectedDriver+"");
@@ -696,18 +722,23 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         listDialog.setCancelable(true);
         listDialog.setCanceledOnTouchOutside(true);
         listDialog.title("CHOOSE TIP");
-        ArrayList<String> tips = new ArrayList<String>();
-        tips.add("0%");
-        tips.add("2%");
-        tips.add("5%");
-        tips.add("10%");
-        tips.add("15%");
+        final ArrayList<String> tips = new ArrayList<String>();
+        tips.add("0");
+        tips.add("2");
+        tips.add("5");
+        tips.add("10");
+        tips.add("15");
         listDialog.setItems(tips);
         listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
             @Override
             public void selected(String value) {
 
-                txtTip.setText(value);
+                txtTip.setText(value+"%");
+                for(int i=0;i<tips.size();i++) {
+                    if(tips.get(i).equalsIgnoreCase(value)){
+                        selectedTip=tips.get(i);
+                    }
+                }
 
             }
         });

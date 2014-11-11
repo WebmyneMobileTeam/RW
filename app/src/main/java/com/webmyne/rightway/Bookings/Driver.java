@@ -9,6 +9,8 @@ public class Driver {
 
     @SerializedName("DriverID")
     public String DriverID;
+    @SerializedName("DriverNotificationID")
+    public String DriverNotificationID;
     @SerializedName("FirstName")
     public String FirstName;
     @SerializedName("LastName")
@@ -23,11 +25,12 @@ public class Driver {
 
     }
 
-    public Driver(String driverID, String firstName, String lastName, String webmyne_Latitude, String webmyne_Longitude) {
+    public Driver(String webmyne_Longitude, String driverID, String driverNotificationID, String firstName, String lastName, String webmyne_Latitude) {
+        Webmyne_Longitude = webmyne_Longitude;
         DriverID = driverID;
+        DriverNotificationID = driverNotificationID;
         FirstName = firstName;
         LastName = lastName;
         Webmyne_Latitude = webmyne_Latitude;
-        Webmyne_Longitude = webmyne_Longitude;
     }
 }

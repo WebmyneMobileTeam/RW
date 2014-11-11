@@ -20,7 +20,10 @@ import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class CurrentOrdersFragment extends Fragment {
@@ -47,10 +50,22 @@ public class CurrentOrdersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        sharedPreferenceTrips=new SharedPreferenceTrips();
-        currentOrdersList=sharedPreferenceTrips.loadTrip(getActivity());
-        currentOrdersAdapter=new CurrentOrdersAdapter(getActivity(), currentOrdersList);
-        currentOrdersListView.setAdapter(currentOrdersAdapter);
+        try {
+            sharedPreferenceTrips = new SharedPreferenceTrips();
+            currentOrdersList = sharedPreferenceTrips.loadTrip(getActivity());
+            ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
+            for(Trip trip: currentOrdersList){
+                if(!trip.TripStatus.contains("Cancel")){
+                    filteredCurruntOrderList.add(trip);
+                }
+            }
+            if(currentOrdersList !=null) {
+                currentOrdersAdapter = new CurrentOrdersAdapter(getActivity(), filteredCurruntOrderList);
+                currentOrdersListView.setAdapter(currentOrdersAdapter);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -111,11 +126,11 @@ public class CurrentOrdersFragment extends Fragment {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-//            holder.currentOrderCname.setText(currentOrdersList.get(position).DriverID);
-            holder.currentOrderDate.setText(currentOrdersList.get(position).TripDate);
+            holder.currentOrderCname.setText(currentOrdersList.get(position).DriverName);
+            holder.currentOrderDate.setText(getFormatedDate(currentOrdersList.get(position)));
             holder.currentOrderPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
             holder.currentOrderDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
-//            holder.currentOrderFareAmount.setText(currentOrdersList.get(position).TripFare);
+            holder.currentOrderFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             holder.currentOrderStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
 
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +140,7 @@ public class CurrentOrdersFragment extends Fragment {
                     complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
                     complexPreferences.commit();
 
-                    Intent i=new Intent(getActivity(), OrderDetailActivity.class);
+                    Intent i = new Intent(getActivity(), OrderDetailActivity.class);
                     startActivity(i);
 
 
@@ -135,6 +150,36 @@ public class CurrentOrdersFragment extends Fragment {
 
 
         }
+
+        public String getFormatedDate(Trip currentTrip) {
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+            Date date = float2Date(dateinFloat);
+            return  format.format(date);
+        }
+        public  java.util.Date float2Date(float nbSeconds) {
+            java.util.Date date_origine;
+            java.util.Calendar date = java.util.Calendar.getInstance();
+            java.util.Calendar origine = java.util.Calendar.getInstance();
+            origine.set(1970, Calendar.JANUARY, 1);
+            date_origine = origine.getTime();
+            date.setTime(date_origine);
+            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+            return date.getTime();
+        }
+        public double getTotal(Trip currentTrip) {
+            Double total;
+            if(Integer.parseInt(currentTrip.TipPercentage)>0){
+                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+                total= Double.parseDouble(currentTrip.TripFare)+tip;
+            } else {
+                total=Double.parseDouble(currentTrip.TripFare);
+            }
+            total=total+Double.parseDouble(currentTrip.TripFee);
+            return total;
+        }
+
 
     }
 

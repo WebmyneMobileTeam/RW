@@ -29,7 +29,10 @@ import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class OrdersHistoryFragment extends Fragment implements ListDialog.setSelectedListner{
@@ -52,9 +55,6 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         dateSelectionArray.add("Current Week");
         dateSelectionArray.add("Last Week");
         dateSelectionArray.add("Current Month");
@@ -64,10 +64,22 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     @Override
     public void onResume() {
         super.onResume();
+        try {
         sharedPreferenceTrips=new SharedPreferenceTrips();
         ordersHistoryList=sharedPreferenceTrips.loadTrip(getActivity());
-        ordersHistoryAdapter =new OrdersHistoryAdapter(getActivity(), ordersHistoryList);
-        ordersHistoryListView.setAdapter(ordersHistoryAdapter);
+            ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
+            for(Trip trip: ordersHistoryList){
+                if(!trip.TripStatus.contains("Cancel")){
+                    filteredCurruntOrderList.add(trip);
+                }
+            }
+        if(ordersHistoryList != null) {
+            ordersHistoryAdapter = new OrdersHistoryAdapter(getActivity(), filteredCurruntOrderList);
+            ordersHistoryListView.setAdapter(ordersHistoryAdapter);
+        }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -132,7 +144,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_ordered_history, parent, false);
                 holder = new ViewHolder();
-//                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderHistoryCname);
+                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderHistoryCname);
                 holder.orderHistoryDate=(TextView)convertView.findViewById(R.id.orderHistoryDate);
                 holder.orderHistoryPickupLocation=(TextView)convertView.findViewById(R.id.orderHistoryPickupLocation);
                 holder.orderHistoryDropoffLocation=(TextView)convertView.findViewById(R.id.orderHistoryDropoffLocation);
@@ -143,11 +155,12 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.orderHistoryDate.setText(currentOrdersList.get(position).TripDate);
+            holder.orderHistoryCname.setText(currentOrdersList.get(position).DriverName);
+            holder.orderHistoryDate.setText(getFormatedDate(currentOrdersList.get(position)));
             holder.orderHistoryPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
             holder.orderHistoryDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
             holder.orderHistoryStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
-//            holder.orderHistoryFareAmount.setText(currentOrdersList.get(position).TripFare);
+            holder.orderHistoryFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -163,6 +176,34 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             return convertView;
 
 
+        }
+        public String getFormatedDate(Trip currentTrip) {
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+            Date date = float2Date(dateinFloat);
+            return  format.format(date);
+        }
+        public  java.util.Date float2Date(float nbSeconds) {
+            java.util.Date date_origine;
+            java.util.Calendar date = java.util.Calendar.getInstance();
+            java.util.Calendar origine = java.util.Calendar.getInstance();
+            origine.set(1970, Calendar.JANUARY, 1);
+            date_origine = origine.getTime();
+            date.setTime(date_origine);
+            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+            return date.getTime();
+        }
+        public double getTotal(Trip currentTrip) {
+            Double total;
+            if(Integer.parseInt(currentTrip.TipPercentage)>0){
+                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+                total= Double.parseDouble(currentTrip.TripFare)+tip;
+            } else {
+                total=Double.parseDouble(currentTrip.TripFare);
+            }
+            total=total+Double.parseDouble(currentTrip.TripFee);
+            return total;
         }
 
     }

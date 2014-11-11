@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,7 @@ public class LauncherActivity extends Activity {
      */
     public static class PlaceholderFragment extends Fragment {
 
-        private String SENDER_ID = "APA91bF7Mu1e1M8nKWKYeOODcPJm0coqF6TEEEvl-bb6TDmEBvbYU5m9y0IE1Olnt0ZyQM4p3ccNhHx6nUUnKE91g9QXBDirFz1HxtAw-CDtufxiLPHaxRH-ll37FnnsHD5KAmhlw6QulKKzhKmZoBxzWmNdtR9qHdETiv9epIwQ5inqLqOuC5Q";
+//        private String SENDER_ID = "APA91bF7Mu1e1M8nKWKYeOODcPJm0coqF6TEEEvl-bb6TDmEBvbYU5m9y0IE1Olnt0ZyQM4p3ccNhHx6nUUnKE91g9QXBDirFz1HxtAw-CDtufxiLPHaxRH-ll37FnnsHD5KAmhlw6QulKKzhKmZoBxzWmNdtR9qHdETiv9epIwQ5inqLqOuC5Q";
 
         GoogleCloudMessaging gcm;
         String regid;
@@ -132,23 +133,7 @@ public class LauncherActivity extends Activity {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
                         }
                         regid = gcm.register(PROJECT_NUMBER);
-                        //..........................................
 
-                        String msg = "";
-                        try {
-                            Bundle data = new Bundle();
-                            data.putString("my_message", "Hello World");
-                            data.putString("my_action",
-                                    "com.google.android.gcm.demo.app.ECHO_NOW");
-
-                            String id = Integer.toString(1);
-                            gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);
-                            msg = "Sent message";
-                        } catch (IOException ex) {
-                            msg = "Error :" + ex.getMessage();
-                        }
-
-                        //..........................................
 
                         Log.e("GCM ID :", regid);
 

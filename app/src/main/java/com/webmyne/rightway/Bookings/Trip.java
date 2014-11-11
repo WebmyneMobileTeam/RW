@@ -43,11 +43,19 @@ public class Trip {
     public String PaymentType;
     @SerializedName("TripStatus")
     public String TripStatus;
+    @SerializedName("CustomerName")
+    public String CustomerName;
+    @SerializedName("DriverName")
+    public String DriverName;
+    @SerializedName("CustomerNotificationID")
+    public String CustomerNotificationID;
+    @SerializedName("DriverNotificationID")
+    public String DriverNotificationID;
 
     public Trip() {
     }
 
-    public Trip(String tripID, String customerID, String driverID, String pickupLatitude, String pickupLongitude, String pickupAddress, String pickupNote, String dropoffLatitude, String dropoffLongitude, String dropOffAddress, String pickupTime, String tripDate, String tipPercentage, String tripFare, String tripFee, String tripDistance, String paymentType, String tripStatus) {
+    public Trip(String tripID, String customerID, String driverID, String pickupLatitude, String pickupLongitude, String pickupAddress, String pickupNote, String dropoffLatitude, String dropoffLongitude, String dropOffAddress, String pickupTime, String tripDate, String tipPercentage, String tripFare, String tripFee, String tripDistance, String paymentType, String tripStatus, String customerName, String driverName, String customerNotificationID, String driverNotificationID) {
         TripID = tripID;
         CustomerID = customerID;
         DriverID = driverID;
@@ -66,5 +74,9 @@ public class Trip {
         TripDistance = tripDistance;
         PaymentType = paymentType;
         TripStatus = tripStatus;
+        CustomerName = customerName;
+        DriverName = driverName;
+        CustomerNotificationID = customerNotificationID;
+        DriverNotificationID = driverNotificationID;
     }
 }
