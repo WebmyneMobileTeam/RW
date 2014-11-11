@@ -61,7 +61,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripDriverName"
                             android:text="Driver Name"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -97,7 +97,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripPickup"
                             android:text="Ajwa Road, Kamla Nagar, Vadodara, Gujarat"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -133,7 +133,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripDropoff"
                             android:text="Alkapuri Side Railway Station Entrance, Alkapuri, Vadodara, Gujarat"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -169,7 +169,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripPickupNote"
                             android:text="Pickup From Kamlanagar Talav"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -205,7 +205,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripDate"
                             android:text="January 7, 2014"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -241,7 +241,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripTime"
                             android:text="10AM"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -286,7 +286,7 @@
                                 android:layout_width="wrap_content"
                                 app:customTypeface="@string/normal"
                                 tools:ignore="MissingPrefix"
-
+                                android:id="@+id/currentTripDistance"
                                 android:layout_height="wrap_content"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/text_size_medium"/>
@@ -367,7 +367,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripPaymentType"
                             android:text="Credit Card"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -403,7 +403,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripFare"
                             android:text="100$"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -439,7 +439,7 @@
 
                         <TextView
                             android:layout_weight="2"
-
+                            android:id="@+id/currentTripTip"
                             android:text="2$"
                             android:layout_toLeftOf="@+id/txtTripDateAndTime"
                             android:layout_alignParentLeft="true"
@@ -488,7 +488,7 @@
                                 android:layout_width="wrap_content"
                                 app:customTypeface="@string/normal"
                                 tools:ignore="MissingPrefix"
-
+                                android:id="@+id/currentTripFee"
                                 android:layout_height="wrap_content"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/text_size_medium"/>

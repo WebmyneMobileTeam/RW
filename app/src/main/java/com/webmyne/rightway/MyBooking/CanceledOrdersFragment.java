@@ -15,7 +15,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.ListDialog;
+import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
 import java.util.ArrayList;
@@ -23,9 +26,10 @@ import java.util.ArrayList;
 public class CanceledOrdersFragment extends Fragment implements ListDialog.setSelectedListner {
     ListView ordersCanceledListView;
     OrdersCanceledAdapter ordersCanceledAdapter;
-    ArrayList<String> ordersCanceledList =new ArrayList<String>();
+    ArrayList<Trip> ordersCanceledList;
     TextView txtDateSelectionForOrderCancel;
     ArrayList<String> dateSelectionArray=new ArrayList<String>();
+    SharedPreferenceTrips sharedPreferenceTrips;
     public static CanceledOrdersFragment newInstance(String param1, String param2) {
         CanceledOrdersFragment fragment = new CanceledOrdersFragment();
 
@@ -39,11 +43,8 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ordersCanceledList.add("one");
-        ordersCanceledList.add("two");
-        ordersCanceledList.add("three");
-        ordersCanceledList.add("four");
-        ordersCanceledList.add("five");
+        sharedPreferenceTrips=new SharedPreferenceTrips();
+        ordersCanceledList=sharedPreferenceTrips.loadTrip(getActivity());
 
         dateSelectionArray.add("Current Week");
         dateSelectionArray.add("Last Week");
@@ -51,6 +52,13 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
         dateSelectionArray.add("Last Month");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        sharedPreferenceTrips=new SharedPreferenceTrips();
+        ordersCanceledAdapter =new OrdersCanceledAdapter(getActivity(), ordersCanceledList);
+        ordersCanceledListView.setAdapter(ordersCanceledAdapter);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,8 +73,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
             }
         });
         ordersCanceledListView =(ListView)convertView.findViewById(R.id.canceledOrdersList);
-        ordersCanceledAdapter =new OrdersCanceledAdapter(getActivity(), ordersCanceledList);
-        ordersCanceledListView.setAdapter(ordersCanceledAdapter);
+
         return convertView;
     }
 
@@ -74,9 +81,9 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     public class OrdersCanceledAdapter extends BaseAdapter {
 
         Context context;
-        ArrayList<String> currentOrdersList;
+        ArrayList<Trip> currentOrdersList;
 
-        public OrdersCanceledAdapter(Context context, ArrayList<String> currentOrdersList) {
+        public OrdersCanceledAdapter(Context context, ArrayList<Trip> currentOrdersList) {
             this.context = context;
             this.currentOrdersList = currentOrdersList;
         }
@@ -94,7 +101,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
         }
 
         class ViewHolder {
-            TextView orderHistoryCname,orderHistoryDate,orderHistoryPickupLocation,orderHistoryDropoffLocation,orderHistoryStatus;
+            TextView orderHistoryCname,orderHistoryDate,orderHistoryPickupLocation,orderHistoryDropoffLocation,orderHistoryStatus,canceledOrdersFareAmount;
         }
 
         public View getView(final int position, View convertView,
@@ -106,21 +113,28 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_canceled_orders, parent, false);
                 holder = new ViewHolder();
-                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderCanceledCname);
+//                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderCanceledCname);
                 holder.orderHistoryDate=(TextView)convertView.findViewById(R.id.orderCanceledDate);
                 holder.orderHistoryPickupLocation=(TextView)convertView.findViewById(R.id.orderCanceledPickupLocation);
                 holder.orderHistoryDropoffLocation=(TextView)convertView.findViewById(R.id.orderCanceledDropoffLocation);
                 holder.orderHistoryStatus=(TextView)convertView.findViewById(R.id.orderCanceledStatus);
+                holder.canceledOrdersFareAmount=(TextView)convertView.findViewById(R.id.canceledOrdersFareAmount);
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            holder.orderHistoryDate.setText(currentOrdersList.get(position).TripDate);
+            holder.orderHistoryPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
+            holder.orderHistoryDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
+            holder.orderHistoryStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
+//            holder.canceledOrdersFareAmount.setText(currentOrdersList.get(position).TripFare);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
-//                    complexPreferences.putObject("searched_play",beanSearchList.get(position));
-//                    complexPreferences.commit();
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                    complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
+                    complexPreferences.commit();
                     Intent i=new Intent(getActivity(), OrderDetailActivity.class);
                     startActivity(i);
 

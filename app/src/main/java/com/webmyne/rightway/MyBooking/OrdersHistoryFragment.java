@@ -23,7 +23,10 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 
+import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.ListDialog;
+import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
 import java.util.ArrayList;
@@ -34,9 +37,9 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     ListView ordersHistoryListView;
     OrdersHistoryAdapter ordersHistoryAdapter;
     TextView txtDateSelection;
-    ArrayList<String> ordersHistoryList =new ArrayList<String>();
+    ArrayList<Trip> ordersHistoryList ;
     ArrayList<String> dateSelectionArray=new ArrayList<String>();
-
+    SharedPreferenceTrips sharedPreferenceTrips;
 //    Spinner dateSelection;
     public static OrdersHistoryFragment newInstance(String param1, String param2) {
         OrdersHistoryFragment fragment = new OrdersHistoryFragment();
@@ -49,11 +52,8 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ordersHistoryList.add("one");
-        ordersHistoryList.add("two");
-        ordersHistoryList.add("three");
-        ordersHistoryList.add("four");
-        ordersHistoryList.add("five");
+
+
 
         dateSelectionArray.add("Current Week");
         dateSelectionArray.add("Last Week");
@@ -61,6 +61,14 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
         dateSelectionArray.add("Last Month");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        sharedPreferenceTrips=new SharedPreferenceTrips();
+        ordersHistoryList=sharedPreferenceTrips.loadTrip(getActivity());
+        ordersHistoryAdapter =new OrdersHistoryAdapter(getActivity(), ordersHistoryList);
+        ordersHistoryListView.setAdapter(ordersHistoryAdapter);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,8 +89,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             }
         });
         ordersHistoryListView =(ListView)convertView.findViewById(R.id.ordersHistoryList);
-        ordersHistoryAdapter =new OrdersHistoryAdapter(getActivity(), ordersHistoryList);
-        ordersHistoryListView.setAdapter(ordersHistoryAdapter);
+
 
         return convertView;
     }
@@ -93,9 +100,9 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     public class OrdersHistoryAdapter extends BaseAdapter {
 
         Context context;
-        ArrayList<String> currentOrdersList;
+        ArrayList<Trip> currentOrdersList;
 
-        public OrdersHistoryAdapter(Context context, ArrayList<String> currentOrdersList) {
+        public OrdersHistoryAdapter(Context context, ArrayList<Trip> currentOrdersList) {
             this.context = context;
             this.currentOrdersList = currentOrdersList;
         }
@@ -113,7 +120,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
         }
 
         class ViewHolder {
-            TextView orderHistoryCname,orderHistoryDate,orderHistoryPickupLocation,orderHistoryDropoffLocation,orderHistoryStatus;
+            TextView orderHistoryCname,orderHistoryDate,orderHistoryPickupLocation,orderHistoryDropoffLocation,orderHistoryStatus,orderHistoryFareAmount;
         }
 
         public View getView(final int position, View convertView,
@@ -125,21 +132,28 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_ordered_history, parent, false);
                 holder = new ViewHolder();
-                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderHistoryCname);
+//                holder.orderHistoryCname=(TextView)convertView.findViewById(R.id.orderHistoryCname);
                 holder.orderHistoryDate=(TextView)convertView.findViewById(R.id.orderHistoryDate);
                 holder.orderHistoryPickupLocation=(TextView)convertView.findViewById(R.id.orderHistoryPickupLocation);
                 holder.orderHistoryDropoffLocation=(TextView)convertView.findViewById(R.id.orderHistoryDropoffLocation);
                 holder.orderHistoryStatus=(TextView)convertView.findViewById(R.id.orderHistoryStatus);
+                holder.orderHistoryFareAmount=(TextView)convertView.findViewById(R.id.orderHistoryFareAmount);
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            holder.orderHistoryDate.setText(currentOrdersList.get(position).TripDate);
+            holder.orderHistoryPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
+            holder.orderHistoryDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
+            holder.orderHistoryStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
+//            holder.orderHistoryFareAmount.setText(currentOrdersList.get(position).TripFare);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "search_result_play",0);
-//                    complexPreferences.putObject("searched_play",beanSearchList.get(position));
-//                    complexPreferences.commit();
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                    complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
+                    complexPreferences.commit();
                     Intent i=new Intent(getActivity(), OrderDetailActivity.class);
                     startActivity(i);
 

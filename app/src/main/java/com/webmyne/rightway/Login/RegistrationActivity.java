@@ -129,8 +129,8 @@ public class RegistrationActivity extends BaseActivity {
                 customerInfo.City=etCustomerCity.getText().toString().trim()+"";
                 customerInfo.State=etCustomerState.getText().toString().trim();
                 customerInfo.ZipCode=etCustomerZipcode.getText().toString().trim();
-                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
-                complexPreferences.putObject("customer_registration", customerInfo);
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+                complexPreferences.putObject("customer_data", customerInfo);
                 complexPreferences.commit();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
@@ -352,8 +352,8 @@ public class RegistrationActivity extends BaseActivity {
                 }
 
                 protected Void doInBackground(Void... params) {
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_reg", 0);
-                    Customer customer = complexPreferences.getObject("customer_registration", Customer.class);
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+                    Customer customer = complexPreferences.getObject("customer_data", Customer.class);
                     customer.ProfilePicture="temp_path.jpg";
                     customer.DeviceType="android";
 
@@ -417,13 +417,7 @@ public class RegistrationActivity extends BaseActivity {
                     return null;
                 }
 
-                @Override
-                protected void onPostExecute(Void aVoid) {
 
-                    super.onPostExecute(aVoid);
-
-
-                }
             }.execute();
         }
 
@@ -431,14 +425,15 @@ public class RegistrationActivity extends BaseActivity {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
-                    complexPreferences.putObject("customer_profile_data", customerResponse);
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+                    complexPreferences.putObject("customer_data", customerResponse);
                     complexPreferences.commit();
 
                     SharedPreferences preferences = getActivity().getSharedPreferences("is_registered",MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("registration", true);
                     editor.commit();
+
                     progressDialog.dismiss();
                     Intent i = new Intent(getActivity(), DrawerActivity.class);
                     startActivity(i);

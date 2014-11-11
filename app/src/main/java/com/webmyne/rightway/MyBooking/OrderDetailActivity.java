@@ -1,22 +1,42 @@
 package com.webmyne.rightway.MyBooking;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.ads.mediation.customevent.CustomEvent;
+import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.BaseActivity;
+import com.webmyne.rightway.Application.MyApplication;
+import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.CustomHeaderView;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.CustomTypeface;
+import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 
 public class OrderDetailActivity extends BaseActivity {
@@ -67,7 +87,11 @@ public class OrderDetailActivity extends BaseActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
-
+        ProgressDialog progressDialog;
+        Trip currentTrip;
+        TextView currentTripDriverName, currentTripPickup, currentTripDropoff, currentTripPickupNote, currentTripDate, currentTripTime,
+                currentTripDistance, txtTripStatus, currentTripPaymentType, currentTripFare, currentTripTip, currentTripFee,txtTotalAmount,
+                txtCancelTrip;
         public PlaceholderFragment() {
         }
 
@@ -77,10 +101,32 @@ public class OrderDetailActivity extends BaseActivity {
 
         }
 
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_order_detail, container, false);
+            txtCancelTrip=(TextView)rootView.findViewById(R.id.txtCancelTrip);
+            txtCancelTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelTrip();
+                }
+            });
+            currentTripDriverName=(TextView)rootView.findViewById(R.id.currentTripDriverName);
+            currentTripPickup=(TextView)rootView.findViewById(R.id.currentTripPickup);
+            currentTripDropoff=(TextView)rootView.findViewById(R.id.currentTripDropoff);
+            currentTripPickupNote=(TextView)rootView.findViewById(R.id.currentTripPickupNote);
+            currentTripDate=(TextView)rootView.findViewById(R.id.currentTripDate);
+            currentTripTime=(TextView)rootView.findViewById(R.id.currentTripTime);
+            currentTripDistance=(TextView)rootView.findViewById(R.id.currentTripDistance);
+            txtTripStatus=(TextView)rootView.findViewById(R.id.txtTripStatus);
+            currentTripPaymentType=(TextView)rootView.findViewById(R.id.currentTripPaymentType);
+            currentTripFare=(TextView)rootView.findViewById(R.id.currentTripFare);
+            currentTripTip=(TextView)rootView.findViewById(R.id.currentTripTip);
+            currentTripFee=(TextView)rootView.findViewById(R.id.currentTripFee);
+            txtTotalAmount=(TextView)rootView.findViewById(R.id.txtTotalAmount);
 
 
             return rootView;
@@ -89,6 +135,78 @@ public class OrderDetailActivity extends BaseActivity {
         @Override
         public void onResume() {
             super.onResume();
+            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+            currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
+//            currentTripDriverName.setText(currentTrip.DriverID);
+            currentTripPickup.setText(currentTrip.PickupAddress);
+            currentTripDropoff.setText(currentTrip.DropOffAddress);
+            currentTripPickupNote.setText(currentTrip.PickupNote);
+            currentTripDate.setText(currentTrip.TripDate);
+            currentTripTime.setText(currentTrip.PickupTime);
+            currentTripDistance.setText(currentTrip.TripDistance);
+            currentTripPaymentType.setText(currentTrip.PaymentType);
+            currentTripFare.setText(currentTrip.TripFare);
+            currentTripTip.setText(currentTrip.TipPercentage);
+            currentTripFee.setText(currentTrip.TripFee);
+
+//            txtTotalAmount.setText();
+            txtTripStatus.setText(currentTrip.TripStatus);
+        }
+
+        public void cancelTrip() {
+            new AsyncTask<Void,Void,Void>(){
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    progressDialog=new ProgressDialog(getActivity());
+                    progressDialog.setCancelable(true);
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
+                }
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    JSONObject tripObject = new JSONObject();
+                    try {
+                        tripObject.put("TripID",currentTrip.TripID+"");
+                        tripObject.put("DriverID", currentTrip.DriverID+"");
+                        tripObject.put("TripStatus", "Canceled By Customer");
+                        Log.e("tripObject: ",tripObject+"");
+
+
+                    }catch(JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.CancelTrip, tripObject, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject jobj) {
+                            String response = jobj.toString();
+
+                            ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
+                            Log.e("after cancel response: ", responseMessage.Response +"");
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("error response: ",error+"");
+                        }
+                    });
+                    MyApplication.getInstance().addToRequestQueue(req);
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "Trip Canceled Successfully", Toast.LENGTH_SHORT).show();
+
+                }
+            }.execute();
 
         }
 

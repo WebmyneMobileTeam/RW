@@ -1,23 +1,38 @@
 package com.webmyne.rightway.CurrentTrip;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.webmyne.rightway.Bookings.Driver;
+import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.R;
 import com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackActivity;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class FragmentCurrentTripMap extends Fragment {
+    ProgressDialog progressDialog;
     private MapView mv;
     private MapController mc;
     TextView getReceipt;
@@ -75,15 +90,63 @@ public class FragmentCurrentTripMap extends Fragment {
             @Override
             public void onFinish() {
                 int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
-                mc.animateTo(mc.getMyLocation().getLatitude(),mc.getMyLocation().getLongitude(),zoom);
+                try {
+                    mc.animateTo(mc.getMyLocation().getLatitude(), mc.getMyLocation().getLongitude(), zoom);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onTick(long millisUntilFinished) {
             }
         }.start();
 
+        Timer timer=new Timer();
+        // stopLoginTimer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    updateDriverLocation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },0,1000*15);
+
+
+
     }
 
+    public void updateDriverLocation() {
+        new AsyncTask<Void,Void,Void>(){
+
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                new CallWebService(AppConstants.DriverUpdatedLocation+"9", CallWebService.TYPE_JSONOBJECT) {
+
+                    @Override
+                    public void response(String response) {
+
+                      Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
+                            Log.e("DriverID", availableDrivers.DriverID + "");
+                            Log.e("FirstName", availableDrivers.FirstName+"");
+                            Log.e("LastName", availableDrivers.LastName+"");
+                            Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
+                            Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
+                    }
+
+                    @Override
+                    public void error(VolleyError error) {
+                        Log.e("error response: ",error+"");
+                    }
+                }.start();
+                return null;
+            }
+        }.execute();
+
+    }
     @Override
     public void onPause() {
         mv.onPause();

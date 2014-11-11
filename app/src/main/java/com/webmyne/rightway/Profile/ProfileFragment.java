@@ -25,6 +25,7 @@ import com.webmyne.rightway.Login.Customer;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.R;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,8 +69,8 @@ public class ProfileFragment extends Fragment {
         txtCustomerState=(EditText)rootView.findViewById(R.id.txtCustomerState);
         txtCustomerZipCode=(EditText)rootView.findViewById(R.id.txtCustomerZipCode);
 
-        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
-        customerProfile=complexPreferences.getObject("customer_profile_data", Customer.class);
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        customerProfile=complexPreferences.getObject("customer_data", Customer.class);
 
         txtCustomerName.setText(customerProfile.Name);
         txtCustomerMobile.setText(customerProfile.Mobile);

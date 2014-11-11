@@ -78,7 +78,7 @@
     <TextView
         android:paddingRight="@dimen/activity_margin"
         android:paddingLeft="@dimen/activity_margin"
-        android:id="@+id/orderHistoryStatus"
+        android:id="@+id/currentOrderStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:customTypeface="@string/normal"

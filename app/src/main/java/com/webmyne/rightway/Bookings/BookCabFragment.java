@@ -136,10 +136,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
-        customerProfile=complexPreferences.getObject("customer_profile_data", Customer.class);
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        customerProfile=complexPreferences.getObject("customer_data", Customer.class);
+        Log.e("customer ID: ",customerProfile.CustomerID+"");
         getActiveDriversList();
-
 
     }
 
