@@ -51,11 +51,15 @@ public class Trip {
     public String CustomerNotificationID;
     @SerializedName("DriverNotificationID")
     public String DriverNotificationID;
+    @SerializedName("CustomerEmail")
+    public String CustomerEmail;
+    @SerializedName("CustomerMobile")
+    public String CustomerMobile;
 
     public Trip() {
     }
 
-    public Trip(String tripID, String customerID, String driverID, String pickupLatitude, String pickupLongitude, String pickupAddress, String pickupNote, String dropoffLatitude, String dropoffLongitude, String dropOffAddress, String pickupTime, String tripDate, String tipPercentage, String tripFare, String tripFee, String tripDistance, String paymentType, String tripStatus, String customerName, String driverName, String customerNotificationID, String driverNotificationID) {
+    public Trip(String tripID, String customerID, String driverID, String pickupLatitude, String pickupLongitude, String pickupAddress, String pickupNote, String dropoffLatitude, String dropoffLongitude, String dropOffAddress, String pickupTime, String tripDate, String tipPercentage, String tripFare, String tripFee, String tripDistance, String paymentType, String tripStatus, String customerName, String driverName, String customerNotificationID, String driverNotificationID, String customerEmail, String customerMobile) {
         TripID = tripID;
         CustomerID = customerID;
         DriverID = driverID;
@@ -78,5 +82,7 @@ public class Trip {
         DriverName = driverName;
         CustomerNotificationID = customerNotificationID;
         DriverNotificationID = driverNotificationID;
+        CustomerEmail = customerEmail;
+        CustomerMobile = customerMobile;
     }
 }

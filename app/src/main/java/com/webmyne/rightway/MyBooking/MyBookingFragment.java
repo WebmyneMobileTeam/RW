@@ -150,7 +150,7 @@ public class MyBookingFragment extends Fragment {
 
     public class MyPagerAdapter extends FragmentStatePagerAdapter {
 
-        private final String[] TITLES = { "Current", "History", "Canceled"};
+        private final String[] TITLES = { "Current", "History", "Cancelled"};
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
