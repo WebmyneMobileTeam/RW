@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +56,7 @@ import com.webmyne.rightway.MapNavigator.Navigator;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.Model.ResponseMessage;
+import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.R;
 
 import org.json.JSONArray;
@@ -392,7 +395,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
              if(!txtDistance.isShown()){
                  txtDistance.setVisibility(View.VISIBLE);
              }
-             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("%.2f $", distance*0.6214*10));
+             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f ", distance*0.6214*10));
         }
 
     }
@@ -519,7 +522,13 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 super.onPostExecute(aVoid);
                 progressDialog.dismiss();
                 Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
-
+                //TODO
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+                if (manager.findFragmentByTag("MYBOOKING") == null) {
+                    ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
+                }
             }
         }.execute();
     }

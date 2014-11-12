@@ -23,6 +23,7 @@ import com.webmyne.rightway.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 
@@ -60,6 +61,8 @@ public class CurrentOrdersFragment extends Fragment {
                 }
             }
             if(currentOrdersList !=null) {
+
+                Collections.reverse(filteredCurruntOrderList);
                 currentOrdersAdapter = new CurrentOrdersAdapter(getActivity(), filteredCurruntOrderList);
                 currentOrdersListView.setAdapter(currentOrdersAdapter);
             }

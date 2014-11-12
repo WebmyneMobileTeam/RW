@@ -24,6 +24,7 @@ import com.webmyne.rightway.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class CanceledOrdersFragment extends Fragment implements ListDialog.setSelectedListner {
@@ -68,6 +69,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
                 }
             }
             if(ordersCanceledList !=null) {
+                Collections.reverse(filteredCurruntOrderList);
                 ordersCanceledAdapter = new OrdersCanceledAdapter(getActivity(), filteredCurruntOrderList);
                 ordersCanceledListView.setAdapter(ordersCanceledAdapter);
             }
