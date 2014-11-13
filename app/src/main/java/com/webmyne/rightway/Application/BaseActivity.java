@@ -30,12 +30,9 @@ public class BaseActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         // ActionBar Style
-        ActionBar.LayoutParams acBarParams = new ActionBar.LayoutParams(
-                ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
+        ActionBar.LayoutParams acBarParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,ActionBar.LayoutParams.WRAP_CONTENT);
         acBarParams.gravity= Gravity.LEFT| Gravity.CENTER_VERTICAL;
         // Adding the new custom textview to the actionbar that has center alined property.
-
         txtHeader=new TextView(this);
         txtHeader.setTypeface(Typeface.createFromAsset(getAssets(), "RBold.ttf"));
 
@@ -57,10 +54,8 @@ public class BaseActivity extends FragmentActivity {
     public  boolean isConnected() {
 
         ConnectivityManager cm =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         return  isConnected;
     }
 

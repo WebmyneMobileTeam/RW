@@ -3,7 +3,6 @@ package com.webmyne.rightway.Application;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -22,9 +21,9 @@ import android.widget.TextView;
 import com.webmyne.rightway.Bookings.BookCabFragment;
 import com.webmyne.rightway.ContactUs.ContactUsFragment;
 import com.webmyne.rightway.CurrentTrip.FragmentCurrentTripMap;
+import com.webmyne.rightway.CustomComponents.CustomTypeface;
 import com.webmyne.rightway.DrawerLibrary.ActionBarDrawerToggle;
 import com.webmyne.rightway.DrawerLibrary.DrawerArrowDrawable;
-import com.webmyne.rightway.Model.CustomTypeface;
 import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.MyNotifications.MyNotificationFragment;
 import com.webmyne.rightway.Profile.ProfileFragment;
@@ -37,7 +36,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerArrowDrawable drawerArrow;
     private DrawerLayout drawer;
     private ListView leftDrawerList;
-    //    private ActionBarDrawerToggle actionBarDrawerToggle;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","CURRENT TRIP","SETTING"};
     private boolean isPupil;
     public static String BOOKCAB = "bookcab";
@@ -48,46 +46,28 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     public static String CURRENT_TRIP = "current_trip";
     public static String SETTINGS="settings";
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
-         //Load My Places First
-         FragmentManager manager = getSupportFragmentManager();
-         FragmentTransaction ft = manager.beginTransaction();
+        //Load My Places First
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
 
         BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
         if (manager.findFragmentByTag(BOOKCAB) == null) {
             ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
         }
-
         // header
         txtHeader.setText("BOOK A CAB");
         initFields();
         initDrawer();
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("onResume ", "in drawer activty");
-    }
 
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return CustomTypeface.getInstance().createView(name, context, attrs);
-    }
     private void initFields() {
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList = (ListView) findViewById(R.id.left_drawer);
-        leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderData));
-        leftDrawerList.setOnItemClickListener(this);
-
     }
 
     private void initDrawer() {
@@ -117,17 +97,29 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderData));
+        leftDrawerList.setOnItemClickListener(this);
+    }
+
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        // for custom font
+        return CustomTypeface.getInstance().createView(name, context, attrs);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        // Add your onclick logic here
         drawer.closeDrawers();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
-        //drawer items for pupil
+        //drawer items for customer
         switch (position) {
 
             case 0:
-
                 BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
                 if (manager.findFragmentByTag(BOOKCAB) == null) {
                     ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
@@ -136,8 +128,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 1:
-
-               MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+                MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
                 if (manager.findFragmentByTag(MYBOOKING) == null) {
                     ft.replace(R.id.main_content, fragmentMyBooking,MYBOOKING).commit();
                 }
@@ -145,8 +136,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 2:
-
-               ProfileFragment fragmentProfile = ProfileFragment.newInstance("", "");
+                ProfileFragment fragmentProfile = ProfileFragment.newInstance("", "");
                 if (manager.findFragmentByTag(PROFILE) == null) {
                     ft.replace(R.id.main_content, fragmentProfile,PROFILE).commit();
                 }
@@ -154,8 +144,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 3:
-
-               ContactUsFragment fragmentcontactus = ContactUsFragment.newInstance("", "");
+                ContactUsFragment fragmentcontactus = ContactUsFragment.newInstance("", "");
                 if (manager.findFragmentByTag(CONTACTUS) == null) {
                     ft.replace(R.id.main_content, fragmentcontactus,CONTACTUS).commit();
                 }
@@ -163,8 +152,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 4:
-
-               MyNotificationFragment fragmentmynotification = MyNotificationFragment.newInstance("", "");
+                MyNotificationFragment fragmentmynotification = MyNotificationFragment.newInstance("", "");
                 if (manager.findFragmentByTag(MYNOTIFICATION) == null) {
                     ft.replace(R.id.main_content, fragmentmynotification,MYNOTIFICATION).commit();
                 }
@@ -172,7 +160,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 5:
-
                 FragmentCurrentTripMap fragmentCurrentTripMap = FragmentCurrentTripMap.newInstance("", "");
                 if (manager.findFragmentByTag(CURRENT_TRIP) == null) {
                     ft.replace(R.id.main_content, fragmentCurrentTripMap,CURRENT_TRIP).commit();
@@ -181,14 +168,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 break;
 
             case 6:
-
                 SettingsFragment settingsFragment = SettingsFragment.newInstance("", "");
                 if (manager.findFragmentByTag(SETTINGS) == null) {
                     ft.replace(R.id.main_content, settingsFragment,SETTINGS).commit();
                 }
                 txtHeader.setText("SETTINGS");
                 break;
-
         }
     }
 
@@ -209,12 +194,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         mDrawerToggle.syncState();
     }
 
-    //region Drawer code
+
     // Navigation Drawer Adapter
     public class NavigationDrawerAdapter extends BaseAdapter {
 
         Context context;
-        LayoutInflater inflater;
         String[] leftSliderData;
 
         public NavigationDrawerAdapter(Context context, String[] leftSliderData) {
@@ -239,9 +223,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
             TextView txtBadgeValue;
         }
 
-
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public View getView(final int position, View convertView,ViewGroup parent) {
 
             final ViewHolder holder;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -252,7 +234,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 holder.txtDrawerItem = (TextView) convertView.findViewById(R.id.txtDrawerItem);
                 holder.txtBadgeValue=(TextView) convertView.findViewById(R.id.txtBadgeValue);
                 convertView.setTag(holder);
-
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
@@ -263,17 +244,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
             }
             holder.txtDrawerItem.setText(leftSliderData[position]);
             return convertView;
-
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         return false;
     }
-
-
-
 }

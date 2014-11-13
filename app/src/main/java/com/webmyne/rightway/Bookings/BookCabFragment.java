@@ -51,7 +51,7 @@ import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.CustomComponents.ListDialog;
-import com.webmyne.rightway.Login.Customer;
+import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.MapNavigator.Navigator;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.MapController;

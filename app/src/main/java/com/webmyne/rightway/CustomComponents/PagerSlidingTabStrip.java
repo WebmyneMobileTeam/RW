@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.webmyne.rightway.Model;
+package com.webmyne.rightway.CustomComponents;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/activity_background"
-    tools:context="com.webmyne.rightway.Login.RegistrationActivity.BasicFormFragment">
+    tools:context="com.webmyne.rightway.Registration.RegistrationActivity.BasicFormFragment">
 
 
     <Button

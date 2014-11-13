@@ -1,4 +1,4 @@
-package com.webmyne.rightway.Login;
+package com.webmyne.rightway.Registration;
 
 import com.google.gson.annotations.SerializedName;
 

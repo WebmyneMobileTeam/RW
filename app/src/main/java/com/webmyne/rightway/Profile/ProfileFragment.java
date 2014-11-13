@@ -21,7 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.MyApplication;
 
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
-import com.webmyne.rightway.Login.Customer;
+import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.R;
 

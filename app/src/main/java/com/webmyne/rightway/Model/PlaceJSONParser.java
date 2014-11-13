@@ -60,7 +60,6 @@ public class PlaceJSONParser {
             description = jPlace.getString("description");
             id = jPlace.getString("id");
             reference = jPlace.getString("reference");
-
             place.put("description", description);
             place.put("_id",id);
             place.put("reference",reference);

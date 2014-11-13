@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.webmyne.rightway.MyBooking.MyBookingFragment">
 
-    <com.webmyne.rightway.Model.PagerSlidingTabStrip
+    <com.webmyne.rightway.CustomComponents.PagerSlidingTabStrip
         android:layout_alignParentTop="true"
         android:id="@+id/my_order_tabs"
         android:layout_width="match_parent"

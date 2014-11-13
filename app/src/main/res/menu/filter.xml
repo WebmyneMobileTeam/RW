@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.webmyne.rightway.Login.RegistrationActivity" >
+    tools:context="com.webmyne.rightway.Registration.RegistrationActivity" >
 
     <item android:id="@+id/action_filter"
         android:title="Filter"

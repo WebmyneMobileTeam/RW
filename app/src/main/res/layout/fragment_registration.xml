@@ -7,7 +7,7 @@
     android:gravity="center"
 
     android:background="@color/activity_background"
-    tools:context="com.webmyne.rightway.Login.RegistrationActivity.BasicFormFragment">
+    tools:context="com.webmyne.rightway.Registration.RegistrationActivity.BasicFormFragment">
 
     <ScrollView
 
@@ -16,304 +16,309 @@
 
 
 
-    <LinearLayout
+        <LinearLayout
 
-        android:paddingTop="@dimen/activity_margin"
-        android:paddingBottom="@dimen/activity_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_height="1dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_name"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-        <EditText
-            android:id="@+id/etCustomerName"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Name"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_height="1dp"/>
-
-    <!-- -->
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_marginTop="16dp"
-            android:layout_height="1dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
-
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_mobile"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-
-        <EditText
-            android:id="@+id/etCustomerMobile"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Mobile"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-        <FrameLayout
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff">
+            android:orientation="vertical">
+
             <View
                 android:layout_width="match_parent"
                 android:background="@color/divider"
-                android:layout_marginLeft="@dimen/activity_margin"
-                android:layout_marginRight="@dimen/activity_margin"
                 android:layout_height="1dp"/>
-        </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_name"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+                <EditText
+                    android:id="@+id/etCustomerName"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Name"
+                    android:inputType="text"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
 
 
 
-    <!-- -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
-
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_email"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-
-        <EditText
-            android:id="@+id/etCustomerEmail"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Email"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-
-            android:layout_height="1dp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:layout_height="1dp"/>
-
-    <!-- -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
-
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_location"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-
-        <EditText
-            android:id="@+id/etCustomerCity"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="City"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff">
             <View
                 android:layout_width="match_parent"
                 android:background="@color/divider"
-                android:layout_marginLeft="@dimen/activity_margin"
-                android:layout_marginRight="@dimen/activity_margin"
                 android:layout_height="1dp"/>
-        </FrameLayout>
 
+            <!-- -->
 
-    <!-- -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
-
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_location"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-
-        <EditText
-            android:id="@+id/etCustomerState"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="State"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff">
             <View
                 android:layout_width="match_parent"
                 android:background="@color/divider"
-                android:layout_marginLeft="@dimen/activity_margin"
-                android:layout_marginRight="@dimen/activity_margin"
+                android:layout_marginTop="16dp"
                 android:layout_height="1dp"/>
-        </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_mobile"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
 
 
-    <!-- -->
+                <EditText
+                    android:id="@+id/etCustomerMobile"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Mobile"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:padding="@dimen/activity_margin"
+            </LinearLayout>
 
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:src="@drawable/ic_location"
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-
-
-        <EditText
-            android:id="@+id/etCustomerZipcode"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:background="@null"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="ZipCode"
-            app:customTypeface="rnormal"
-            tools:ignore="MissingPrefix"
-            android:singleLine="true"
-
-            android:textSize="@dimen/text_size_medium"
-            android:gravity="center_vertical"
-            />
-
-    </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/divider"
-            android:layout_height="1dp"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
 
 
-        <!--<View-->
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_email"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:id="@+id/etCustomerEmail"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Email"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:inputType="textEmailAddress"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+
+                android:layout_height="1dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_marginTop="@dimen/activity_margin"
+                android:layout_height="1dp"/>
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:id="@+id/etCustomerCity"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="City"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:inputType="text"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
+
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:id="@+id/etCustomerState"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="State"
+                    android:inputType="text"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/divider"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:layout_marginRight="@dimen/activity_margin"
+                    android:layout_height="1dp"/>
+            </FrameLayout>
+
+
+            <!-- -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:padding="@dimen/activity_margin"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+
+
+                <EditText
+                    android:id="@+id/etCustomerZipcode"
+                    android:layout_marginLeft="@dimen/activity_margin"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="ZipCode"
+                    app:customTypeface="rnormal"
+                    tools:ignore="MissingPrefix"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:textSize="@dimen/text_size_medium"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp"/>
+
+
+            <!--<View-->
             <!--android:layout_width="match_parent"-->
             <!--android:background="@color/divider"-->
             <!--android:layout_marginTop="@dimen/activity_margin"-->
             <!--android:layout_height="1dp"/>-->
 
-        <!--<LinearLayout-->
+            <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:background="#fff"-->
@@ -322,39 +327,39 @@
             <!--android:orientation="horizontal">-->
 
             <!--<ImageView-->
-                <!--android:src="@drawable/ic_star"-->
-                <!--android:contentDescription="@string/app_name"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:scaleType="centerInside" />-->
+            <!--android:src="@drawable/ic_star"-->
+            <!--android:contentDescription="@string/app_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:scaleType="centerInside" />-->
 
             <!--<EditText-->
-                <!--android:layout_marginLeft="@dimen/activity_margin"-->
-                <!--android:background="@null"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:hint="Preferred Driver if any"-->
-                <!--app:customTypeface="rnormal"-->
-                <!--tools:ignore="MissingPrefix"-->
-                <!--android:singleLine="true"-->
-                <!--android:imeOptions="actionDone"-->
-                <!--android:textSize="@dimen/text_size_medium"-->
-                <!--android:gravity="center_vertical"-->
-                <!--/>-->
+            <!--android:layout_marginLeft="@dimen/activity_margin"-->
+            <!--android:background="@null"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:hint="Preferred Driver if any"-->
+            <!--app:customTypeface="rnormal"-->
+            <!--tools:ignore="MissingPrefix"-->
+            <!--android:singleLine="true"-->
+            <!--android:imeOptions="actionDone"-->
+            <!--android:textSize="@dimen/text_size_medium"-->
+            <!--android:gravity="center_vertical"-->
+            <!--/>-->
 
-        <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
 
 
 
-        <!--<View-->
+            <!--<View-->
             <!--android:layout_width="match_parent"-->
             <!--android:background="@color/divider"-->
             <!--android:layout_height="1dp"/>-->
 
-        <!-- -->
+            <!-- -->
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
     </ScrollView>

@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.webmyne.rightway.Application.BaseActivity;
-import com.webmyne.rightway.Model.CustomTypeface;
+import com.webmyne.rightway.CustomComponents.CustomTypeface;
 import com.webmyne.rightway.R;
 
 

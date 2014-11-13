@@ -1,7 +1,6 @@
 package com.webmyne.rightway.MyBooking;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -20,10 +19,12 @@ import com.google.gson.reflect.TypeToken;
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.CallWebService;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
-import com.webmyne.rightway.Login.Customer;
+import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.Model.AppConstants;
-import com.webmyne.rightway.Model.PagerSlidingTabStrip;
+import com.webmyne.rightway.CustomComponents.PagerSlidingTabStrip;
+import com.webmyne.rightway.Model.SharedPreferenceNotification;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
+import com.webmyne.rightway.MyNotifications.CustomerNotification;
 import com.webmyne.rightway.R;
 
 import java.lang.reflect.Type;
@@ -33,12 +34,14 @@ import java.util.List;
 
 public class MyBookingFragment extends Fragment {
     private SharedPreferenceTrips sharedPreferenceTrips;
+    private SharedPreferenceNotification sharedPreferenceNotification;
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
     private MyPagerAdapter adapter;
     public ArrayList<Trip> tripArrayList=new ArrayList<Trip>();
     ProgressDialog progressDialog;
     Customer customerDetails;
+    ArrayList<CustomerNotification> notificationList;
     public static MyBookingFragment newInstance(String param1, String param2) {
         MyBookingFragment fragment = new MyBookingFragment();
         return fragment;
@@ -69,69 +72,26 @@ public class MyBookingFragment extends Fragment {
         super.onResume();
         getTripList();
         sharedPreferenceTrips=new SharedPreferenceTrips();
+        sharedPreferenceNotification=new SharedPreferenceNotification();
     }
 
     public void getTripList() {
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerDetails =complexPreferences.getObject("customer_data", Customer.class);
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
-        Log.e("list: ",AppConstants.getTripList+customerDetails.CustomerID +"");
-
-        new AsyncTask<Void,Void,Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-            }
+        new CallWebService(AppConstants.getTripList+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            public void response(String response) {
 
-                new CallWebService(AppConstants.getTripList+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
-
-                    @Override
-                    public void response(String response) {
-
-                        Type listType=new TypeToken<List<Trip>>(){
-                        }.getType();
-                        tripArrayList = new GsonBuilder().create().fromJson(response, listType);
-
-
-                        handleTripListData();
-                    }
-
-                    @Override
-                    public void error(VolleyError error) {
-
-                        Log.e("error: ",error+"");
-
-                    }
-                }.start();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                progressDialog.dismiss();
-            }
-
-
-        }.execute();
-
-
-    }
-
-    public void handleTripListData() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-
+                Type listType=new TypeToken<List<Trip>>(){
+                }.getType();
+                tripArrayList = new GsonBuilder().create().fromJson(response, listType);
                 sharedPreferenceTrips.clearTrip(getActivity());
                 for(int i=0;i<tripArrayList.size();i++){
                     sharedPreferenceTrips.saveTrip(getActivity(),tripArrayList.get(i));
@@ -142,11 +102,51 @@ public class MyBookingFragment extends Fragment {
                 final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
                 pager.setPageMargin(pageMargin);
                 tabs.setViewPager(pager);
-            }
-        });
+                getNotificationList();
 
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
     }
 
+    public void getNotificationList() {
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        customerDetails =complexPreferences.getObject("customer_data", Customer.class);
+
+        new CallWebService(AppConstants.GetCustomerNotifications+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+
+                Type listType=new TypeToken<List<CustomerNotification>>(){
+                }.getType();
+
+                notificationList = new GsonBuilder().create().fromJson(response, listType);
+//                Log.e("notification list size:",notificationList.size()+"");
+                sharedPreferenceNotification.clearNotification(getActivity());
+                for(int i=0;i<notificationList.size();i++){
+                    sharedPreferenceNotification.saveNotification(getActivity(),notificationList.get(i));
+                    Log.e("notification id: ",notificationList.get(i).Status+"");
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+
+
+    }
 
     public class MyPagerAdapter extends FragmentStatePagerAdapter {
 

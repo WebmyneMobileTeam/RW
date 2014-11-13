@@ -14,22 +14,19 @@
  * the License.
  */
 
-package com.webmyne.rightway.Model;
+package com.webmyne.rightway.CustomComponents;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -41,9 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.view.LayoutInflater.Factory;
-import static android.view.LayoutInflater.Factory2;
 
 /**
  * This class can be used to automatically apply custom {@link android.graphics.Typeface} to views inflated from

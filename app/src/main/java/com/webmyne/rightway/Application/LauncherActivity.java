@@ -12,13 +12,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.webmyne.rightway.Login.RegistrationActivity;
+import com.webmyne.rightway.Registration.RegistrationActivity;
 import com.webmyne.rightway.R;
 
 import java.io.IOException;
@@ -43,25 +42,14 @@ public class LauncherActivity extends Activity {
      */
     public static class PlaceholderFragment extends Fragment {
 
-//        private String SENDER_ID = "APA91bF7Mu1e1M8nKWKYeOODcPJm0coqF6TEEEvl-bb6TDmEBvbYU5m9y0IE1Olnt0ZyQM4p3ccNhHx6nUUnKE91g9QXBDirFz1HxtAw-CDtufxiLPHaxRH-ll37FnnsHD5KAmhlw6QulKKzhKmZoBxzWmNdtR9qHdETiv9epIwQ5inqLqOuC5Q";
-
-        GoogleCloudMessaging gcm;
-        String regid;
-
-
-         String PROJECT_NUMBER = "92884720384";
-//       String PROJECT_NUMBER = "766031645889";
+        private GoogleCloudMessaging gcm;
+        private String regid;
+        private String PROJECT_NUMBER = "92884720384";
 
         public PlaceholderFragment() {
         }
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-        }
-
-        @Override
+          @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_launcher, container, false);
             return rootView;
@@ -69,24 +57,18 @@ public class LauncherActivity extends Activity {
 
         // Check Internet Connection
         public  boolean isConnected() {
-
             ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
             return  isConnected;
         }
 
         @Override
         public void onResume() {
             super.onResume();
-
             if(isConnected()) { // Check Internet Coneection Availability
-
                 SharedPreferences preferences = getActivity().getSharedPreferences("is_registered", MODE_PRIVATE);
                 boolean isRegistered = preferences.getBoolean("registration", false);
-
                 if (isRegistered==false) { // get GCM Id and post IMEI Number
                     getRegId();
                 } else {    // show home screen
@@ -107,13 +89,11 @@ public class LauncherActivity extends Activity {
                     }.start();
 
                 }
-            } else {
-
+            } else { // If internet connection is not available
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                 alert.setTitle("Error");
                 alert.setMessage("No Internet Connection");
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -133,19 +113,14 @@ public class LauncherActivity extends Activity {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
                         }
                         regid = gcm.register(PROJECT_NUMBER);
-
-
                         Log.e("GCM ID :", regid);
-
                         if(regid==null || regid==""){
-
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Error");
                             alert.setMessage("Internal Server Error");
                             alert.setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-
                                     getRegId();
                                     dialog.dismiss();
                                 }
@@ -159,7 +134,7 @@ public class LauncherActivity extends Activity {
                             });
                             alert.show();
                         } else {
-
+                            // Store GCM ID in sharedpreference
                             SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
                             SharedPreferences.Editor editor=sharedPreferences.edit();
                             editor.putString("GCM_ID",regid);
@@ -176,11 +151,5 @@ public class LauncherActivity extends Activity {
                 }
             }.execute();
         } // end of getRegId
-
-
-
-
     } // end of fragment
-
-
 }

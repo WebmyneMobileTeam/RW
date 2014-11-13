@@ -22,7 +22,6 @@ public class FormValidator {
 
     }
 
-
     public synchronized final FormValidator validate(ArrayList<? extends View> arrayList) {
 
         if (startValidating(arrayList) == true) {
@@ -41,17 +40,11 @@ public class FormValidator {
                 }
 
                 listner.error(error);
-
             }
-
-
         }
-
 
         return this;
     }
-
-
 
     public boolean startValidating(ArrayList<? extends View> arrayList){
 
@@ -65,49 +58,29 @@ public class FormValidator {
 
                 EditText ed = (EditText)v;
                 if(ed.getText().toString() !=null && ed.getText().length()>0){
-
                     valid = true;
                     continue;
-
                 }else{
-
                     defectedView = ed;
                     valid = false;
                     return valid;
                 }
-
-
-
             }else if(v instanceof TextView){
 
                 TextView tv = (TextView)v;
-
                 if(tv.getText().toString() !=null && tv.getText().length()>0){
-
                     valid = true;
                     continue;
 
                 }else{
-
-
                     defectedView = tv;
                     valid = false;
                     return valid;
                 }
-
             }
-
-
-
         }
-
-
         return  valid;
     }
-
-
-
-
 
     public static interface  ResultValidationListner{
 
@@ -115,6 +88,4 @@ public class FormValidator {
         public void error(String error);
 
     }
-
-
 }

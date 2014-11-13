@@ -9,7 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.webmyne.rightway.Model.CustomTypeface;
+import com.webmyne.rightway.CustomComponents.CustomTypeface;
 import com.webmyne.rightway.Model.DatabaseHelper;
 import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.R;
@@ -46,13 +46,10 @@ public class MyApplication extends Application {
 	super.onCreate();
     // initialize the singleton
     sInstance = this;
-
    // initiallize the custom typeface
         CustomTypeface.getInstance().registerTypeface("rbold", getAssets(), "RBold.ttf");
         CustomTypeface.getInstance().registerTypeface("rnormal", getAssets(), "RRegular.ttf");
         CustomTypeface.getInstance().registerTypeface("rlight", getAssets(), "RLight.ttf");
-
-
        db_wrapper = new DatabaseHelper(this.getApplicationContext());
         try {
             db_wrapper.createDataBase();
@@ -62,12 +59,8 @@ public class MyApplication extends Application {
             MapController.initialize(this);
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
-
-            Toast.makeText(this,
-                    R.string.common_google_play_services_enable_text,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,R.string.common_google_play_services_enable_text,Toast.LENGTH_SHORT).show();
         }
-	
     }
     
     /**
@@ -76,7 +69,6 @@ public class MyApplication extends Application {
     public static synchronized MyApplication getInstance() {
         return sInstance;
     }
-
     /**
      * @return The Volley Request queue, the queue will be created if it is null
      */
@@ -86,7 +78,6 @@ public class MyApplication extends Application {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-
         return mRequestQueue;
     }
 
@@ -100,9 +91,7 @@ public class MyApplication extends Application {
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         // set the default tag if tag is empty
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-
         VolleyLog.d("Adding request to queue: %s", req.getUrl());
-
         getRequestQueue().add(req);
     }
 
@@ -130,7 +119,4 @@ public class MyApplication extends Application {
             mRequestQueue.cancelAll(tag);
         }
     }
-    
-  
-
 }
