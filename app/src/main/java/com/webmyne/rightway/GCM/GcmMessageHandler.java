@@ -80,7 +80,7 @@ public class GcmMessageHandler extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, DrawerActivity.class), 0);
+                new Intent(this, DrawerActivity.class).putExtra("is_from_notification",true), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

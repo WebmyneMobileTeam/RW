@@ -293,6 +293,7 @@ public class RegistrationActivity extends BaseActivity {
 
             switch (v.getId()){
                 case R.id.btnRegister:
+                    //TODO
 //                      postImage();
                     postRegistrationData();
                     break;
@@ -352,7 +353,7 @@ public class RegistrationActivity extends BaseActivity {
         }
 
        public void postImage() {
-           //TODO
+
 
            new AsyncTask<Void,Void,Void>(){
                @Override
@@ -372,7 +373,7 @@ public class RegistrationActivity extends BaseActivity {
             FTPClient client = new FTPClient();
 
             try {
-                client.connect(AppConstants.ftpPath,21);
+                client.connect(AppConstants.ftpPath,121);
                 client.login(AppConstants.ftpUsername, AppConstants.ftpPassword);
                 client.setType(FTPClient.TYPE_BINARY);
                 client.changeDirectory("/RiteWay/Images/");
@@ -397,23 +398,25 @@ public class RegistrationActivity extends BaseActivity {
 
 
                 // Transfer started
-                Toast.makeText(getActivity(), " Upload Started ...", Toast.LENGTH_SHORT).show();
-                //System.out.println(" Upload Started ...");
+//                Toast.makeText(getActivity(), " Upload Started ...", Toast.LENGTH_SHORT).show();
+                System.out.println(" Upload Started ...");
             }
 
             public void transferred(int length) {
-
-                Toast.makeText(getActivity(), " transferred ..." + length, Toast.LENGTH_SHORT).show();
+                System.out.println(" transferred ..." );
+//                Toast.makeText(getActivity(), " transferred ..." + length, Toast.LENGTH_SHORT).show();
             }
 
             public void completed() {
                 // Transfer completed
-                Toast.makeText(getActivity(), " completed ...", Toast.LENGTH_SHORT).show();
+                System.out.println(" completed ..." );
+//                Toast.makeText(getActivity(), " completed ...", Toast.LENGTH_SHORT).show();
             }
 
             public void aborted() {
                 // Transfer aborted
-                Toast.makeText(getActivity()," transfer aborted ,please try again...", Toast.LENGTH_SHORT).show();
+                System.out.println(" transfer aborted ,please try again..." );
+//                Toast.makeText(getActivity()," transfer aborted ,please try again...", Toast.LENGTH_SHORT).show();
             }
 
             public void failed() {

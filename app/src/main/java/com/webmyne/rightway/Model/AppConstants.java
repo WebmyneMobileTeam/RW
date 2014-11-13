@@ -13,8 +13,9 @@ public class AppConstants {
     public static final String DriverUpdatedLocation="http://ws-srv-net.in.webmyne.com/Applications/Android/RiteWayServices/Customer.svc/json/DriverUpdatedLocation/";
     public static final String TripSuccessful="http://ws-srv-net.in.webmyne.com/Applications/Android/RiteWayServices/Customer.svc/json/TripSuccessful";
     public static final String GetCustomerNotifications="http://ws-srv-net.in.webmyne.com/Applications/Android/RiteWayServices/Customer.svc/json/GetCustomerNotifications/";
-    public static final String ftpPath="http://ws-srv-net.in.webmyne.com";
-    public static final String ftpUsername="riteawy";
+//    public static final String ftpPath="http://ws-srv-net.in.webmyne.com";
+    public static final String ftpPath="192.168.1.4";
+    public static final String ftpUsername="riteway";
     public static final String ftpPassword="riteway";
 
     // ftp username: riteway

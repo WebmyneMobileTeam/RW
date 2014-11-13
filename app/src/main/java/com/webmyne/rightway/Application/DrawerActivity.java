@@ -2,6 +2,7 @@ package com.webmyne.rightway.Application;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +36,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerArrowDrawable drawerArrow;
     private DrawerLayout drawer;
+    private boolean isFromNotification=false;
     private ListView leftDrawerList;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","CURRENT TRIP","SETTING"};
     private boolean isPupil;
@@ -51,14 +53,24 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
-        //Load My Places First
+        Intent intent=getIntent();
+        isFromNotification=intent.getBooleanExtra("is_from_notification",false);
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
 
-        BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
-        if (manager.findFragmentByTag(BOOKCAB) == null) {
-            ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
+        if(isFromNotification==true) {
+            MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+            if (manager.findFragmentByTag(MYBOOKING) == null) {
+                ft.replace(R.id.main_content, fragmentMyBooking,MYBOOKING).commit();
+            }
+        } else {
+            BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
+            if (manager.findFragmentByTag(BOOKCAB) == null) {
+                ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
+            }
         }
+
         // header
         txtHeader.setText("BOOK A CAB");
         initFields();
