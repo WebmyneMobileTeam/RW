@@ -108,9 +108,11 @@ public class OrderDetailActivity extends BaseActivity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_order_detail, container, false);
             txtCancelTrip=(TextView)rootView.findViewById(R.id.txtCancelTrip);
-            txtCancelTrip.setOnClickListener(new View.OnClickListener() {
+
+                txtCancelTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     cancelTrip();
                 }
             });
@@ -150,6 +152,11 @@ public class OrderDetailActivity extends BaseActivity {
             currentTripFee.setText("$ "+currentTrip.TripFee);
             txtTotalAmount.setText(String.format("$ %.2f", getTotal())+"");
             txtTripStatus.setText(currentTrip.TripStatus);
+            if(currentTrip.TripStatus.contains("Cancel")){
+                txtCancelTrip.setVisibility(View.GONE);
+            } else {
+                txtCancelTrip.setVisibility(View.VISIBLE);
+            }
         }
 
         public String getFormatedDate() {
