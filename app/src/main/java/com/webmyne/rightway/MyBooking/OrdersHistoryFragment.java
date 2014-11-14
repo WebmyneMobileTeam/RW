@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.webmyne.rightway.Bookings.Trip;
@@ -66,12 +67,15 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     public void onResume() {
         super.onResume();
         try {
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            String date=format.format(new Date());
+            Date dateValue=format.parse(date);
         sharedPreferenceTrips=new SharedPreferenceTrips();
         ordersHistoryList=sharedPreferenceTrips.loadTrip(getActivity());
             ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
-            for(Trip trip: ordersHistoryList){
-                if(!trip.TripStatus.contains("Cancel")){
-                    filteredCurruntOrderList.add(trip);
+            for(int i=0;i<ordersHistoryList.size();i++){
+                if(ordersHistoryList.get(i).TripStatus.contains("Success") ){
+                    filteredCurruntOrderList.add(ordersHistoryList.get(i));
                 }
             }
         if(ordersHistoryList != null) {
@@ -179,34 +183,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
 
 
         }
-        public String getFormatedDate(Trip currentTrip) {
 
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
-            Date date = float2Date(dateinFloat);
-            return  format.format(date);
-        }
-        public  java.util.Date float2Date(float nbSeconds) {
-            java.util.Date date_origine;
-            java.util.Calendar date = java.util.Calendar.getInstance();
-            java.util.Calendar origine = java.util.Calendar.getInstance();
-            origine.set(1970, Calendar.JANUARY, 1);
-            date_origine = origine.getTime();
-            date.setTime(date_origine);
-            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
-            return date.getTime();
-        }
-        public double getTotal(Trip currentTrip) {
-            Double total;
-            if(Integer.parseInt(currentTrip.TipPercentage)>0){
-                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
-                total= Double.parseDouble(currentTrip.TripFare)+tip;
-            } else {
-                total=Double.parseDouble(currentTrip.TripFare);
-            }
-            total=total+Double.parseDouble(currentTrip.TripFee);
-            return total;
-        }
 
     }
 
@@ -225,8 +202,37 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     public void selected(String value) {
 
         txtDateSelection.setText("Filtered By "+value);
-
+        //TODO
+//        Toast.makeText(getActivity(), "notify", Toast.LENGTH_SHORT).show();
     }
 
+    public String getFormatedDate(Trip currentTrip) {
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+        Date date = float2Date(dateinFloat);
+        return  format.format(date);
+    }
+    public  java.util.Date float2Date(float nbSeconds) {
+        java.util.Date date_origine;
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        java.util.Calendar origine = java.util.Calendar.getInstance();
+        origine.set(1970, Calendar.JANUARY, 1);
+        date_origine = origine.getTime();
+        date.setTime(date_origine);
+        date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+        return date.getTime();
+    }
+    public double getTotal(Trip currentTrip) {
+        Double total;
+        if(Integer.parseInt(currentTrip.TipPercentage)>0){
+            Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+            total= Double.parseDouble(currentTrip.TripFare)+tip;
+        } else {
+            total=Double.parseDouble(currentTrip.TripFare);
+        }
+        total=total+Double.parseDouble(currentTrip.TripFee);
+        return total;
+    }
 
 }

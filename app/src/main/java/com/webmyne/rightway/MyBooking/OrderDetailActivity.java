@@ -129,8 +129,6 @@ public class OrderDetailActivity extends BaseActivity {
             currentTripTip=(TextView)rootView.findViewById(R.id.currentTripTip);
             currentTripFee=(TextView)rootView.findViewById(R.id.currentTripFee);
             txtTotalAmount=(TextView)rootView.findViewById(R.id.txtTotalAmount);
-
-
             return rootView;
         }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
@@ -54,18 +56,21 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
         dateSelectionArray.add("Current Month");
         dateSelectionArray.add("Last Month");
     }
-
     @Override
     public void onResume() {
         super.onResume();
         try {
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            String date=format.format(new Date());
+            Date dateValue=format.parse(date);
+
         sharedPreferenceTrips=new SharedPreferenceTrips();
             sharedPreferenceTrips=new SharedPreferenceTrips();
             ordersCanceledList=sharedPreferenceTrips.loadTrip(getActivity());
             ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
-            for(Trip trip: ordersCanceledList){
-                if(trip.TripStatus.contains("Cancel")){
-                    filteredCurruntOrderList.add(trip);
+            for(int i=0;i<ordersCanceledList.size();i++){
+                if(ordersCanceledList.get(i).TripStatus.contains("Cancel") ){
+                    filteredCurruntOrderList.add(ordersCanceledList.get(i));
                 }
             }
             if(ordersCanceledList !=null) {
@@ -149,6 +154,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
             holder.orderHistoryStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
             holder.canceledOrdersFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             convertView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View view) {
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
@@ -156,45 +162,10 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
                     complexPreferences.commit();
                     Intent i=new Intent(getActivity(), OrderDetailActivity.class);
                     startActivity(i);
-
-
                 }
             });
             return convertView;
-
-
         }
-
-        public String getFormatedDate(Trip currentTrip) {
-
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            float dateinFloat = Float.parseFloat(currentTrip.TripDate);
-            Date date = float2Date(dateinFloat);
-            return  format.format(date);
-        }
-        public  java.util.Date float2Date(float nbSeconds) {
-            java.util.Date date_origine;
-            java.util.Calendar date = java.util.Calendar.getInstance();
-            java.util.Calendar origine = java.util.Calendar.getInstance();
-            origine.set(1970, Calendar.JANUARY, 1);
-            date_origine = origine.getTime();
-            date.setTime(date_origine);
-            date.add(java.util.Calendar.SECOND, (int) nbSeconds);
-            return date.getTime();
-        }
-        public double getTotal(Trip currentTrip) {
-            Double total;
-            if(Integer.parseInt(currentTrip.TipPercentage)>0){
-                Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
-                total= Double.parseDouble(currentTrip.TripFare)+tip;
-            } else {
-                total=Double.parseDouble(currentTrip.TripFare);
-            }
-            total=total+Double.parseDouble(currentTrip.TripFee);
-            return total;
-        }
-
-
     }
 
     public void showDialog() {
@@ -212,6 +183,101 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     public void selected(String value) {
 
         txtDateSelectionForOrderCancel.setText("Filtered By "+value);
+//        Toast.makeText(getActivity(), "notify", Toast.LENGTH_SHORT).show();
+//        try {
+//            SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+//            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+//            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+//            int day=1;
+////            int day = Integer.parseInt(dayFormat.format(new Date()));
+////            int month = Integer.parseInt(monthFormat.format(new Date()));
+//            int month=11;
+////            int year = Integer.parseInt(yearFormat.format(new Date()));
+//            int year=2013;
+//            Log.e("day: ", day + "");
+//            Log.e("month: ", month + "");
+//            Log.e("year: ", year + "");
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.set(year, month, day);
+//            int weekOfMonth=calendar.get(calendar.WEEK_OF_YEAR);
+////            int lastWeekOfMont=calendar.get(Calendar.WEEK_OF_MONTH)-1;
+////            if(lastWeekOfMont<1){
+////                lastWeekOfMont=4;
+////            }
+////            Log.e("last week of month: ",""+lastWeekOfMont);
+//            int monthOfYear=calendar.get(calendar.MONTH);
+////            int lstMonthOfYear=calendar.get(Calendar.MONTH)-1;
+////            if(lstMonthOfYear<0){
+////                lstMonthOfYear=12;
+////            }
+////            Log.e("last month of year: ",""+lstMonthOfYear);
+//
+//
+//            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+//            for (int i = 0; i < ordersCanceledList.size(); i++) {
+//                Date loopDate = format.parse(getFormatedDate(ordersCanceledList.get(i)));
+//                int loopDay = Integer.parseInt(dayFormat.format(loopDate));
+//                int loopMonth = Integer.parseInt(monthFormat.format(loopDate));
+//                int loopYear = Integer.parseInt(yearFormat.format(loopDate));
+//                Log.e("loop day: ", loopDay + "");
+//                Log.e("loop month: ", loopMonth + "");
+//                Log.e("loop year: ", loopYear + "");
+//                Calendar loopCalendar = Calendar.getInstance();
+//                loopCalendar.set(loopYear, loopMonth, loopDay);
+//                int loopWeekOfMonth=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
+//                int loopMonthOfYear=loopCalendar.get(loopCalendar.MONTH);
+//                Log.e("weekOfMonth: ", weekOfMonth + "");
+//                Log.e("loopWeekOfMonth: ", loopWeekOfMonth + "");
+//
+//                if(weekOfMonth == loopWeekOfMonth){
+//                    Log.e("current week match value:","true");
+//                } else {
+//                    Log.e("current week match value:","false");
+//                }
+//
+//                if(monthOfYear == loopMonthOfYear) {
+//                    Log.e("current month match value:","true");
+//                } else {
+//                    Log.e("current month match value:","false");
+//                }
+//
+//
+//            }
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
 
     }
+
+    public String getFormatedDate(Trip currentTrip) {
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        float dateinFloat = Float.parseFloat(currentTrip.TripDate);
+        Date date = float2Date(dateinFloat);
+        return  format.format(date);
+    }
+
+    public  java.util.Date float2Date(float nbSeconds) {
+        java.util.Date date_origine;
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        java.util.Calendar origine = java.util.Calendar.getInstance();
+        origine.set(1970, Calendar.JANUARY, 1);
+        date_origine = origine.getTime();
+        date.setTime(date_origine);
+        date.add(java.util.Calendar.SECOND, (int) nbSeconds);
+        return date.getTime();
+    }
+
+    public double getTotal(Trip currentTrip) {
+        Double total;
+        if(Integer.parseInt(currentTrip.TipPercentage)>0){
+            Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
+            total= Double.parseDouble(currentTrip.TripFare)+tip;
+        } else {
+            total=Double.parseDouble(currentTrip.TripFare);
+        }
+        total=total+Double.parseDouble(currentTrip.TripFee);
+        return total;
+    }
+
 }
