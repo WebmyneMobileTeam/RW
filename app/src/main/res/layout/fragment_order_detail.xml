@@ -531,8 +531,9 @@
     <TextView
 
         android:id="@+id/txtCancelTrip"
-        android:padding="8dp"
+        android:padding="16dp"
         android:gravity="center"
+
         android:background="@color/actionbar"
         android:layout_alignParentBottom="true"
         android:textSize="@dimen/text_size_medium"

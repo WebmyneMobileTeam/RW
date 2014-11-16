@@ -1,38 +1,39 @@
 package com.webmyne.rightway.MyBooking;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+        import android.app.Activity;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.os.Bundle;
 
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.support.v4.app.Fragment;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.Menu;
+        import android.view.MenuInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.BaseAdapter;
+        import android.widget.ListView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import com.webmyne.rightway.Bookings.Trip;
-import com.webmyne.rightway.CustomComponents.ComplexPreferences;
-import com.webmyne.rightway.CustomComponents.ListDialog;
-import com.webmyne.rightway.Model.SharedPreferenceTrips;
-import com.webmyne.rightway.R;
+        import com.webmyne.rightway.Bookings.Trip;
+        import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+        import com.webmyne.rightway.CustomComponents.ListDialog;
+        import com.webmyne.rightway.Model.SharedPreferenceTrips;
+        import com.webmyne.rightway.R;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.Collections;
+        import java.util.Date;
 
 public class CanceledOrdersFragment extends Fragment implements ListDialog.setSelectedListner {
     ListView ordersCanceledListView;
     OrdersCanceledAdapter ordersCanceledAdapter;
     ArrayList<Trip> ordersCanceledList;
+    ArrayList<Trip> filteredOrderList;
     TextView txtDateSelectionForOrderCancel;
     ArrayList<String> dateSelectionArray=new ArrayList<String>();
     SharedPreferenceTrips sharedPreferenceTrips;
@@ -60,22 +61,33 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     public void onResume() {
         super.onResume();
         try {
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            String date=format.format(new Date());
-            Date dateValue=format.parse(date);
-
-        sharedPreferenceTrips=new SharedPreferenceTrips();
             sharedPreferenceTrips=new SharedPreferenceTrips();
             ordersCanceledList=sharedPreferenceTrips.loadTrip(getActivity());
-            ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
-            for(int i=0;i<ordersCanceledList.size();i++){
-                if(ordersCanceledList.get(i).TripStatus.contains("Cancel") ){
-                    filteredCurruntOrderList.add(ordersCanceledList.get(i));
-                }
-            }
-            if(ordersCanceledList !=null) {
-                Collections.reverse(filteredCurruntOrderList);
-                ordersCanceledAdapter = new OrdersCanceledAdapter(getActivity(), filteredCurruntOrderList);
+
+//            ordersCanceledList=new ArrayList<Trip>();
+//
+//            Trip t1=new Trip();
+//            t1.TripDate="9-1-2014";
+//            t1.TripStatus="Cancel";
+//            Trip t2=new Trip();
+//            t2.TripDate="2-1-2014";
+//            t2.TripStatus="Cancel";
+//            Trip t3=new Trip();
+//            t3.TripDate="11-12-2013";
+//            t3.TripStatus="Cancel";
+//            Trip t4=new Trip();
+//            t4.TripDate="31-12-2013";
+//            t4.TripStatus="Cancel";
+//            ordersCanceledList.add(t1);
+//            ordersCanceledList.add(t2);
+//            ordersCanceledList.add(t3);
+//            ordersCanceledList.add(t4);
+
+            filteredOrderList=new ArrayList<Trip>();
+            filterData("Current Week");
+            if(filteredOrderList !=null) {
+                Collections.reverse(filteredOrderList);
+                ordersCanceledAdapter = new OrdersCanceledAdapter(getActivity(), filteredOrderList);
                 ordersCanceledListView.setAdapter(ordersCanceledAdapter);
             }
         }catch (Exception e) {
@@ -87,7 +99,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View  convertView= inflater.inflate(R.layout.fragment_canceled_orders, container, false);
+        View  convertView= inflater.inflate(R.layout.fragment_canceled_orders, container, false);
         txtDateSelectionForOrderCancel=(TextView)convertView.findViewById(R.id.txtDateSelectionForOrderCancel);
         txtDateSelectionForOrderCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,70 +195,90 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
     public void selected(String value) {
 
         txtDateSelectionForOrderCancel.setText("Filtered By "+value);
-//        Toast.makeText(getActivity(), "notify", Toast.LENGTH_SHORT).show();
-//        try {
-//            SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
-//            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
-//            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
-//            int day=1;
-////            int day = Integer.parseInt(dayFormat.format(new Date()));
-////            int month = Integer.parseInt(monthFormat.format(new Date()));
-//            int month=11;
-////            int year = Integer.parseInt(yearFormat.format(new Date()));
-//            int year=2013;
-//            Log.e("day: ", day + "");
-//            Log.e("month: ", month + "");
-//            Log.e("year: ", year + "");
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.set(year, month, day);
-//            int weekOfMonth=calendar.get(calendar.WEEK_OF_YEAR);
-////            int lastWeekOfMont=calendar.get(Calendar.WEEK_OF_MONTH)-1;
-////            if(lastWeekOfMont<1){
-////                lastWeekOfMont=4;
-////            }
-////            Log.e("last week of month: ",""+lastWeekOfMont);
-//            int monthOfYear=calendar.get(calendar.MONTH);
-////            int lstMonthOfYear=calendar.get(Calendar.MONTH)-1;
-////            if(lstMonthOfYear<0){
-////                lstMonthOfYear=12;
-////            }
-////            Log.e("last month of year: ",""+lstMonthOfYear);
-//
-//
-//            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-//            for (int i = 0; i < ordersCanceledList.size(); i++) {
-//                Date loopDate = format.parse(getFormatedDate(ordersCanceledList.get(i)));
-//                int loopDay = Integer.parseInt(dayFormat.format(loopDate));
-//                int loopMonth = Integer.parseInt(monthFormat.format(loopDate));
-//                int loopYear = Integer.parseInt(yearFormat.format(loopDate));
-//                Log.e("loop day: ", loopDay + "");
-//                Log.e("loop month: ", loopMonth + "");
-//                Log.e("loop year: ", loopYear + "");
-//                Calendar loopCalendar = Calendar.getInstance();
-//                loopCalendar.set(loopYear, loopMonth, loopDay);
-//                int loopWeekOfMonth=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
-//                int loopMonthOfYear=loopCalendar.get(loopCalendar.MONTH);
-//                Log.e("weekOfMonth: ", weekOfMonth + "");
-//                Log.e("loopWeekOfMonth: ", loopWeekOfMonth + "");
-//
-//                if(weekOfMonth == loopWeekOfMonth){
-//                    Log.e("current week match value:","true");
-//                } else {
-//                    Log.e("current week match value:","false");
-//                }
-//
-//                if(monthOfYear == loopMonthOfYear) {
-//                    Log.e("current month match value:","true");
-//                } else {
-//                    Log.e("current month match value:","false");
-//                }
-//
-//
-//            }
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
 
+        filterData(value);
+
+
+    }
+
+    private void filterData(String filterType){
+        try {
+
+            filteredOrderList.clear();
+
+            SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+
+            int day = Integer.parseInt(dayFormat.format(new Date()));
+            int month = Integer.parseInt(monthFormat.format(new Date()))-1;
+            int year = Integer.parseInt(yearFormat.format(new Date()));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(calendar.YEAR,year);
+            calendar.set(calendar.MONTH,month);
+            calendar.set(calendar.DAY_OF_MONTH,day);
+
+            int currentWeekOfyear=calendar.get(calendar.WEEK_OF_YEAR);
+            int lastWeekOfYear=currentWeekOfyear-1;
+            if(lastWeekOfYear<1){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastWeekOfYear=c.get(c.WEEK_OF_YEAR);
+            }
+            int currentMonth=calendar.get(calendar.MONTH);
+            int lastMonth=currentMonth-1;
+            if(lastMonth<0){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastMonth=c.get(c.MONTH);
+            }
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            for (int i = 0; i < ordersCanceledList.size(); i++) {
+                Date loopDate = format.parse(getFormatedDate(ordersCanceledList.get(i)));
+                int loopDay = Integer.parseInt(dayFormat.format(loopDate));
+                int loopMonth = Integer.parseInt(monthFormat.format(loopDate))-1;
+                int loopYear = Integer.parseInt(yearFormat.format(loopDate));
+
+                Calendar loopCalendar = Calendar.getInstance();
+                loopCalendar.set(loopCalendar.YEAR,loopYear);
+                loopCalendar.set(loopCalendar.MONTH,loopMonth);
+                loopCalendar.set(loopCalendar.DAY_OF_MONTH,loopDay);
+
+                int loopCurrentWeekOfyear=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
+                int loopCurrentMonth=loopCalendar.get(loopCalendar.MONTH);
+
+                if( ordersCanceledList.get(i).TripStatus.contains("Cancel")) {
+                    if (filterType.equalsIgnoreCase("Current Week")) {
+                        if (currentWeekOfyear == loopCurrentWeekOfyear) {
+                            filteredOrderList.add(ordersCanceledList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Week")) {
+                        if (lastWeekOfYear == loopCurrentWeekOfyear) {
+                            filteredOrderList.add(ordersCanceledList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Current Month")) {
+                        if (currentMonth == loopCurrentMonth) {
+                            filteredOrderList.add(ordersCanceledList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Month")) {
+                        if (lastMonth == loopCurrentMonth) {
+                            filteredOrderList.add(ordersCanceledList.get(i));
+                        }
+                    }
+                }
+            }
+            if(ordersCanceledAdapter != null) {
+                ordersCanceledAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String getFormatedDate(Trip currentTrip) {

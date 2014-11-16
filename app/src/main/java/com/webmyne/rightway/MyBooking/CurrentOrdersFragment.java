@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,13 +55,15 @@ public class CurrentOrdersFragment extends Fragment {
         try {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             String date=format.format(new Date());
-            Date dateValue=format.parse(date);
+
             //TODO
             sharedPreferenceTrips = new SharedPreferenceTrips();
             currentOrdersList = sharedPreferenceTrips.loadTrip(getActivity());
             ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
             for(int i=0;i<currentOrdersList.size();i++){
-                if((!currentOrdersList.get(i).TripStatus.contains("Cancel") )){
+                Log.e("current date:",date+"");
+                Log.e("loop date:",getFormatedDate(currentOrdersList.get(i))+"");
+                if((!currentOrdersList.get(i).TripStatus.contains("Cancel")) && date.equals(getFormatedDate(currentOrdersList.get(i)))){
                     filteredCurruntOrderList.add(currentOrdersList.get(i));
                 }
             }

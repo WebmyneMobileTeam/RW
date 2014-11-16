@@ -43,6 +43,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     OrdersHistoryAdapter ordersHistoryAdapter;
     TextView txtDateSelection;
     ArrayList<Trip> ordersHistoryList ;
+    ArrayList<Trip> filteredOrderList;
     ArrayList<String> dateSelectionArray=new ArrayList<String>();
     SharedPreferenceTrips sharedPreferenceTrips;
 //    Spinner dateSelection;
@@ -72,15 +73,12 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             Date dateValue=format.parse(date);
         sharedPreferenceTrips=new SharedPreferenceTrips();
         ordersHistoryList=sharedPreferenceTrips.loadTrip(getActivity());
-            ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
-            for(int i=0;i<ordersHistoryList.size();i++){
-                if(ordersHistoryList.get(i).TripStatus.contains("Success") ){
-                    filteredCurruntOrderList.add(ordersHistoryList.get(i));
-                }
-            }
+            filteredOrderList=new ArrayList<Trip>();
+
+            filterData("Current Week");
         if(ordersHistoryList != null) {
-            Collections.reverse(filteredCurruntOrderList);
-            ordersHistoryAdapter = new OrdersHistoryAdapter(getActivity(), filteredCurruntOrderList);
+            Collections.reverse(filteredOrderList);
+            ordersHistoryAdapter = new OrdersHistoryAdapter(getActivity(), filteredOrderList);
             ordersHistoryListView.setAdapter(ordersHistoryAdapter);
         }
         }catch (Exception e) {
@@ -206,6 +204,89 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
 //        Toast.makeText(getActivity(), "notify", Toast.LENGTH_SHORT).show();
     }
 
+
+    private void filterData(String filterType){
+        try {
+
+            filteredOrderList.clear();
+
+            SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+
+            int day = Integer.parseInt(dayFormat.format(new Date()));
+            int month = Integer.parseInt(monthFormat.format(new Date()))-1;
+            int year = Integer.parseInt(yearFormat.format(new Date()));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(calendar.YEAR,year);
+            calendar.set(calendar.MONTH,month);
+            calendar.set(calendar.DAY_OF_MONTH,day);
+
+            int currentWeekOfyear=calendar.get(calendar.WEEK_OF_YEAR);
+            int lastWeekOfYear=currentWeekOfyear-1;
+            if(lastWeekOfYear<1){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastWeekOfYear=c.get(c.WEEK_OF_YEAR);
+            }
+            int currentMonth=calendar.get(calendar.MONTH);
+            int lastMonth=currentMonth-1;
+            if(lastMonth<0){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastMonth=c.get(c.MONTH);
+            }
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            String date=format.format(new Date());
+
+            for (int i = 0; i < filteredOrderList.size(); i++) {
+                Date loopDate = format.parse(getFormatedDate(filteredOrderList.get(i)));
+                int loopDay = Integer.parseInt(dayFormat.format(loopDate));
+                int loopMonth = Integer.parseInt(monthFormat.format(loopDate))-1;
+                int loopYear = Integer.parseInt(yearFormat.format(loopDate));
+
+                Calendar loopCalendar = Calendar.getInstance();
+                loopCalendar.set(loopCalendar.YEAR,loopYear);
+                loopCalendar.set(loopCalendar.MONTH,loopMonth);
+                loopCalendar.set(loopCalendar.DAY_OF_MONTH,loopDay);
+
+                int loopCurrentWeekOfyear=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
+                int loopCurrentMonth=loopCalendar.get(loopCalendar.MONTH);
+
+                if( filteredOrderList.get(i).TripStatus.contains("Success")) {
+                    if (filterType.equalsIgnoreCase("Current Week")) {
+                        if (currentWeekOfyear == loopCurrentWeekOfyear && (!date.equals(getFormatedDate(filteredOrderList.get(i))))) {
+
+                            filteredOrderList.add(filteredOrderList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Week")) {
+                        if (lastWeekOfYear == loopCurrentWeekOfyear) {
+                            filteredOrderList.add(filteredOrderList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Current Month")) {
+                        if (currentMonth == loopCurrentMonth) {
+                            filteredOrderList.add(filteredOrderList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Month")) {
+                        if (lastMonth == loopCurrentMonth) {
+                            filteredOrderList.add(filteredOrderList.get(i));
+                        }
+                    }
+                }
+            }
+            if(ordersHistoryAdapter != null) {
+                ordersHistoryAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public String getFormatedDate(Trip currentTrip) {
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
