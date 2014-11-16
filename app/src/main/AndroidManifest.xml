@@ -65,6 +65,7 @@
         </activity>
         <activity
             android:name="com.webmyne.rightway.Application.DrawerActivity"
+
             android:label="@string/title_activity_drawer" >
         </activity>
         <activity android:name="com.webmyne.rightway.MyBooking.OrderDetailActivity" >

@@ -141,6 +141,7 @@ public class LauncherActivity extends Activity {
                             editor.commit();
 
                             Intent i = new Intent(getActivity(), RegistrationActivity.class);
+
                             startActivity(i);
                             getActivity().finish();
                         }

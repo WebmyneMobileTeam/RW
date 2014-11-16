@@ -515,7 +515,9 @@ public class RegistrationActivity extends BaseActivity {
                     progressDialog.dismiss();
 
                     Intent i = new Intent(getActivity(), DrawerActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
+                    getActivity().finish();
                 }
             });
         }

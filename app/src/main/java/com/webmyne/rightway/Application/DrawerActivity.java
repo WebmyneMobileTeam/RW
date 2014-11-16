@@ -263,4 +263,10 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
