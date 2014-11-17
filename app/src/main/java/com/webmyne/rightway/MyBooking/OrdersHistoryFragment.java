@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.ListDialog;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
@@ -200,6 +201,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     public void selected(String value) {
 
         txtDateSelection.setText("Filtered By "+value);
+        filterData(value);
         //TODO
 //        Toast.makeText(getActivity(), "notify", Toast.LENGTH_SHORT).show();
     }
@@ -259,7 +261,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
                 int loopCurrentWeekOfyear=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
                 int loopCurrentMonth=loopCalendar.get(loopCalendar.MONTH);
 
-                if( filteredOrderList.get(i).TripStatus.contains("Success")) {
+                if( filteredOrderList.get(i).TripStatus.contains(AppConstants.tripSuccessStatus)) {
                     if (filterType.equalsIgnoreCase("Current Week")) {
                         if (currentWeekOfyear == loopCurrentWeekOfyear && (!date.equals(getFormatedDate(filteredOrderList.get(i))))) {
 

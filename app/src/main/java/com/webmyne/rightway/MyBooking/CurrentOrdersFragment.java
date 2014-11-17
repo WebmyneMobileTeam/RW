@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 
@@ -63,7 +64,7 @@ public class CurrentOrdersFragment extends Fragment {
             for(int i=0;i<currentOrdersList.size();i++){
                 Log.e("current date:",date+"");
                 Log.e("loop date:",getFormatedDate(currentOrdersList.get(i))+"");
-                if((!currentOrdersList.get(i).TripStatus.contains("Cancel")) && date.equals(getFormatedDate(currentOrdersList.get(i)))){
+                if((!(currentOrdersList.get(i).TripStatus.contains(AppConstants.tripCancelledByCustomerStatus) || currentOrdersList.get(i).TripStatus.contains(AppConstants.tripCancelledByDriverStatus))) && date.equals(getFormatedDate(currentOrdersList.get(i)))){
                     filteredCurruntOrderList.add(currentOrdersList.get(i));
                 }
             }

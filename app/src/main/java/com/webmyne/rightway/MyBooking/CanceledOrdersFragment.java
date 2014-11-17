@@ -20,6 +20,7 @@ package com.webmyne.rightway.MyBooking;
         import com.webmyne.rightway.Bookings.Trip;
         import com.webmyne.rightway.CustomComponents.ComplexPreferences;
         import com.webmyne.rightway.CustomComponents.ListDialog;
+        import com.webmyne.rightway.Model.AppConstants;
         import com.webmyne.rightway.Model.SharedPreferenceTrips;
         import com.webmyne.rightway.R;
 
@@ -253,7 +254,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
                 int loopCurrentWeekOfyear=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
                 int loopCurrentMonth=loopCalendar.get(loopCalendar.MONTH);
 
-                if( ordersCanceledList.get(i).TripStatus.contains("Cancel")) {
+                if( ordersCanceledList.get(i).TripStatus.contains(AppConstants.tripCancelledByCustomerStatus) || ordersCanceledList.get(i).TripStatus.contains(AppConstants.tripCancelledByDriverStatus)) {
                     if (filterType.equalsIgnoreCase("Current Week")) {
                         if (currentWeekOfyear == loopCurrentWeekOfyear) {
                             filteredOrderList.add(ordersCanceledList.get(i));

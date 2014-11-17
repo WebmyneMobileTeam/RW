@@ -482,7 +482,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("TripFee", "2");
                     tripObject.put("TripDistance", String.format("%.2f", distance)+"");
                     tripObject.put("PaymentType", "");
-                    tripObject.put("TripStatus", "In Progress");
+                    tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
                     tripObject.put("CustomerName", "");
                     tripObject.put("DriverName", "");
                     tripObject.put("CustomerNotificationID", GCM_ID);

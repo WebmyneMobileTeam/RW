@@ -150,7 +150,7 @@ public class OrderDetailActivity extends BaseActivity {
             currentTripFee.setText("$ "+currentTrip.TripFee);
             txtTotalAmount.setText(String.format("$ %.2f", getTotal())+"");
             txtTripStatus.setText(currentTrip.TripStatus);
-            if(currentTrip.TripStatus.contains("Cancel")){
+            if(currentTrip.TripStatus.contains(AppConstants.tripCancelledByCustomerStatus) || currentTrip.TripStatus.contains(AppConstants.tripCancelledByDriverStatus)){
                 txtCancelTrip.setVisibility(View.GONE);
             } else {
                 txtCancelTrip.setVisibility(View.VISIBLE);
