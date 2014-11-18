@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,11 +14,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CurrentTrip.FragmentCurrentTripMap;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
@@ -115,6 +119,7 @@ public class CurrentOrdersFragment extends Fragment {
 
         class ViewHolder {
             TextView currentOrderCname,currentOrderDate,currentOrderPickupLocation,currentOrderDropoffLocation,currentOrderFareAmount,currentOrderStatus;
+            ImageView mapView;
         }
 
         public View getView(final int position, View convertView,
@@ -132,6 +137,7 @@ public class CurrentOrdersFragment extends Fragment {
                 holder.currentOrderDropoffLocation=(TextView)convertView.findViewById(R.id.currentOrderDropoffLocation);
                 holder.currentOrderFareAmount=(TextView)convertView.findViewById(R.id.currentOrderFareAmount);
                 holder.currentOrderStatus=(TextView)convertView.findViewById(R.id.currentOrderStatus);
+                holder. mapView=(ImageView)convertView.findViewById(R.id.mapView);
 
                 convertView.setTag(holder);
             } else {
@@ -143,7 +149,20 @@ public class CurrentOrdersFragment extends Fragment {
             holder.currentOrderDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
             holder.currentOrderFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             holder.currentOrderStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
-
+            holder. mapView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                    complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
+                    complexPreferences.commit();
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = manager.beginTransaction();
+                    FragmentCurrentTripMap currentTripFragment = FragmentCurrentTripMap.newInstance("", "");
+                    if (manager.findFragmentByTag("CURRENT_TRIP") == null) {
+                        ft.replace(R.id.main_content, currentTripFragment,"CURRENT_TRIP").commit();
+                    }
+                }
+            });
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

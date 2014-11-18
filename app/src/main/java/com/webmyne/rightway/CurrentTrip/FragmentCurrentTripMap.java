@@ -2,14 +2,16 @@ package com.webmyne.rightway.CurrentTrip;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.location.Location;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
-import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,17 +19,21 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.webmyne.rightway.Bookings.Driver;
+import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.MapNavigator.Navigator;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.R;
 import com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackActivity;
 
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,6 +42,10 @@ public class FragmentCurrentTripMap extends Fragment {
     private MapView mv;
     private MapController mc;
     TextView getReceipt;
+    private LatLng driver_latlng;
+    LatLng pickup_latlng;
+    LatLng dropoff_latlng;
+    Trip currentTrip;
     public static FragmentCurrentTripMap newInstance(String param1, String param2) {
         FragmentCurrentTripMap fragment = new FragmentCurrentTripMap();
 
@@ -48,7 +58,9 @@ public class FragmentCurrentTripMap extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -79,30 +91,17 @@ public class FragmentCurrentTripMap extends Fragment {
     public void onResume() {
         super.onResume();
         mv.onResume();
+        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+        final String updatedTimeInterval=preferencesTimeInterval.getString("driver_time_interval", "5");
 
-        mc.startTrackMyLocation(mc.getMap(),2000,0, MapController.TrackType.TRACK_TYPE_NONE,new MapController.ChangeMyLocation() {
-            @Override
-            public void changed(GoogleMap map, Location location, boolean lastLocation) {
-            }
-        });
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+        currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
+        pickup_latlng=new LatLng(Double.parseDouble(currentTrip.PickupLatitude),Double.parseDouble(currentTrip.PickupLongitude));
+        dropoff_latlng=new LatLng(Double.parseDouble(currentTrip.DropoffLatitude),Double.parseDouble(currentTrip.DropoffLongitude));
 
-        new CountDownTimer(1500, 1000) {
-            @Override
-            public void onFinish() {
-                int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
-                try {
-                    mc.animateTo(mc.getMyLocation().getLatitude(), mc.getMyLocation().getLongitude(), zoom);
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-        }.start();
 
         Timer timer=new Timer();
-        // stopLoginTimer();
+
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -112,39 +111,82 @@ public class FragmentCurrentTripMap extends Fragment {
                     e.printStackTrace();
                 }
             }
-        },0,1000*15);
+        },0,1000*60*Integer.parseInt(updatedTimeInterval));
 
 
 
     }
 
-    public void updateDriverLocation() {
-        new AsyncTask<Void,Void,Void>(){
+    private void addMarker(MarkerOptions opts) {
 
+        mc.addMarker(opts, new MapController.MarkerCallback() {
+            @Override
+            public void invokedMarker(GoogleMap map, Marker marker) {
+
+            }
+        });
+    }
+
+
+    public void updateDriverLocation() {
+        new CallWebService(AppConstants.DriverUpdatedLocation+"9", CallWebService.TYPE_JSONOBJECT) {
 
             @Override
-            protected Void doInBackground(Void... params) {
-                new CallWebService(AppConstants.DriverUpdatedLocation+"9", CallWebService.TYPE_JSONOBJECT) {
+            public void response(String response) {
 
-                    @Override
-                    public void response(String response) {
+                Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
+                Log.e("DriverID", availableDrivers.DriverID + "");
+                Log.e("FirstName", availableDrivers.FirstName+"");
+                Log.e("LastName", availableDrivers.LastName+"");
+                Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
+                Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
+                driver_latlng =new LatLng(Double.parseDouble(availableDrivers.Webmyne_Latitude),Double.parseDouble(availableDrivers.Webmyne_Longitude));
+                int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
+                mc.clearMarkers();
+                if(driver_latlng != null) {
 
-                      Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
-                            Log.e("DriverID", availableDrivers.DriverID + "");
-                            Log.e("FirstName", availableDrivers.FirstName+"");
-                            Log.e("LastName", availableDrivers.LastName+"");
-                            Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
-                            Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
-                    }
+                    MarkerOptions opts = new MarkerOptions();
+                    opts.position(driver_latlng);
+                    opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
+                    opts.title(currentTrip.DriverName+"");
+                    opts.snippet("");
+                    addMarker(opts);
+                    mc.animateTo(driver_latlng,zoom);
 
-                    @Override
-                    public void error(VolleyError error) {
-                        Log.e("error response: ",error+"");
-                    }
-                }.start();
-                return null;
+                }
+                if(pickup_latlng != null) {
+
+                    MarkerOptions opts = new MarkerOptions();
+                    opts.position(pickup_latlng);
+                    opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pickup_pin));
+                    opts.title("PICK ME UP HERE");
+                    opts.snippet("");
+                    addMarker(opts);
+
+
+                }
+
+                if(dropoff_latlng != null) {
+
+                    MarkerOptions opts = new MarkerOptions();
+                    opts.position(dropoff_latlng);
+                    opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dropoff_pin));
+                    opts.title("DROP ME HERE");
+                    opts.snippet("");
+                    addMarker(opts);
+
+
+                }
+                Navigator nav = new Navigator(mv.getMap(),pickup_latlng,dropoff_latlng);
+                nav.findDirections(false);
+                nav.setPathColor(Color.parseColor("#4285F4"),Color.BLUE,Color.BLUE);
             }
-        }.execute();
+
+            @Override
+            public void error(VolleyError error) {
+                Log.e("error response: ",error+"");
+            }
+        }.start();
 
     }
     @Override
@@ -170,5 +212,22 @@ public class FragmentCurrentTripMap extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mv.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.refresh, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            updateDriverLocation();
+        }
+        return true;
     }
 }

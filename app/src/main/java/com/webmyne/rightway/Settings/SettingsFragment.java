@@ -1,6 +1,7 @@
 package com.webmyne.rightway.Settings;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -34,11 +35,12 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         timeList=new ArrayList<String>();
-        timeList.add("5 minutes");
-        timeList.add("10 minutes");
-        timeList.add("15 minutes");
-        timeList.add("20 minutes");
-        timeList.add("25 minutes");
+        timeList.add("1");
+        timeList.add("2");
+        timeList.add("3");
+        timeList.add("5");
+        timeList.add("7");
+        timeList.add("10");
 
     }
 
@@ -49,6 +51,8 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
         View convertView= inflater.inflate(R.layout.fragment_settings, container, false);
         linearIntervalTime=(LinearLayout)convertView.findViewById(R.id.linearIntervalTime);
         txtUpdateTime=(TextView)convertView.findViewById(R.id.txtUpdateTime);
+        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+        txtUpdateTime.setText(preferencesTimeInterval.getString("driver_time_interval", "5")+" minutes");
         linearIntervalTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,7 +77,11 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
     public void selected(String value) {
 
         txtUpdateTime.setText(value);
-
+        txtUpdateTime.setText(value+" minutes");
+        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencesTimeInterval.edit();
+        editor.putString("driver_time_interval",value);
+        editor.commit();
     }
 
 }
