@@ -1001,6 +1001,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             return filter;
         }
     }
+
     public  String getAddress(Context ctx, double latitude, double longitude) {
         StringBuilder result = new StringBuilder();
         try {
