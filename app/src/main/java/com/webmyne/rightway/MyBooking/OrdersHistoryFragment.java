@@ -1,27 +1,16 @@
 package com.webmyne.rightway.MyBooking;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.webmyne.rightway.Bookings.Trip;
@@ -308,11 +297,13 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
     }
     public double getTotal(Trip currentTrip) {
         Double total;
+        String tripFareValue=String.format("%.2f", Double.parseDouble(currentTrip.TripDistance)*0.6214*Double.parseDouble(currentTrip.TripFare));
         if(Integer.parseInt(currentTrip.TipPercentage)>0){
-            Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
-            total= Double.parseDouble(currentTrip.TripFare)+tip;
+
+            Double tip=((Double.parseDouble(tripFareValue)*Double.parseDouble(currentTrip.TipPercentage))/100);
+            total= Double.parseDouble(tripFareValue)+tip;
         } else {
-            total=Double.parseDouble(currentTrip.TripFare);
+            total=Double.parseDouble(tripFareValue);
         }
         total=total+Double.parseDouble(currentTrip.TripFee);
         return total;

@@ -83,7 +83,7 @@ public class MyBookingFragment extends Fragment {
         progressDialog.setCancelable(true);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-
+        Log.e("Customer trip url: ",AppConstants.getTripList+customerDetails.CustomerID+"");
         new CallWebService(AppConstants.getTripList+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -92,11 +92,13 @@ public class MyBookingFragment extends Fragment {
                 Type listType=new TypeToken<List<Trip>>(){
                 }.getType();
                 tripArrayList = new GsonBuilder().create().fromJson(response, listType);
+
                 sharedPreferenceTrips.clearTrip(getActivity());
                 for(int i=0;i<tripArrayList.size();i++){
                     sharedPreferenceTrips.saveTrip(getActivity(),tripArrayList.get(i));
 
                 }
+
                 adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager());
                 pager.setAdapter(adapter);
                 final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
@@ -129,10 +131,12 @@ public class MyBookingFragment extends Fragment {
 
                 notificationList = new GsonBuilder().create().fromJson(response, listType);
 //                Log.e("notification list size:",notificationList.size()+"");
-                sharedPreferenceNotification.clearNotification(getActivity());
-                for(int i=0;i<notificationList.size();i++){
-                    sharedPreferenceNotification.saveNotification(getActivity(),notificationList.get(i));
-                    Log.e("notification id: ",notificationList.get(i).Status+"");
+
+                if(notificationList != null) {
+                    sharedPreferenceNotification.clearNotification(getActivity());
+                    for (int i = 0; i < notificationList.size(); i++) {
+                        sharedPreferenceNotification.saveNotification(getActivity(), notificationList.get(i));
+                    }
                 }
                 progressDialog.dismiss();
             }

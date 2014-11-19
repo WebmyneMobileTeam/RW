@@ -427,80 +427,66 @@ public class RegistrationActivity extends BaseActivity {
         }
 
         public void postRegistrationData() {
+            progressDialog=new ProgressDialog(getActivity());
+            progressDialog.setCancelable(true);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            // Get customer form data from BasicFormFragment
+            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+            Customer customer = complexPreferences.getObject("customer_data", Customer.class);
 
-            new AsyncTask<Void,Void,Void>(){
+            //Get IMEI Number
+            TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            customer.CustomerIMEI_Number= telephonyManager.getDeviceId();
+
+            //Get GCM ID
+            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+            customer.NotificationID=sharedPreferences.getString("GCM_ID","");
+
+            customer.ProfilePicture=telephonyManager.getDeviceId()+".jpg";
+            customer.DeviceType="Android";
+            JSONObject customerObject=new JSONObject();
+            try {
+                customerObject.put("CustomerID", "0");
+                customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
+                customerObject.put("NotificationID", customer.NotificationID+"");
+                customerObject.put("DeviceType", customer.DeviceType+"");
+                customerObject.put("Name", customer.Name+"");
+                customerObject.put("Mobile", customer.Mobile+"");
+                customerObject.put("Email", customer.Email+"");
+                customerObject.put("City", customer.City+"");
+                customerObject.put("State", customer.State+"");
+                customerObject.put("ZipCode", customer.ZipCode+"");
+                customerObject.put("ProfilePicture", customer.ProfilePicture+"");
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+            Log.e("Customer Info: ",customerObject+"");
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
+
                 @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    progressDialog=new ProgressDialog(getActivity());
-                    progressDialog.setCancelable(true);
-                    progressDialog.setMessage("Loading...");
-                    progressDialog.show();
+                public void onResponse(JSONObject jobj) {
+                    String response = jobj.toString();
+                    Log.e("response continue: ", response + "");
+                    customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
+
+                    handleCustomerRegistrationData();
+
                 }
+            }, new Response.ErrorListener() {
 
-                protected Void doInBackground(Void... params) {
-
-                    // Get customer form data from BasicFormFragment
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
-                    Customer customer = complexPreferences.getObject("customer_data", Customer.class);
-
-                    //Get IMEI Number
-                    TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                    customer.CustomerIMEI_Number= telephonyManager.getDeviceId();
-
-                    //Get GCM ID
-                    SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
-                    customer.NotificationID=sharedPreferences.getString("GCM_ID","");
-
-                    customer.ProfilePicture=telephonyManager.getDeviceId()+".jpg";
-                    customer.DeviceType="Android";
-                    JSONObject customerObject=new JSONObject();
-                    try {
-                        customerObject.put("CustomerID", "0");
-                        customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
-                        customerObject.put("NotificationID", customer.NotificationID+"");
-                        customerObject.put("DeviceType", customer.DeviceType+"");
-                        customerObject.put("Name", customer.Name+"");
-                        customerObject.put("Mobile", customer.Mobile+"");
-                        customerObject.put("Email", customer.Email+"");
-                        customerObject.put("City", customer.City+"");
-                        customerObject.put("State", customer.State+"");
-                        customerObject.put("ZipCode", customer.ZipCode+"");
-                        customerObject.put("ProfilePicture", customer.ProfilePicture+"");
-                    } catch (JSONException e){
-                        e.printStackTrace();
-                    }
-                    Log.e("Customer Info: ",customerObject+"");
-
-                    JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
-
-                        @Override
-                        public void onResponse(JSONObject jobj) {
-                            String response = jobj.toString();
-                            Log.e("response continue: ", response + "");
-                           customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
-
-                            handleCustomerRegistrationData();
-
-                        }
-                    }, new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("error response: ",error+"");
-                        }
-                    });
-                    MyApplication.getInstance().addToRequestQueue(req);
-
-                    return null;
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("error response: ",error+"");
                 }
-            }.execute();
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
         }
 
         public void handleCustomerRegistrationData() {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+
 
                     // Store customer data from response
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
@@ -518,8 +504,7 @@ public class RegistrationActivity extends BaseActivity {
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                     getActivity().finish();
-                }
-            });
+
         }
     }// end of fragment
 }// end of activity

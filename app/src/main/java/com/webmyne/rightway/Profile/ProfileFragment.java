@@ -97,80 +97,65 @@ public class ProfileFragment extends Fragment {
 
     public void updateProfileData() {
 
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-            }
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        JSONObject customerObject=new JSONObject();
+        try {
+            customerObject.put("CustomerID", customerProfile.CustomerID);
+            customerObject.put("CustomerIMEI_Number", customerProfile.CustomerIMEI_Number+"");
+            customerObject.put("NotificationID", customerProfile.NotificationID+"");
+            customerObject.put("DeviceType", customerProfile.DeviceType+"");
+            customerObject.put("Name", customerProfile.Name+"");
+            customerObject.put("Mobile", customerProfile.Mobile+"");
+            customerObject.put("Email", customerProfile.Email+"");
+            customerObject.put("City", customerProfile.City+"");
+            customerObject.put("State", customerProfile.State+"");
+            customerObject.put("ZipCode", customerProfile.ZipCode+"");
+            customerObject.put("DeviceType", customerProfile.DeviceType+"");
+            customerObject.put("ProfilePicture", customerProfile.ProfilePicture+"");
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
-                JSONObject customerObject=new JSONObject();
-                try {
-                    customerObject.put("CustomerID", customerProfile.CustomerID);
-                    customerObject.put("CustomerIMEI_Number", customerProfile.CustomerIMEI_Number+"");
-                    customerObject.put("NotificationID", customerProfile.NotificationID+"");
-                    customerObject.put("DeviceType", customerProfile.DeviceType+"");
-                    customerObject.put("Name", customerProfile.Name+"");
-                    customerObject.put("Mobile", customerProfile.Mobile+"");
-                    customerObject.put("Email", customerProfile.Email+"");
-                    customerObject.put("City", customerProfile.City+"");
-                    customerObject.put("State", customerProfile.State+"");
-                    customerObject.put("ZipCode", customerProfile.ZipCode+"");
-                    customerObject.put("DeviceType", customerProfile.DeviceType+"");
-                    customerObject.put("ProfilePicture", customerProfile.ProfilePicture+"");
-
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
-                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject jobj) {
-                        String response = jobj.toString();
-                        Log.e("response continue: ", response + "");
-                        Customer customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
-
-                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
-                        complexPreferences.putObject("customer_profile_data", customerResponse);
-                        complexPreferences.commit();
-
-                        Log.e("CustomerID",customerResponse.CustomerID+"");
-                        Log.e("CustomerIMEI_Number",customerResponse.CustomerIMEI_Number+"");
-                        Log.e("NotificationID",customerResponse.NotificationID+"");
-                        Log.e("DeviceType",customerResponse.DeviceType+"");
-                        Log.e("Name",customerResponse.Name+"");
-                        Log.e("Mobile",customerResponse.Mobile+"");
-                        Log.e("Email",customerResponse.Email+"");
-                        Log.e("City",customerResponse.City+"");
-                        Log.e("State",customerResponse.State+"");
-                        Log.e("ZipCode",customerResponse.ZipCode+"");
-
-                        Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
-                        Toast.makeText(getActivity(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("error response: ",error+"");
-                    }
-                });
-                MyApplication.getInstance().addToRequestQueue(req);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+            public void onResponse(JSONObject jobj) {
+                String response = jobj.toString();
+                Log.e("response continue: ", response + "");
                 progressDialog.dismiss();
+                Customer customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
+
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
+                complexPreferences.putObject("customer_profile_data", customerResponse);
+                complexPreferences.commit();
+
+                Log.e("CustomerID",customerResponse.CustomerID+"");
+                Log.e("CustomerIMEI_Number",customerResponse.CustomerIMEI_Number+"");
+                Log.e("NotificationID",customerResponse.NotificationID+"");
+                Log.e("DeviceType",customerResponse.DeviceType+"");
+                Log.e("Name",customerResponse.Name+"");
+                Log.e("Mobile",customerResponse.Mobile+"");
+                Log.e("Email",customerResponse.Email+"");
+                Log.e("City",customerResponse.City+"");
+                Log.e("State",customerResponse.State+"");
+                Log.e("ZipCode",customerResponse.ZipCode+"");
+
+                Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
+                Toast.makeText(getActivity(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
+
+
             }
-        }.execute();
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error response: ",error+"");
+            }
+        });
+        MyApplication.getInstance().addToRequestQueue(req);
 
     }
 

@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -204,11 +202,13 @@ public class CurrentOrdersFragment extends Fragment {
     }
     public double getTotal(Trip currentTrip) {
         Double total;
+        String tripFareValue=String.format("%.2f", Double.parseDouble(currentTrip.TripDistance)*0.6214*Double.parseDouble(currentTrip.TripFare));
         if(Integer.parseInt(currentTrip.TipPercentage)>0){
-            Double tip=((Double.parseDouble(currentTrip.TripFare)*Double.parseDouble(currentTrip.TipPercentage))/100);
-            total= Double.parseDouble(currentTrip.TripFare)+tip;
+
+            Double tip=((Double.parseDouble(tripFareValue)*Double.parseDouble(currentTrip.TipPercentage))/100);
+            total= Double.parseDouble(tripFareValue)+tip;
         } else {
-            total=Double.parseDouble(currentTrip.TripFare);
+            total=Double.parseDouble(tripFareValue);
         }
         total=total+Double.parseDouble(currentTrip.TripFee);
         return total;

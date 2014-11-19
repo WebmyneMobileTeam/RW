@@ -51,6 +51,7 @@ import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.CustomComponents.ListDialog;
+import com.webmyne.rightway.CustomComponents.ListDialogDrivers;
 import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.MapNavigator.Navigator;
 import com.webmyne.rightway.Model.AppConstants;
@@ -79,6 +80,8 @@ import java.util.Locale;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
+    String currentRate;
+    String currentFee;
     float distance;
      ArrayList<String> driverNames = new ArrayList<String>();;
     String selectedTip;
@@ -148,6 +151,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         customerProfile=complexPreferences.getObject("customer_data", Customer.class);
         Log.e("customer ID: ",customerProfile.CustomerID+"");
         getActiveDriversList();
+        getCurrentRate();
 
     }
 
@@ -276,71 +280,82 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         return view;
     }
 
+    public void getCurrentRate() {
+        new CallWebService(AppConstants.CurrentRate, CallWebService.TYPE_JSONOBJECT) {
+
+            @Override
+            public void response(String response) {
+               CurrentRate currentRates= new GsonBuilder().create().fromJson(response, CurrentRate.class);
+                Log.e("Rate: ",currentRates.Rate+"");
+                Log.e("TripFee: ",currentRates.TripFee+"");
+                SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("rate", currentRates.Rate+"");
+                editor.putString("tripFee", currentRates.TripFee+"");
+                editor.commit();
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+
+
+            }
+        }.start();
+    }
+
     public void getActiveDriversList() {
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-            }
+
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        new CallWebService(AppConstants.getActiveDrivers, CallWebService.TYPE_JSONARRAY) {
 
             @Override
-            protected Void doInBackground(Void... params) {
-                new CallWebService(AppConstants.getActiveDrivers, CallWebService.TYPE_JSONARRAY) {
+            public void response(String response) {
+                Type listType = new TypeToken<List<Driver>>() {
+                }.getType();
+                availableDrivers= new GsonBuilder().create().fromJson(response, listType);
 
-                    @Override
-                    public void response(String response) {
-                        Type listType = new TypeToken<List<Driver>>() {
-                        }.getType();
-                        availableDrivers= new GsonBuilder().create().fromJson(response, listType);
+                for(int i=0;i<availableDrivers.size();i++) {
+                    Log.e("DriverID", availableDrivers.get(i).DriverID+"");
+                    Log.e("DriverNotificationID", availableDrivers.get(i).DriverNotificationID+"");
+                    Log.e("FirstName", availableDrivers.get(i).FirstName+"");
+                    Log.e("LastName", availableDrivers.get(i).LastName+"");
+                    Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
+                    Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
 
-                        for(int i=0;i<availableDrivers.size();i++) {
-                            Log.e("DriverID", availableDrivers.get(i).DriverID+"");
-                            Log.e("DriverNotificationID", availableDrivers.get(i).DriverNotificationID+"");
-                            Log.e("FirstName", availableDrivers.get(i).FirstName+"");
-                            Log.e("LastName", availableDrivers.get(i).LastName+"");
-                            Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
-                            Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
+                }
 
-                        }
-
-                        try {
-                            Log.e("availableDrivers size ",availableDrivers.size()+"");
+                try {
+                    Log.e("availableDrivers size ",availableDrivers.size()+"");
 
 
-                            for (int i = 0; i < availableDrivers.size(); i++) {
-                                if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
-                                    cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
-                                    driverNames.add(availableDrivers.get(i).FirstName+" "+availableDrivers.get(i).LastName);
+                    for (int i = 0; i < availableDrivers.size(); i++) {
+                        if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
+                            cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
+                            driverNames.add(availableDrivers.get(i).FirstName+","+availableDrivers.get(i).LastName+","+availableDrivers.get(i).DriverID+","+availableDrivers.get(i).DriverNotificationID);
 
 
 
-                                }
-                            }
-
-                        } catch(NullPointerException e){
-                            e.printStackTrace();
                         }
                     }
 
-                    @Override
-                    public void error(VolleyError error) {
-                        Log.e("error response: ",error+"");
-                    }
-                }.start();
-                return null;
-            }
+                } catch(NullPointerException e){
+                    e.printStackTrace();
+                }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
                 progressDialog.dismiss();
-//                displayAvailableDrivers();
             }
-        }.execute();
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error response: ",error+"");
+            }
+        }.start();
 
     }
 
@@ -395,7 +410,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
              if(!txtDistance.isShown()){
                  txtDistance.setVisibility(View.VISIBLE);
              }
-             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f ", distance*0.6214*10));
+             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f ", distance*0.6214*Double.parseDouble(currentRate)));
         }
 
     }
@@ -441,96 +456,92 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
     public void postBookRequest() {
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        JSONObject tripObject = new JSONObject();
 
 
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-            }
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+        String GCM_ID=sharedPreferences.getString("GCM_ID","");
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                JSONObject tripObject = new JSONObject();
+        SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
 
+         currentRate=preferences.getString("rate","");
+         currentFee=preferences.getString("tripFee","");
 
-                SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
-                String GCM_ID=sharedPreferences.getString("GCM_ID","");
-                try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    String stringDate=dateFormat.format(new Date());
-                    Date date =dateFormat.parse(stringDate) ;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String stringDate=dateFormat.format(new Date());
+            Date date =dateFormat.parse(stringDate) ;
 
-                    tripObject.put("TripID", "0");
-                    tripObject.put("CustomerID", customerProfile.CustomerID+"");
-                    tripObject.put("DriverID",selectedDriver+ "");
-                    tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
-                    tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
-                    tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
-                    tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
-                    tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
-                    tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
-                    tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
-                    tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
-                    tripObject.put("TripDate", (date.getTime()/1000)+"");
-                    tripObject.put("TipPercentage", selectedTip+"");
-                    tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
-                    tripObject.put("TripFee", "2");
-                    tripObject.put("TripDistance", String.format("%.2f", distance)+"");
-                    tripObject.put("PaymentType", "");
-                    tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
-                    tripObject.put("CustomerName", "");
-                    tripObject.put("DriverName", "");
-                    tripObject.put("CustomerNotificationID", GCM_ID);
-                    tripObject.put("DriverNotificationID", selectedDriverNotification);
-                    Log.e("tripObject: ",tripObject+"");
+            tripObject.put("TripID", "0");
+            tripObject.put("CustomerID", customerProfile.CustomerID+"");
+            tripObject.put("DriverID",selectedDriver+ "");
+            tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
+            tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
+            tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
+            tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
+            tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
+            tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
+            tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
+            tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
+            tripObject.put("TripDate", (date.getTime()/1000)+"");
+            tripObject.put("TipPercentage", selectedTip+"");
+//            tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
+            tripObject.put("TripFare", currentRate+"");
+            tripObject.put("TripFee", currentFee+"");
+            tripObject.put("TripDistance", String.format("%.2f", distance)+"");
+            tripObject.put("PaymentType", "");
+            tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
+            tripObject.put("CustomerName", "");
+            tripObject.put("DriverName", "");
+            tripObject.put("CustomerNotificationID", GCM_ID);
+            tripObject.put("DriverNotificationID", selectedDriverNotification);
+            tripObject.put("isCustomerFeedbackGiven", false);
+            tripObject.put("isDriverFeedbackGiven", false);
+            Log.e("tripObject: ",tripObject+"");
 
 
-                }catch(JSONException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject jobj) {
-                        String response = jobj.toString();
-                        Log.e("response continue: ", response + "");
-                        ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
-                        Log.e("response: ", responseMessage.Response +"");
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("error response: ",error+"");
-                    }
-                });
-                MyApplication.getInstance().addToRequestQueue(req);
-
-                return null;
-            }
+        }catch(JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+            public void onResponse(JSONObject jobj) {
+                String response = jobj.toString();
+                Log.e("response continue: ", response + "");
+                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
+                Log.e("response: ", responseMessage.Response +"");
                 progressDialog.dismiss();
-                Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
-                //TODO
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
-                if (manager.findFragmentByTag("MYBOOKING") == null) {
-                    ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
+                if(responseMessage.Response.equalsIgnoreCase("Success")){
+                    Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
+                    //TODO
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = manager.beginTransaction();
+                    MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+                    if (manager.findFragmentByTag("MYBOOKING") == null) {
+                        ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
                 }
+
             }
-        }.execute();
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error response: ",error+"");
+            }
+        });
+        MyApplication.getInstance().addToRequestQueue(req);
+
     }
 
 
@@ -576,7 +587,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             MarkerOptions opts = new MarkerOptions();
             opts.position(cabs.get(i));
             opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
-            opts.title(driverNames.get(i));
+            opts.title("");
             opts.snippet("");
             addMarker(opts);
 
@@ -676,27 +687,21 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     private void showAvailableDrivers() {
 
-        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+        ListDialogDrivers listDialog = new ListDialogDrivers(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         listDialog.setCancelable(true);
         listDialog.setCanceledOnTouchOutside(true);
         listDialog.title("CHOOSE DRIVER");
-
             listDialog.setItems(driverNames);
-
-        listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
+        listDialog.setSelectedListner(new ListDialogDrivers.setSelectedListner() {
             @Override
             public void selected(String value) {
+                String[] splited = value.split(",");
+                txtDriver.setText(splited[0]+" "+splited[1]);
 
-                txtDriver.setText(value);
+                        selectedDriver=splited[2];
+                        selectedDriverNotification=splited[3];
 
-                for(int i=0;i<driverNames.size();i++){
-                    if(driverNames.get(i).equalsIgnoreCase(value) ){
 
-                        selectedDriver=availableDrivers.get(i).DriverID;
-                        selectedDriverNotification=availableDrivers.get(i).DriverNotificationID;
-                    }
-                }
-                Log.e("selectedDriver: ",selectedDriver+"");
             }
         });
         listDialog.show();
@@ -1009,7 +1014,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-
                 String locality=address.getLocality();
                 String city=address.getCountryName();
                 String region_code=address.getCountryCode();

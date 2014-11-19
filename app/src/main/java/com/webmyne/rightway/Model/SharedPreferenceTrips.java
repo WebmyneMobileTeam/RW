@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.webmyne.rightway.Bookings.Trip;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
