@@ -150,8 +150,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerProfile=complexPreferences.getObject("customer_data", Customer.class);
         Log.e("customer ID: ",customerProfile.CustomerID+"");
+
         getActiveDriversList();
-        getCurrentRate();
+
 
     }
 
@@ -281,6 +282,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
     public void getCurrentRate() {
+
         new CallWebService(AppConstants.CurrentRate, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
@@ -293,7 +295,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 editor.putString("rate", currentRates.Rate+"");
                 editor.putString("tripFee", currentRates.TripFee+"");
                 editor.commit();
-
+                progressDialog.dismiss();
             }
 
             @Override
@@ -347,7 +349,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     e.printStackTrace();
                 }
 
-                progressDialog.dismiss();
+                getCurrentRate();
             }
 
             @Override
@@ -358,6 +360,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         }.start();
 
     }
+
+
 
     private void hideKeyBoard(AutoCompleteTextView ed) {
 
@@ -410,7 +414,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
              if(!txtDistance.isShown()){
                  txtDistance.setVisibility(View.VISIBLE);
              }
-             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f ", distance*0.6214*Double.parseDouble(currentRate)));
+             txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f", distance*0.6214*(Double.parseDouble(currentRate))));
         }
 
     }
@@ -467,10 +471,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
         String GCM_ID=sharedPreferences.getString("GCM_ID","");
 
-        SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
 
-         currentRate=preferences.getString("rate","");
-         currentFee=preferences.getString("tripFee","");
 
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -521,7 +522,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 progressDialog.dismiss();
                 if(responseMessage.Response.equalsIgnoreCase("Success")){
                     Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
-                    //TODO
+
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ft = manager.beginTransaction();
                     MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
@@ -606,7 +607,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
         super.onResume();
         mv.onResume();
+        SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
 
+        currentRate=preferences.getString("rate","");
+        currentFee=preferences.getString("tripFee","");
         mc.startTrackMyLocation(mc.getMap(),2000,0, MapController.TrackType.TRACK_TYPE_NONE,new MapController.ChangeMyLocation() {
             @Override
             public void changed(GoogleMap map, Location location, boolean lastLocation) {

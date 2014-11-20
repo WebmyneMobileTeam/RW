@@ -109,14 +109,14 @@
 
         <ImageView
 
-            android:paddingRight="@dimen/activity_margin"
+            android:layout_marginRight="@dimen/activity_margin"
             android:layout_alignParentRight="true"
             android:id="@+id/mapView"
             android:layout_centerVertical="true"
             android:contentDescription="@string/app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_maps_navigation"
+            android:background="@drawable/ic_maps_navigation"
             android:scaleType="centerInside" />
 
     </RelativeLayout>

@@ -44,10 +44,21 @@ import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.CustomComponents.CustomTypeface;
 import com.webmyne.rightway.R;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -295,6 +306,7 @@ public class RegistrationActivity extends BaseActivity {
                 case R.id.btnRegister:
                     //TODO
 //                      postImage();
+
                     postRegistrationData();
                     break;
                 case R.id.imgProfilePic:
@@ -369,25 +381,45 @@ public class RegistrationActivity extends BaseActivity {
 
         public void uploadFile(File fileName){
 
-
-            FTPClient client = new FTPClient();
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost(AppConstants.ftpPath);
 
             try {
-                client.connect(AppConstants.ftpPath,121);
-                client.login(AppConstants.ftpUsername, AppConstants.ftpPassword);
-                client.setType(FTPClient.TYPE_BINARY);
-                client.changeDirectory("/RiteWay/Images/");
+                MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+                entity.addPart("image", new FileBody(fileName));
 
-                client.upload(fileName, new MyTransferListener());
 
-            } catch (Exception e) {
+                httpPost.setEntity(entity);
+
+                HttpResponse response = httpClient.execute(httpPost, localContext);
+            } catch (IOException e) {
                 e.printStackTrace();
-                try {
-                    client.disconnect(true);
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
             }
+
+
+//            FTPClient client = new FTPClient();
+//
+//            try {
+//                client.connect(AppConstants.ftpPath,121);
+//                client.login(AppConstants.ftpUsername, AppConstants.ftpPassword);
+//                client.setType(FTPClient.TYPE_BINARY);
+//                client.changeDirectory("/RiteWay/Images/");
+//
+//                client.upload(fileName, new MyTransferListener());
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//
+//                try {
+//                    client.disconnect(true);
+//                } catch (Exception e2) {
+//                    e2.printStackTrace();
+//                }
+//            }
+
+
+
         }
 
         /*******  Used to file upload and show progress  **********/

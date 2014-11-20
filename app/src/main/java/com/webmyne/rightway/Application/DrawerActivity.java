@@ -38,7 +38,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerLayout drawer;
     private boolean isFromNotification=false;
     private ListView leftDrawerList;
-    private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","CURRENT TRIP","SETTING"};
+    private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","SETTING"};
     private boolean isPupil;
     public static String BOOKCAB = "bookcab";
     public static String MYBOOKING = "mybooking";
@@ -171,15 +171,9 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 txtHeader.setText("NOTIFICATIONS");
                 break;
 
-            case 5:
-                FragmentCurrentTripMap fragmentCurrentTripMap = FragmentCurrentTripMap.newInstance("", "");
-                if (manager.findFragmentByTag(CURRENT_TRIP) == null) {
-                    ft.replace(R.id.main_content, fragmentCurrentTripMap,CURRENT_TRIP).commit();
-                }
-                txtHeader.setText("CURRENT TRIP");
-                break;
 
-            case 6:
+
+            case 5:
                 SettingsFragment settingsFragment = SettingsFragment.newInstance("", "");
                 if (manager.findFragmentByTag(SETTINGS) == null) {
                     ft.replace(R.id.main_content, settingsFragment,SETTINGS).commit();

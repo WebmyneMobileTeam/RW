@@ -83,11 +83,12 @@ public class OrderDetailActivity extends BaseActivity {
     /**
      * A placeholder fragment containing a order detail view.
      */
-    public static class PlaceholderFragment extends Fragment {
 
+    public static class PlaceholderFragment extends Fragment {
 
         ProgressDialog progressDialog;
         Trip currentTrip;
+
         TextView currentTripDriverName, currentTripPickup, currentTripDropoff, currentTripPickupNote, currentTripDate, currentTripTime,
                 currentTripDistance, txtTripStatus, currentTripPaymentType, currentTripFare, currentTripTip, currentTripFee,txtTotalAmount,
                 txtCancelTrip,paymentType;
@@ -99,9 +100,6 @@ public class OrderDetailActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
 
         }
-
-
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
@@ -158,10 +156,10 @@ public class OrderDetailActivity extends BaseActivity {
             currentTripFee.setText("$ "+currentTrip.TripFee);
             txtTotalAmount.setText(String.format("$ %.2f", getTotal(currentTrip))+"");
             txtTripStatus.setText(currentTrip.TripStatus);
-            if(currentTrip.TripStatus.contains(AppConstants.tripCancelledByCustomerStatus) || currentTrip.TripStatus.contains(AppConstants.tripCancelledByDriverStatus)){
-                txtCancelTrip.setVisibility(View.GONE);
-            } else {
+            if(currentTrip.TripStatus.equalsIgnoreCase(AppConstants.tripInProgressStatus)){
                 txtCancelTrip.setVisibility(View.VISIBLE);
+            } else {
+                txtCancelTrip.setVisibility(View.GONE);
             }
         }
 
@@ -196,7 +194,6 @@ public class OrderDetailActivity extends BaseActivity {
             total=total+Double.parseDouble(currentTrip.TripFee);
             return total;
         }
-
         public void cancelTrip() {
             progressDialog=new ProgressDialog(getActivity());
             progressDialog.setCancelable(true);
@@ -209,8 +206,6 @@ public class OrderDetailActivity extends BaseActivity {
                 tripObject.put("DriverID", currentTrip.DriverID+"");
                 tripObject.put("TripStatus", "Canceled By Customer");
                 Log.e("tripObject: ",tripObject+"");
-
-
             }catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -219,7 +214,6 @@ public class OrderDetailActivity extends BaseActivity {
                 @Override
                 public void onResponse(JSONObject jobj) {
                     String response = jobj.toString();
-
                     ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
                     Log.e("after cancel response: ", responseMessage.Response +"");
                     progressDialog.dismiss();
@@ -229,8 +223,6 @@ public class OrderDetailActivity extends BaseActivity {
                     } else {
                         Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             }, new Response.ErrorListener() {
 
@@ -240,8 +232,6 @@ public class OrderDetailActivity extends BaseActivity {
                 }
             });
             MyApplication.getInstance().addToRequestQueue(req);
-
         }
-
     }
 }

@@ -23,6 +23,7 @@ import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
+import com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -147,18 +148,36 @@ public class CurrentOrdersFragment extends Fragment {
             holder.currentOrderDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
             holder.currentOrderFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             holder.currentOrderStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
+            if(currentOrdersList.get(position).isDriverFeedbackGiven.equalsIgnoreCase("false") && (!currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripInProgressStatus))) {
+                if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)) {
+                    holder. mapView.setBackgroundResource(R.drawable.ic_feedback);
+
+                }
+                holder. mapView.setVisibility(View.VISIBLE);
+            } else {
+                holder. mapView.setVisibility(View.GONE);
+            }
+
             holder. mapView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
-                    complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
-                    complexPreferences.commit();
-                    FragmentManager manager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = manager.beginTransaction();
-                    FragmentCurrentTripMap currentTripFragment = FragmentCurrentTripMap.newInstance("", "");
-                    if (manager.findFragmentByTag("CURRENT_TRIP") == null) {
-                        ft.replace(R.id.main_content, currentTripFragment,"CURRENT_TRIP").commit();
+
+
+                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                        complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
+                        complexPreferences.commit();
+                    if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)){
+                        Intent i=new Intent(getActivity(), ReceiptAndFeedbackActivity.class);
+                        startActivity(i);
+                    } else {
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction ft = manager.beginTransaction();
+                        FragmentCurrentTripMap currentTripFragment = FragmentCurrentTripMap.newInstance("", "");
+                        if (manager.findFragmentByTag("CURRENT_TRIP") == null) {
+                            ft.replace(R.id.main_content, currentTripFragment, "CURRENT_TRIP").commit();
+                        }
                     }
+
                 }
             });
             convertView.setOnClickListener(new View.OnClickListener() {

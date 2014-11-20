@@ -46,6 +46,7 @@ public class FragmentCurrentTripMap extends Fragment {
     LatLng pickup_latlng;
     LatLng dropoff_latlng;
     Trip currentTrip;
+
     public static FragmentCurrentTripMap newInstance(String param1, String param2) {
         FragmentCurrentTripMap fragment = new FragmentCurrentTripMap();
 
@@ -61,24 +62,28 @@ public class FragmentCurrentTripMap extends Fragment {
 
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+        currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView= inflater.inflate(R.layout.fragment_current_trip, container, false);
         getReceipt =(TextView)rootView.findViewById(R.id.txtgetReceipt);
         getReceipt.setVisibility(View.VISIBLE);
-        getReceipt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i=new Intent(getActivity(), ReceiptAndFeedbackActivity.class);
-                startActivity(i);
-            }
-        });
+//        getReceipt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i=new Intent(getActivity(), ReceiptAndFeedbackActivity.class);
+//                startActivity(i);
+//            }
+//        });
         mv = (MapView)rootView.findViewById(R.id.map);
-        setView(savedInstanceState);
+
+            setView(savedInstanceState);
+
         return rootView;
     }
 
@@ -90,30 +95,31 @@ public class FragmentCurrentTripMap extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mv.onResume();
-        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
-        final String updatedTimeInterval=preferencesTimeInterval.getString("driver_time_interval", "5");
-
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
         currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
-        pickup_latlng=new LatLng(Double.parseDouble(currentTrip.PickupLatitude),Double.parseDouble(currentTrip.PickupLongitude));
-        dropoff_latlng=new LatLng(Double.parseDouble(currentTrip.DropoffLatitude),Double.parseDouble(currentTrip.DropoffLongitude));
+
+            mv.onResume();
+
+            SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+            final String updatedTimeInterval=preferencesTimeInterval.getString("driver_time_interval", "5");
 
 
-        Timer timer=new Timer();
+            pickup_latlng=new LatLng(Double.parseDouble(currentTrip.PickupLatitude),Double.parseDouble(currentTrip.PickupLongitude));
+            dropoff_latlng=new LatLng(Double.parseDouble(currentTrip.DropoffLatitude),Double.parseDouble(currentTrip.DropoffLongitude));
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    updateDriverLocation();
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+            Timer timer=new Timer();
+
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        updateDriverLocation();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        },0,1000*60*Integer.parseInt(updatedTimeInterval));
-
-
+            },0,1000*60*Integer.parseInt(updatedTimeInterval));
 
     }
 
@@ -127,13 +133,11 @@ public class FragmentCurrentTripMap extends Fragment {
         });
     }
 
-
     public void updateDriverLocation() {
-        new CallWebService(AppConstants.DriverUpdatedLocation+"9", CallWebService.TYPE_JSONOBJECT) {
+        new CallWebService(AppConstants.DriverUpdatedLocation+currentTrip.DriverID, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
             public void response(String response) {
-
                 Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
                 Log.e("DriverID", availableDrivers.DriverID + "");
                 Log.e("FirstName", availableDrivers.FirstName+"");
@@ -162,20 +166,15 @@ public class FragmentCurrentTripMap extends Fragment {
                     opts.title("PICK ME UP HERE");
                     opts.snippet("");
                     addMarker(opts);
-
-
                 }
 
                 if(dropoff_latlng != null) {
-
                     MarkerOptions opts = new MarkerOptions();
                     opts.position(dropoff_latlng);
                     opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dropoff_pin));
                     opts.title("DROP ME HERE");
                     opts.snippet("");
                     addMarker(opts);
-
-
                 }
                 Navigator nav = new Navigator(mv.getMap(),pickup_latlng,dropoff_latlng);
                 nav.findDirections(false);
