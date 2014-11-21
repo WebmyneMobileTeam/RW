@@ -217,12 +217,10 @@ public class OrderDetailActivity extends BaseActivity {
                     ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
                     Log.e("after cancel response: ", responseMessage.Response +"");
                     progressDialog.dismiss();
-                    if(responseMessage.Response.equalsIgnoreCase("Success")){
+
                         Toast.makeText(getActivity(), "Trip Canceled Successfully", Toast.LENGTH_SHORT).show();
                         getActivity().finish();
-                    } else {
-                        Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
             }, new Response.ErrorListener() {
 

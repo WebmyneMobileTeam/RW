@@ -155,7 +155,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
                 ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
                 Log.e("Response: ",responseMessage.Response+"");
                 progressDialog.dismiss();
-                if(responseMessage.Response.equalsIgnoreCase("Success")){
+
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     Toast.makeText(getActivity(), "Trip completed Successfully", Toast.LENGTH_SHORT).show();
                     FragmentTransaction ft = manager.beginTransaction();
@@ -163,9 +163,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
                     if (manager.findFragmentByTag("MyBooking") == null) {
                         ft.replace(R.id.main_content, myOrdersFragment,"MyBooking").commit();
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
-                }
+
 
 
             }

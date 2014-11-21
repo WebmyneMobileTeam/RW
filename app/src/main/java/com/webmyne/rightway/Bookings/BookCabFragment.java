@@ -31,7 +31,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -52,6 +51,7 @@ import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.CustomComponents.ListDialogDrivers;
+import com.webmyne.rightway.Model.API;
 import com.webmyne.rightway.Model.SharedPreferenceNotification;
 import com.webmyne.rightway.MyNotifications.CustomerNotification;
 import com.webmyne.rightway.Registration.Customer;
@@ -61,13 +61,12 @@ import com.webmyne.rightway.Model.MapController;
 import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.MyBooking.MyBookingFragment;
 import com.webmyne.rightway.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -83,6 +82,7 @@ import java.util.Locale;
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
     String currentRate;
+
     String currentFee;
     float distance;
     private SharedPreferenceNotification sharedPreferenceNotification;
@@ -156,9 +156,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerProfile=complexPreferences.getObject("customer_data", Customer.class);
         Log.e("customer ID: ",customerProfile.CustomerID+"");
-
-
-
 
     }
 
@@ -370,8 +367,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     }
 
-
-
     private void hideKeyBoard(AutoCompleteTextView ed) {
 
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -453,7 +448,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                     @Override
                     public void complete() {
-                        postBookRequest();
+                        sendBookRequest();
+//                        postBookRequest();
 
                     }
 
@@ -468,92 +464,180 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         return super.onOptionsItemSelected(item);
     }
 
-    public void postBookRequest() {
-        progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-
-        JSONObject tripObject = new JSONObject();
-
-
-        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
-        String GCM_ID=sharedPreferences.getString("GCM_ID","");
-
-
-
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String stringDate=dateFormat.format(new Date());
-            Date date =dateFormat.parse(stringDate) ;
-
-            tripObject.put("TripID", "0");
-            tripObject.put("CustomerID", customerProfile.CustomerID+"");
-            tripObject.put("DriverID",selectedDriver+ "");
-            tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
-            tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
-            tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
-            tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
-            tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
-            tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
-            tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
-            tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
-            tripObject.put("TripDate", (date.getTime()/1000)+"");
-            tripObject.put("TipPercentage", selectedTip+"");
-//            tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
-            Log.e("trip rate when send:  ",currentRate+"");
-            tripObject.put("TripFare", currentRate+"");
-            tripObject.put("TripFee", currentFee+"");
-            tripObject.put("TripDistance", String.format("%.2f", distance)+"");
-            tripObject.put("PaymentType", "");
-            tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
-            tripObject.put("CustomerName", "");
-            tripObject.put("DriverName", "");
-            tripObject.put("CustomerNotificationID", GCM_ID);
-            tripObject.put("DriverNotificationID", selectedDriverNotification);
-            tripObject.put("isCustomerFeedbackGiven", false);
-            tripObject.put("isDriverFeedbackGiven", false);
-            Log.e("tripObject: ",tripObject+"");
-
-
-        }catch(JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
+    public void sendBookRequest() {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
 
             @Override
-            public void onResponse(JSONObject jobj) {
-                String response = jobj.toString();
-                Log.e("response continue: ", response + "");
-                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
-                Log.e("response: ", responseMessage.Response +"");
-                progressDialog.dismiss();
-                if(responseMessage.Response.equalsIgnoreCase("Success")){
-                    Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
+            protected Void doInBackground(Void... params) {
 
+                JSONObject tripObject = new JSONObject();
+
+
+                SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+                String GCM_ID=sharedPreferences.getString("GCM_ID","");
+
+
+                try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    String stringDate=dateFormat.format(new Date());
+                    Date date =dateFormat.parse(stringDate) ;
+                    tripObject.put("TripID", "0");
+                    tripObject.put("CustomerID", customerProfile.CustomerID+"");
+                    tripObject.put("DriverID",selectedDriver+ "");
+                    tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
+                    tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
+                    tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
+                    tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
+                    tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
+                    tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
+                    tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
+                    tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
+                    tripObject.put("TripDate", (date.getTime()/1000)+"");
+                    tripObject.put("TipPercentage", selectedTip+"");
+//            tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
+                    Log.e("trip rate when send:  ",currentRate+"");
+                    tripObject.put("TripFare", currentRate+"");
+                    tripObject.put("TripFee", currentFee+"");
+                    tripObject.put("TripDistance", String.format("%.2f", distance)+"");
+                    tripObject.put("PaymentType", "");
+                    tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
+                    tripObject.put("CustomerName", "");
+                    tripObject.put("DriverName", "");
+                    tripObject.put("CustomerNotificationID", GCM_ID);
+                    tripObject.put("DriverNotificationID", selectedDriverNotification);
+                    tripObject.put("isCustomerFeedbackGiven", false);
+                    tripObject.put("isDriverFeedbackGiven", false);
+                    Log.e("tripObject: ",tripObject+"");
+
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Reader reader = API.callWebservicePost(AppConstants.bookTrip, tripObject.toString());
+
+                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(reader, ResponseMessage.class);
+                Log.e("responseMessage:",responseMessage.Response+"");
+                handlePostData(responseMessage);
+                return null;
+
+
+            }
+
+
+        }.execute();
+    }
+
+    public void handlePostData(final ResponseMessage responseMessage) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+
+                    Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ft = manager.beginTransaction();
                     MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
                     if (manager.findFragmentByTag("MYBOOKING") == null) {
                         ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
-                }
 
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error response: ",error+"");
             }
         });
-        MyApplication.getInstance().addToRequestQueue(req);
-
     }
+
+//    public void postBookRequest() {
+//
+//        progressDialog=new ProgressDialog(getActivity());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.show();
+//
+//        JSONObject tripObject = new JSONObject();
+//        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
+//        String GCM_ID=sharedPreferences.getString("GCM_ID","");
+//
+//        try {
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+//            String stringDate=dateFormat.format(new Date());
+//            Date date =dateFormat.parse(stringDate) ;
+//
+//            tripObject.put("TripID", "0");
+//            tripObject.put("CustomerID", customerProfile.CustomerID+"");
+//            tripObject.put("DriverID",selectedDriver+ "");
+//            tripObject.put("PickupLatitude", pickup_latlng.latitude+"");
+//            tripObject.put("PickupLongitude", pickup_latlng.longitude+"");
+//            tripObject.put("PickupAddress", edPickUpLocation.getText().toString().trim()+"");
+//            tripObject.put("PickupNote", etPickupNote.getText().toString().trim()+"");
+//            tripObject.put("DropoffLatitude", dropoff_latlng.latitude+"");
+//            tripObject.put("DropoffLongitude", dropoff_latlng.longitude+"");
+//            tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
+//            tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
+//            tripObject.put("TripDate", (date.getTime()/1000)+"");
+//            tripObject.put("TipPercentage", selectedTip+"");
+////            tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
+//            Log.e("trip rate when send:  ",currentRate+"");
+//            tripObject.put("TripFare", currentRate+"");
+//            tripObject.put("TripFee", currentFee+"");
+//            tripObject.put("TripDistance", String.format("%.2f", distance)+"");
+//            tripObject.put("PaymentType", "");
+//            tripObject.put("TripStatus", AppConstants.tripInProgressStatus);
+//            tripObject.put("CustomerName", "");
+//            tripObject.put("DriverName", "");
+//            tripObject.put("CustomerNotificationID", GCM_ID);
+//            tripObject.put("DriverNotificationID", selectedDriverNotification);
+//            tripObject.put("isCustomerFeedbackGiven", false);
+//            tripObject.put("isDriverFeedbackGiven", false);
+//            Log.e("tripObject: ",tripObject+"");
+//
+//
+//        }catch(JSONException e) {
+//            e.printStackTrace();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.bookTrip, tripObject, new Response.Listener<JSONObject>() {
+//
+//            @Override
+//            public void onResponse(JSONObject jobj) {
+//                String response = jobj.toString();
+//                Log.e("response continue: ", response + "");
+//                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
+//                Log.e("response: ", responseMessage.Response +"");
+//                progressDialog.dismiss();
+//                if(responseMessage.Response.equalsIgnoreCase("Success")){
+//                    Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
+//
+//                    FragmentManager manager = getActivity().getSupportFragmentManager();
+//                    FragmentTransaction ft = manager.beginTransaction();
+//                    MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
+//                    if (manager.findFragmentByTag("MYBOOKING") == null) {
+//                        ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
+//                    }
+//                } else {
+//                    Toast.makeText(getActivity(), "Network error, please try again", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e("error response: ",error+"");
+//            }
+//        });
+//        MyApplication.getInstance().addToRequestQueue(req);
+//
+//    }
 
 
 
@@ -570,7 +654,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
                 try {
                     mc.animateTo(mc.getMyLocation().getLatitude(), mc.getMyLocation().getLongitude(), zoom);
-                    displayAvailableDrivers();
+//                    displayAvailableDrivers();
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -589,9 +673,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
     public void displayAvailableDrivers() {
-
-
-
 
         for(int i=0;i<cabs.size();i++){
 
@@ -765,27 +846,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     }
 
-//    private void showPaymentDialog() {
-//
-//        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-//        listDialog.setCancelable(true);
-//        listDialog.setCanceledOnTouchOutside(true);
-//        listDialog.title("CHOOSE PAYMENT METHOD");
-//        ArrayList<String> methods = new ArrayList<String>();
-//        methods.add("Credit Card");
-//        methods.add("Cash");
-//
-//        listDialog.setItems(methods);
-//        listDialog.setSelectedListner(new ListDialog.setSelectedListner() {
-//            @Override
-//            public void selected(String value) {
-//
-//                txtPayment.setText(value);
-//
-//            }
-//        });
-//        listDialog.show();
-//    }
+
 
     private void showTipDialog() {
 

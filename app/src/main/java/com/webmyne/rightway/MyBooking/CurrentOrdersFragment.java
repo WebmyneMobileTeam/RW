@@ -24,6 +24,7 @@ import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.SharedPreferenceTrips;
 import com.webmyne.rightway.R;
 import com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackActivity;
+import com.webmyne.rightway.Receipt_And_Feedback.ReceiptAndFeedbackFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -151,7 +152,8 @@ public class CurrentOrdersFragment extends Fragment {
             if(currentOrdersList.get(position).isDriverFeedbackGiven.equalsIgnoreCase("false") && (!currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripInProgressStatus))) {
                 if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)) {
                     holder. mapView.setBackgroundResource(R.drawable.ic_feedback);
-
+                } else {
+                    holder. mapView.setBackgroundResource(R.drawable.ic_maps_navigation);
                 }
                 holder. mapView.setVisibility(View.VISIBLE);
             } else {
@@ -167,8 +169,13 @@ public class CurrentOrdersFragment extends Fragment {
                         complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
                         complexPreferences.commit();
                     if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)){
-                        Intent i=new Intent(getActivity(), ReceiptAndFeedbackActivity.class);
-                        startActivity(i);
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+
+                        FragmentTransaction ft = manager.beginTransaction();
+                        ReceiptAndFeedbackFragment receiptAndFeedbackFragment = ReceiptAndFeedbackFragment.newInstance("", "");
+                        if (manager.findFragmentByTag("ReceiptAndFeedbackFragment") == null) {
+                            ft.replace(R.id.main_content, receiptAndFeedbackFragment, "ReceiptAndFeedbackFragment").commit();
+                        }
                     } else {
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         FragmentTransaction ft = manager.beginTransaction();

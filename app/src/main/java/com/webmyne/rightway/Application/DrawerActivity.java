@@ -37,6 +37,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerArrowDrawable drawerArrow;
     private DrawerLayout drawer;
+    NavigationDrawerAdapter navigationDrawerAdapter;
     private boolean isFromNotification=false;
     private ListView leftDrawerList;
     private String badgevalue;
@@ -61,6 +62,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
 
+        //TODO
         if(isFromNotification==true) {
             MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
             if (manager.findFragmentByTag(MYBOOKING) == null) {
@@ -82,6 +84,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private void initFields() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList = (ListView) findViewById(R.id.left_drawer);
+        leftDrawerList.setOnItemClickListener(this);
     }
 
     private void initDrawer() {
@@ -98,16 +101,16 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer,drawerArrow, R.string.drawer_open,R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
-                badgevalue=(sharedPreferences.getString("badge_value",null));
-                invalidateOptionsMenu();
+
+
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
                 badgevalue=(sharedPreferences.getString("badge_value",null));
-                invalidateOptionsMenu();
+                navigationDrawerAdapter.notifyDataSetChanged();
+
             }
         };
         drawer.setDrawerListener(mDrawerToggle);
@@ -117,10 +120,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     @Override
     protected void onResume() {
         super.onResume();
-        leftDrawerList.setAdapter(new NavigationDrawerAdapter(DrawerActivity.this, leftSliderData));
-        leftDrawerList.setOnItemClickListener(this);
-    }
+        navigationDrawerAdapter=new NavigationDrawerAdapter(DrawerActivity.this, leftSliderData);
+        leftDrawerList.setAdapter(navigationDrawerAdapter);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
+        badgevalue=(sharedPreferences.getString("badge_value",null));
+    }
 
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {

@@ -31,6 +31,7 @@ import com.webmyne.rightway.R;
 import com.webmyne.rightway.Registration.Customer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MyNotificationFragment extends Fragment implements ListDialog.setSelectedListner {
 
@@ -83,7 +84,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
         try {
             sharedPreferenceNotification = new SharedPreferenceNotification();
             notificationList = sharedPreferenceNotification.loadNotification(getActivity());
-
+            Collections.reverse(notificationList);
             if (notificationList != null) {
                 notificationAdapter = new NotificationAdapter(getActivity(), notificationList);
                 lvCustomerNotifications.setAdapter(notificationAdapter);
@@ -122,7 +123,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
 
         Context context;
 
-        LayoutInflater inflater;
+
 
         ArrayList<CustomerNotification> notificationList;
 

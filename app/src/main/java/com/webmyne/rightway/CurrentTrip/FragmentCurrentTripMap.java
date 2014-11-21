@@ -41,7 +41,7 @@ public class FragmentCurrentTripMap extends Fragment {
     ProgressDialog progressDialog;
     private MapView mv;
     private MapController mc;
-    TextView getReceipt;
+//    TextView getReceipt;
     private LatLng driver_latlng;
     LatLng pickup_latlng;
     LatLng dropoff_latlng;
@@ -71,8 +71,8 @@ public class FragmentCurrentTripMap extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView= inflater.inflate(R.layout.fragment_current_trip, container, false);
-        getReceipt =(TextView)rootView.findViewById(R.id.txtgetReceipt);
-        getReceipt.setVisibility(View.VISIBLE);
+//        getReceipt =(TextView)rootView.findViewById(R.id.txtgetReceipt);
+//        getReceipt.setVisibility(View.VISIBLE);
 //        getReceipt.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
