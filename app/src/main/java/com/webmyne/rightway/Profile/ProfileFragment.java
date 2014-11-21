@@ -1,6 +1,9 @@
 package com.webmyne.rightway.Profile;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -89,16 +92,27 @@ public class ProfileFragment extends Fragment {
                 customerProfile.City=txtCustomerCity.getText().toString().trim();
                 customerProfile.State=txtCustomerState.getText().toString().trim();
                 customerProfile.ZipCode=txtCustomerZipCode.getText().toString().trim();
-                updateProfileData();
+                if(isConnected()==true) {
+                    updateProfileData();
+                } else {
+                    Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return rootView;
     }
 
+    public  boolean isConnected() {
+        ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return  isConnected;
+    }
+
     public void updateProfileData() {
 
         progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
         JSONObject customerObject=new JSONObject();

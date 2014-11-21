@@ -129,7 +129,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
 
     public void completTrip(){
         progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
         JSONObject driverStatusObject = new JSONObject();

@@ -1,6 +1,7 @@
 package com.webmyne.rightway.MyBooking;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -37,6 +38,7 @@ public class MyBookingFragment extends Fragment {
     private SharedPreferenceNotification sharedPreferenceNotification;
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
+    private int badgeValue=0;
     private MyPagerAdapter adapter;
     public ArrayList<Trip> tripArrayList=new ArrayList<Trip>();
     ProgressDialog progressDialog;
@@ -80,7 +82,7 @@ public class MyBookingFragment extends Fragment {
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerDetails =complexPreferences.getObject("customer_data", Customer.class);
         progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
         Log.e("Customer trip url: ",AppConstants.getTripList+customerDetails.CustomerID+"");
@@ -135,9 +137,17 @@ public class MyBookingFragment extends Fragment {
                 if(notificationList != null) {
                     sharedPreferenceNotification.clearNotification(getActivity());
                     for (int i = 0; i < notificationList.size(); i++) {
+                        if(notificationList.get(i).Status.equalsIgnoreCase("false")){
+                            badgeValue=badgeValue+1;
+                        }
                         sharedPreferenceNotification.saveNotification(getActivity(), notificationList.get(i));
                     }
                 }
+                Log.e("Badge value: ",badgeValue+"");
+                SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("badge_value",getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor=preferencesTimeInterval.edit();
+                editor.putString("badge_value",badgeValue+"");
+                editor.commit();
                 progressDialog.dismiss();
             }
 

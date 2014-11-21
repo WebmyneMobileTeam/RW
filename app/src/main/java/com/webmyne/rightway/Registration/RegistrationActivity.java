@@ -460,7 +460,7 @@ public class RegistrationActivity extends BaseActivity {
 
         public void postRegistrationData() {
             progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setCancelable(true);
+            progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
             // Get customer form data from BasicFormFragment

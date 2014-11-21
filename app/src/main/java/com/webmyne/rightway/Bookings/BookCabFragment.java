@@ -52,6 +52,8 @@ import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.CustomComponents.ListDialog;
 import com.webmyne.rightway.CustomComponents.ListDialogDrivers;
+import com.webmyne.rightway.Model.SharedPreferenceNotification;
+import com.webmyne.rightway.MyNotifications.CustomerNotification;
 import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.MapNavigator.Navigator;
 import com.webmyne.rightway.Model.AppConstants;
@@ -83,7 +85,11 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     String currentRate;
     String currentFee;
     float distance;
-     ArrayList<String> driverNames = new ArrayList<String>();;
+    private SharedPreferenceNotification sharedPreferenceNotification;
+    private int badgeValue=0;
+    Customer customerDetails;
+    ArrayList<CustomerNotification> notificationList;
+     ArrayList<String> driverNames = new ArrayList<String>();
     String selectedTip;
     ArrayList<String> selectedDriverNotificationId = new ArrayList<String>();
     ArrayList<LatLng> cabs = new ArrayList<LatLng>();
@@ -151,7 +157,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         customerProfile=complexPreferences.getObject("customer_data", Customer.class);
         Log.e("customer ID: ",customerProfile.CustomerID+"");
 
-        getActiveDriversList();
+
 
 
     }
@@ -295,7 +301,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 editor.putString("rate", currentRates.Rate+"");
                 editor.putString("tripFee", currentRates.TripFee+"");
                 editor.commit();
-                progressDialog.dismiss();
+                SharedPreferences preferencesRate = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
+                currentRate=preferencesRate.getString("rate","");
+                currentFee=preferencesRate.getString("tripFee","");
+                getNotificationList();
             }
 
             @Override
@@ -461,7 +470,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     public void postBookRequest() {
         progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
@@ -492,6 +501,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             tripObject.put("TripDate", (date.getTime()/1000)+"");
             tripObject.put("TipPercentage", selectedTip+"");
 //            tripObject.put("TripFare", String.format("%.2f", distance*0.6214*10));
+            Log.e("trip rate when send:  ",currentRate+"");
             tripObject.put("TripFare", currentRate+"");
             tripObject.put("TripFee", currentFee+"");
             tripObject.put("TripDistance", String.format("%.2f", distance)+"");
@@ -607,16 +617,59 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
         super.onResume();
         mv.onResume();
-        SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
+        sharedPreferenceNotification=new SharedPreferenceNotification();
+        getActiveDriversList();
 
-        currentRate=preferences.getString("rate","");
-        currentFee=preferences.getString("tripFee","");
         mc.startTrackMyLocation(mc.getMap(),2000,0, MapController.TrackType.TRACK_TYPE_NONE,new MapController.ChangeMyLocation() {
             @Override
             public void changed(GoogleMap map, Location location, boolean lastLocation) {
 
             }
         });
+
+    }
+
+
+    public void getNotificationList() {
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        customerDetails =complexPreferences.getObject("customer_data", Customer.class);
+
+        new CallWebService(AppConstants.GetCustomerNotifications+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
+
+            @Override
+            public void response(String response) {
+
+                Type listType=new TypeToken<List<CustomerNotification>>(){
+                }.getType();
+
+                notificationList = new GsonBuilder().create().fromJson(response, listType);
+//                Log.e("notification list size:",notificationList.size()+"");
+
+                if(notificationList != null) {
+                    sharedPreferenceNotification.clearNotification(getActivity());
+                    for (int i = 0; i < notificationList.size(); i++) {
+                        if(notificationList.get(i).Status.equalsIgnoreCase("false")){
+                            badgeValue=badgeValue+1;
+                        }
+                        sharedPreferenceNotification.saveNotification(getActivity(), notificationList.get(i));
+                    }
+                }
+                Log.e("Badge value: ",badgeValue+"");
+                SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("badge_value",getActivity().MODE_PRIVATE);
+                SharedPreferences.Editor editor=preferencesTimeInterval.edit();
+                editor.putString("badge_value",badgeValue+"");
+                editor.commit();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+
 
     }
 

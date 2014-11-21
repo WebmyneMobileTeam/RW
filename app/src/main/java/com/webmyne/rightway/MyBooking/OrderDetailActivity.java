@@ -196,7 +196,7 @@ public class OrderDetailActivity extends BaseActivity {
         }
         public void cancelTrip() {
             progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setCancelable(true);
+            progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
             JSONObject tripObject = new JSONObject();

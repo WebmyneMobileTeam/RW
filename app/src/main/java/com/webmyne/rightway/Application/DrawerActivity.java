@@ -3,6 +3,7 @@ package com.webmyne.rightway.Application;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,6 +39,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private DrawerLayout drawer;
     private boolean isFromNotification=false;
     private ListView leftDrawerList;
+    private String badgevalue;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","SETTING"};
     private boolean isPupil;
     public static String BOOKCAB = "bookcab";
@@ -96,11 +98,15 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer,drawerArrow, R.string.drawer_open,R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
+                badgevalue=(sharedPreferences.getString("badge_value",null));
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
+                badgevalue=(sharedPreferences.getString("badge_value",null));
                 invalidateOptionsMenu();
             }
         };
@@ -244,7 +250,14 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 holder = (ViewHolder) convertView.getTag();
             }
             if(position==4){
-                holder.txtBadgeValue.setVisibility(View.VISIBLE);
+                Log.e("badge value:.....",badgevalue+"");
+                if(badgevalue !=null && (!badgevalue.equalsIgnoreCase("0"))){
+                    holder.txtBadgeValue.setVisibility(View.VISIBLE);
+                    holder.txtBadgeValue.setText(badgevalue+"");
+                    notifyDataSetChanged();
+                } else {
+                    holder.txtBadgeValue.setVisibility(View.GONE);
+                }
             } else {
                 holder.txtBadgeValue.setVisibility(View.GONE);
             }

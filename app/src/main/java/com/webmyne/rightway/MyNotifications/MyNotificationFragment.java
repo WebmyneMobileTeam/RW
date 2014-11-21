@@ -2,10 +2,12 @@ package com.webmyne.rightway.MyNotifications;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,9 +19,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.google.gson.GsonBuilder;
+import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.ListDialog;
+import com.webmyne.rightway.Model.AppConstants;
+import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.Model.SharedPreferenceNotification;
 import com.webmyne.rightway.R;
+import com.webmyne.rightway.Registration.Customer;
 
 import java.util.ArrayList;
 
@@ -70,6 +79,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
     @Override
     public void onResume() {
         super.onResume();
+        unreadAllNotification();
         try {
             sharedPreferenceNotification = new SharedPreferenceNotification();
             notificationList = sharedPreferenceNotification.loadNotification(getActivity());
@@ -81,6 +91,31 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void unreadAllNotification() {
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        Customer   customerDetails =complexPreferences.getObject("customer_data", Customer.class);
+        new CallWebService(AppConstants.CustomerNotificationsStatusChanged+customerDetails.CustomerID , CallWebService.TYPE_JSONOBJECT) {
+
+            @Override
+            public void response(String response) {
+
+
+
+                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
+
+                Log.e("response message for unread all: ", responseMessage.Response + "");
+            }
+
+            @Override
+            public void error(VolleyError error) {
+
+                Log.e("error: ",error+"");
+
+            }
+        }.start();
+
     }
 
     public class NotificationAdapter extends BaseAdapter {
@@ -130,6 +165,10 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
+            }
+            if(notificationList.get(position).Status.equalsIgnoreCase("false")){
+                holder.txtNotificationDate.setTextColor(Color.GREEN);
+
             }
             holder.txtMessageTitle.setText(notificationList.get(position).Title);
             holder.txtNotificationDate.setText(notificationList.get(position).Date);
