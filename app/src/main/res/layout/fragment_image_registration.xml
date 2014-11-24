@@ -20,7 +20,7 @@
         app:customTypeface="rbold"
         tools:ignore="MissingPrefix"
         android:gravity="center"
-        android:padding="8dp" />
+        android:padding="10dp" />
 
 
 

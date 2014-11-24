@@ -346,10 +346,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                             cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
                             driverNames.add(availableDrivers.get(i).FirstName+","+availableDrivers.get(i).LastName+","+availableDrivers.get(i).DriverID+","+availableDrivers.get(i).DriverNotificationID);
 
-
-
                         }
                     }
+                    displayAvailableDrivers();
 
                 } catch(NullPointerException e){
                     e.printStackTrace();
@@ -542,7 +541,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             @Override
             public void run() {
                 progressDialog.dismiss();
-
                     Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ft = manager.beginTransaction();
@@ -550,7 +548,6 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     if (manager.findFragmentByTag("MYBOOKING") == null) {
                         ft.replace(R.id.main_content, fragmentMyBooking,"MYBOOKING").commit();
                     }
-
             }
         });
     }
@@ -675,12 +672,13 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     public void displayAvailableDrivers() {
 
         for(int i=0;i<cabs.size();i++){
-
+            String[] splited = driverNames.get(i).split(",");
             MarkerOptions opts = new MarkerOptions();
             opts.position(cabs.get(i));
             opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
-            opts.title("");
+            opts.title(splited[0] + " " + splited[1]);
             opts.snippet("");
+
             addMarker(opts);
 
         }
@@ -707,7 +705,13 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
             }
         });
-
+//        mc.whenMarkerClick(new MapController.MarkerCallback() {
+//            @Override
+//            public void invokedMarker(GoogleMap map, Marker marker) {
+//               txtDriver.setText(marker.getTitle()+"");
+//                marker.showInfoWindow();
+//            }
+//        });
     }
 
 
@@ -955,6 +959,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
     private void addMarker(MarkerOptions opts) {
+
+
 
         mc.addMarker(opts, new MapController.MarkerCallback() {
             @Override
