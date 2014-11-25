@@ -37,12 +37,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerArrowDrawable drawerArrow;
     private DrawerLayout drawer;
-    NavigationDrawerAdapter navigationDrawerAdapter;
+    private NavigationDrawerAdapter navigationDrawerAdapter;
     private boolean isFromNotification=false;
     private ListView leftDrawerList;
     private String badgevalue;
     private String[] leftSliderData = {"BOOK A CAB", "MY BOOKINGS", "MY PROFILE", "CONTACT US","NOTIFICATIONS","SETTING"};
-    private boolean isPupil;
     public static String BOOKCAB = "bookcab";
     public static String MYBOOKING = "mybooking";
     public static String PROFILE = "profile";
@@ -61,14 +60,12 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
-
-        //TODO
-        if(isFromNotification==true) {
+        if(isFromNotification==true) { // clicked from notification
             MyBookingFragment fragmentMyBooking = MyBookingFragment.newInstance("", "");
             if (manager.findFragmentByTag(MYBOOKING) == null) {
                 ft.replace(R.id.main_content, fragmentMyBooking,MYBOOKING).commit();
             }
-        } else {
+        } else {  // normal flow
             BookCabFragment fragmentBookCab = BookCabFragment.newInstance("", "");
             if (manager.findFragmentByTag(BOOKCAB) == null) {
                 ft.replace(R.id.main_content, fragmentBookCab,BOOKCAB).commit();
@@ -102,7 +99,6 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
 
-
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -125,6 +121,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
         SharedPreferences sharedPreferences = getSharedPreferences("badge_value",MODE_PRIVATE);
         badgevalue=(sharedPreferences.getString("badge_value",null));
+
     }
 
     @Override
@@ -139,6 +136,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         drawer.closeDrawers();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
+
         //drawer items for customer
         switch (position) {
 
@@ -204,13 +202,11 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
-
 
     // Navigation Drawer Adapter
     public class NavigationDrawerAdapter extends BaseAdapter {
@@ -273,6 +269,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         return false;
     }
 
@@ -281,4 +278,5 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
         super.onBackPressed();
         finish();
     }
+
 }

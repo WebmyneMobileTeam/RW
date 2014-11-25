@@ -3,6 +3,8 @@ package com.webmyne.rightway.MyNotifications;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
@@ -35,17 +38,19 @@ import java.util.Collections;
 
 public class MyNotificationFragment extends Fragment implements ListDialog.setSelectedListner {
 
-    ArrayList<CustomerNotification> notificationList;
-    ListView lvCustomerNotifications;
-     NotificationAdapter notificationAdapter;
-    TextView txtDateSelectionForNotification;
+    private ArrayList<CustomerNotification> notificationList;
+    private ListView lvCustomerNotifications;
+    private NotificationAdapter notificationAdapter;
+    private TextView txtDateSelectionForNotification;
     private SharedPreferenceNotification sharedPreferenceNotification;
-    ArrayList<String> dateSelectionArray=new ArrayList<String>();
+    private ArrayList<String> dateSelectionArray=new ArrayList<String>();
+
     public static MyNotificationFragment newInstance(String param1, String param2) {
         MyNotificationFragment fragment = new MyNotificationFragment();
 
         return fragment;
     }
+
     public MyNotificationFragment() {
         // Required empty public constructor
     }
@@ -72,15 +77,27 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
         });
         lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
 
-
         return rootView;
     }
 
+    public  boolean isConnected() {
+
+        ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return  isConnected;
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        unreadAllNotification();
+
+        if(isConnected()==true) {
+            unreadAllNotification();
+        } else {
+            Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
+        }
+
         try {
             sharedPreferenceNotification = new SharedPreferenceNotification();
             notificationList = sharedPreferenceNotification.loadNotification(getActivity());
@@ -92,6 +109,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void unreadAllNotification() {
@@ -102,10 +120,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             @Override
             public void response(String response) {
 
-
-
                 ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
-
                 Log.e("response message for unread all: ", responseMessage.Response + "");
             }
 
@@ -122,14 +137,8 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
     public class NotificationAdapter extends BaseAdapter {
 
         Context context;
-
-
-
         ArrayList<CustomerNotification> notificationList;
-
-
         public NotificationAdapter(Context context, ArrayList<CustomerNotification> notificationList) {
-
             this.context = context;
             this.notificationList = notificationList;
         }
@@ -148,7 +157,6 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
 
         class ViewHolder {
             TextView txtMessageTitle,txtNotificationDate,txtNotificationMessage,txtNotificationTime;
-
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
@@ -159,11 +167,13 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_notification, parent, false);
                 holder = new ViewHolder();
+
                 holder.txtMessageTitle=(TextView)convertView.findViewById(R.id.txtMessageTitle);
                 holder.txtNotificationDate=(TextView)convertView.findViewById(R.id.txtNotificationDate);
                 holder.txtNotificationMessage=(TextView)convertView.findViewById(R.id.txtNotificationMessage);
                 holder.txtNotificationTime=(TextView)convertView.findViewById(R.id.txtNotificationTime);
                 convertView.setTag(holder);
+
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
@@ -171,10 +181,12 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
                 holder.txtNotificationDate.setTextColor(Color.GREEN);
 
             }
+
             holder.txtMessageTitle.setText(notificationList.get(position).Title);
             holder.txtNotificationDate.setText(notificationList.get(position).Date);
             holder.txtNotificationMessage.setText(notificationList.get(position).Message);
             holder.txtNotificationTime.setText(notificationList.get(position).notificationTime);
+
             return convertView;
 
         }

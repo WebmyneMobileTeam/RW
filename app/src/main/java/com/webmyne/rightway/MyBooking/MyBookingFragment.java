@@ -1,7 +1,10 @@
 package com.webmyne.rightway.MyBooking;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -13,6 +16,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
@@ -41,9 +45,10 @@ public class MyBookingFragment extends Fragment {
     private int badgeValue=0;
     private MyPagerAdapter adapter;
     public ArrayList<Trip> tripArrayList=new ArrayList<Trip>();
-    ProgressDialog progressDialog;
-    Customer customerDetails;
-    ArrayList<CustomerNotification> notificationList;
+    private ProgressDialog progressDialog;
+    private Customer customerDetails;
+    private ArrayList<CustomerNotification> notificationList;
+
     public static MyBookingFragment newInstance(String param1, String param2) {
         MyBookingFragment fragment = new MyBookingFragment();
         return fragment;
@@ -69,10 +74,23 @@ public class MyBookingFragment extends Fragment {
         return convertView;
     }
 
+    public  boolean isConnected() {
+
+        ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return  isConnected;
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
-        getTripList();
+        if(isConnected()==true) {
+            getTripList();
+        } else {
+            Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
+        }
         sharedPreferenceTrips=new SharedPreferenceTrips();
         sharedPreferenceNotification=new SharedPreferenceNotification();
     }
@@ -112,7 +130,6 @@ public class MyBookingFragment extends Fragment {
 
             @Override
             public void error(VolleyError error) {
-
                 Log.e("error: ",error+"");
 
             }
@@ -143,11 +160,13 @@ public class MyBookingFragment extends Fragment {
                         sharedPreferenceNotification.saveNotification(getActivity(), notificationList.get(i));
                     }
                 }
+
                 Log.e("Badge value: ",badgeValue+"");
                 SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("badge_value",getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor=preferencesTimeInterval.edit();
                 editor.putString("badge_value",badgeValue+"");
                 editor.commit();
+
                 progressDialog.dismiss();
             }
 
@@ -158,7 +177,6 @@ public class MyBookingFragment extends Fragment {
 
             }
         }.start();
-
 
     }
 

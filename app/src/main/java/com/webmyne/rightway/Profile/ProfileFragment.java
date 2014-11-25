@@ -24,6 +24,8 @@ import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.MyApplication;
 
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.Model.API;
+import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.R;
@@ -32,17 +34,20 @@ import com.webmyne.rightway.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Reader;
+
 
 public class ProfileFragment extends Fragment {
-    Customer customerProfile;
-    ProgressDialog progressDialog;
+    private Customer customerProfile;
+    private ProgressDialog progressDialog;
     private EditText txtCustomerName,txtCustomerMobile,txtCustomerEmail,txtCustomerCity,txtCustomerState,txtCustomerZipCode;
     private TextView txtUpdate;
+
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
-
         return fragment;
     }
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -51,13 +56,6 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 
     @Override
@@ -65,22 +63,20 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_profile, container, false);
+
+        initView(rootView);
+
+        return rootView;
+    }
+
+    private void initView(View rootView) {
+
         txtCustomerName=(EditText)rootView.findViewById(R.id.txtCustomerName);
         txtCustomerMobile=(EditText)rootView.findViewById(R.id.txtCustomerMobile);
         txtCustomerEmail=(EditText)rootView.findViewById(R.id.txtCustomerEmail);
         txtCustomerCity=(EditText)rootView.findViewById(R.id.txtCustomerCity);
         txtCustomerState=(EditText)rootView.findViewById(R.id.txtCustomerState);
         txtCustomerZipCode=(EditText)rootView.findViewById(R.id.txtCustomerZipCode);
-
-        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
-        customerProfile=complexPreferences.getObject("customer_data", Customer.class);
-
-        txtCustomerName.setText(customerProfile.Name);
-        txtCustomerMobile.setText(customerProfile.Mobile);
-        txtCustomerEmail.setText(customerProfile.Email);
-        txtCustomerCity.setText(customerProfile.City);
-        txtCustomerState.setText(customerProfile.State);
-        txtCustomerZipCode.setText(customerProfile.ZipCode);
         txtUpdate=(TextView)rootView.findViewById(R.id.txtUpdate);
 
         txtUpdate.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +95,22 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
-        return rootView;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
+        customerProfile=complexPreferences.getObject("customer_data", Customer.class);
+
+        txtCustomerName.setText(customerProfile.Name);
+        txtCustomerMobile.setText(customerProfile.Mobile);
+        txtCustomerEmail.setText(customerProfile.Email);
+        txtCustomerCity.setText(customerProfile.City);
+        txtCustomerState.setText(customerProfile.State);
+        txtCustomerZipCode.setText(customerProfile.ZipCode);
+
     }
 
     public  boolean isConnected() {
@@ -111,36 +122,53 @@ public class ProfileFragment extends Fragment {
 
     public void updateProfileData() {
 
-        progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        JSONObject customerObject=new JSONObject();
-        try {
-            customerObject.put("CustomerID", customerProfile.CustomerID);
-            customerObject.put("CustomerIMEI_Number", customerProfile.CustomerIMEI_Number+"");
-            customerObject.put("NotificationID", customerProfile.NotificationID+"");
-            customerObject.put("DeviceType", customerProfile.DeviceType+"");
-            customerObject.put("Name", customerProfile.Name+"");
-            customerObject.put("Mobile", customerProfile.Mobile+"");
-            customerObject.put("Email", customerProfile.Email+"");
-            customerObject.put("City", customerProfile.City+"");
-            customerObject.put("State", customerProfile.State+"");
-            customerObject.put("ZipCode", customerProfile.ZipCode+"");
-            customerObject.put("DeviceType", customerProfile.DeviceType+"");
-            customerObject.put("ProfilePicture", customerProfile.ProfilePicture+"");
-
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
 
             @Override
-            public void onResponse(JSONObject jobj) {
-                String response = jobj.toString();
-                Log.e("response continue: ", response + "");
+            protected Void doInBackground(Void... params) {
+
+                JSONObject customerObject=new JSONObject();
+
+                try {
+                    customerObject.put("CustomerID", customerProfile.CustomerID);
+                    customerObject.put("CustomerIMEI_Number", customerProfile.CustomerIMEI_Number+"");
+                    customerObject.put("NotificationID", customerProfile.NotificationID+"");
+                    customerObject.put("DeviceType", customerProfile.DeviceType+"");
+                    customerObject.put("Name", customerProfile.Name+"");
+                    customerObject.put("Mobile", customerProfile.Mobile+"");
+                    customerObject.put("Email", customerProfile.Email+"");
+                    customerObject.put("City", customerProfile.City+"");
+                    customerObject.put("State", customerProfile.State+"");
+                    customerObject.put("ZipCode", customerProfile.ZipCode+"");
+                    customerObject.put("DeviceType", customerProfile.DeviceType+"");
+                    customerObject.put("ProfilePicture", customerProfile.ProfilePicture+"");
+
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                Reader reader = API.callWebservicePost(AppConstants.customerProfile, customerObject.toString());
+                Customer customerResponse = new GsonBuilder().create().fromJson(reader, Customer.class);
+
+                handlePostData(customerResponse);
+                return null;
+            }
+        }.execute();
+    }
+
+    public void handlePostData(final Customer customerResponse) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
                 progressDialog.dismiss();
-                Customer customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
 
                 ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
                 complexPreferences.putObject("customer_profile_data", customerResponse);
@@ -156,21 +184,12 @@ public class ProfileFragment extends Fragment {
                 Log.e("City",customerResponse.City+"");
                 Log.e("State",customerResponse.State+"");
                 Log.e("ZipCode",customerResponse.ZipCode+"");
-
                 Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
+
                 Toast.makeText(getActivity(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
 
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error response: ",error+"");
             }
         });
-        MyApplication.getInstance().addToRequestQueue(req);
-
     }
 
 }

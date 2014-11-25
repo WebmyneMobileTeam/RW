@@ -50,7 +50,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -63,7 +62,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 
 public class RegistrationActivity extends BaseActivity {
@@ -73,16 +71,13 @@ public class RegistrationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new BasicFormFragment())
-                    .addToBackStack(null)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.container, new BasicFormFragment()).addToBackStack(null).commit();
         }
     }
 
     public void setActionBarTitle(String title){
+
         txtHeader.setText(title);
     }
 
@@ -94,6 +89,7 @@ public class RegistrationActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         return false;
     }
 
@@ -108,22 +104,26 @@ public class RegistrationActivity extends BaseActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+
             setHasOptionsMenu(true);
             View rootView = inflater.inflate(R.layout.fragment_registration, container, false);
             initView(rootView);
+
             return rootView;
         }
 
         private void initView(View rootView){
+
             etCustomerName=(EditText)rootView.findViewById(R.id.etCustomerName);
             etCustomerMobile=(EditText)rootView.findViewById(R.id.etCustomerMobile);
             etCustomerEmail=(EditText)rootView.findViewById(R.id.etCustomerEmail);
             etCustomerCity=(EditText)rootView.findViewById(R.id.etCustomerCity);
             etCustomerState=(EditText)rootView.findViewById(R.id.etCustomerState);
             etCustomerZipcode=(EditText)rootView.findViewById(R.id.etCustomerZipcode);
+
         }
+
         @Override
         public void onResume() {
             super.onResume();
@@ -197,13 +197,13 @@ public class RegistrationActivity extends BaseActivity {
             return matcher.matches();
         }
 
-
     }
 
     /**
      * A placeholder fragment containing  image view.
      */
     public static class ImageFormFragment extends Fragment implements View.OnClickListener,ImageChooserListener{
+
         private ProgressDialog progressDialog;
         private ImageChooserManager imageChooserManager;
         private ImageView imgProfilePic;
@@ -388,11 +388,9 @@ public class RegistrationActivity extends BaseActivity {
             try {
                 MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                 entity.addPart("image", new FileBody(fileName));
-
-
                 httpPost.setEntity(entity);
-
                 HttpResponse response = httpClient.execute(httpPost, localContext);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -417,8 +415,6 @@ public class RegistrationActivity extends BaseActivity {
 //                    e2.printStackTrace();
 //                }
 //            }
-
-
 
         }
 
@@ -459,10 +455,12 @@ public class RegistrationActivity extends BaseActivity {
         }
 
         public void postRegistrationData() {
+
             progressDialog=new ProgressDialog(getActivity());
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
+
             // Get customer form data from BasicFormFragment
             ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
             Customer customer = complexPreferences.getObject("customer_data", Customer.class);
@@ -478,6 +476,7 @@ public class RegistrationActivity extends BaseActivity {
             customer.ProfilePicture=telephonyManager.getDeviceId()+".jpg";
             customer.DeviceType="Android";
             JSONObject customerObject=new JSONObject();
+
             try {
                 customerObject.put("CustomerID", "0");
                 customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
@@ -493,9 +492,10 @@ public class RegistrationActivity extends BaseActivity {
             } catch (JSONException e){
                 e.printStackTrace();
             }
+
             Log.e("Customer Info: ",customerObject+"");
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerRegistration, customerObject, new Response.Listener<JSONObject>() {
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerProfile, customerObject, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject jobj) {
@@ -518,7 +518,6 @@ public class RegistrationActivity extends BaseActivity {
         }
 
         public void handleCustomerRegistrationData() {
-
 
                     // Store customer data from response
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);

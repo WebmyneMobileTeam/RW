@@ -31,9 +31,7 @@ public class LauncherActivity extends Activity {
         setContentView(R.layout.activity_launcher);
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+            getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
         }
     }
 
@@ -49,7 +47,7 @@ public class LauncherActivity extends Activity {
         public PlaceholderFragment() {
         }
 
-          @Override
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_launcher, container, false);
             return rootView;
@@ -70,8 +68,11 @@ public class LauncherActivity extends Activity {
                 SharedPreferences preferences = getActivity().getSharedPreferences("is_registered", MODE_PRIVATE);
                 boolean isRegistered = preferences.getBoolean("registration", false);
                 if (isRegistered==false) { // get GCM Id and post IMEI Number
+
                     getRegId();
+
                 } else {    // show home screen
+
                     new CountDownTimer(2500, 1000) {
                         @Override
                         public void onFinish() {
@@ -90,6 +91,7 @@ public class LauncherActivity extends Activity {
 
                 }
             } else { // If internet connection is not available
+
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                 alert.setTitle("Error");
                 alert.setMessage("No Internet Connection");
@@ -105,6 +107,7 @@ public class LauncherActivity extends Activity {
         }
 
         public void getRegId(){
+
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
@@ -151,6 +154,9 @@ public class LauncherActivity extends Activity {
                     return null;
                 }
             }.execute();
+
         } // end of getRegId
+
     } // end of fragment
+
 }

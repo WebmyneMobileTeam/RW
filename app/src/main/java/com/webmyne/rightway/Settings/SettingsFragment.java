@@ -19,9 +19,11 @@ import java.util.ArrayList;
 
 
 public class SettingsFragment extends Fragment implements ListDialog.setSelectedListner{
-    LinearLayout linearIntervalTime;
-    TextView txtUpdateTime;
-    ArrayList<String> timeList;
+
+    private LinearLayout linearIntervalTime;
+    private TextView txtUpdateTime;
+    private ArrayList<String> timeList;
+
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
         return fragment;
@@ -34,6 +36,7 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         timeList=new ArrayList<String>();
         timeList.add("1");
         timeList.add("2");
@@ -51,14 +54,17 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
         View convertView= inflater.inflate(R.layout.fragment_settings, container, false);
         linearIntervalTime=(LinearLayout)convertView.findViewById(R.id.linearIntervalTime);
         txtUpdateTime=(TextView)convertView.findViewById(R.id.txtUpdateTime);
+
         SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
         txtUpdateTime.setText(preferencesTimeInterval.getString("driver_time_interval", "5")+" minutes");
+
         linearIntervalTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
             }
         });
+
         return convertView;
     }
 

@@ -35,14 +35,16 @@ import java.util.Date;
 
 public class CurrentOrdersFragment extends Fragment {
 
-    ListView currentOrdersListView;
-    CurrentOrdersAdapter currentOrdersAdapter;
-    ArrayList<Trip> currentOrdersList;
-    SharedPreferenceTrips sharedPreferenceTrips;
+    private ListView currentOrdersListView;
+    private CurrentOrdersAdapter currentOrdersAdapter;
+    private ArrayList<Trip> currentOrdersList;
+    private SharedPreferenceTrips sharedPreferenceTrips;
+
     public static CurrentOrdersFragment newInstance(String param1, String param2) {
         CurrentOrdersFragment fragment = new CurrentOrdersFragment();
         return fragment;
     }
+
     public CurrentOrdersFragment() {
         // Required empty public constructor
     }
@@ -50,7 +52,6 @@ public class CurrentOrdersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
     }
 
@@ -61,10 +62,11 @@ public class CurrentOrdersFragment extends Fragment {
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             String date=format.format(new Date());
 
-            //TODO
             sharedPreferenceTrips = new SharedPreferenceTrips();
             currentOrdersList = sharedPreferenceTrips.loadTrip(getActivity());
+
             ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
+
             for(int i=0;i<currentOrdersList.size();i++){
                 Log.e("current date:",date+"");
                 Log.e("loop date:",getFormatedDate(currentOrdersList.get(i))+"");
@@ -72,25 +74,23 @@ public class CurrentOrdersFragment extends Fragment {
                     filteredCurruntOrderList.add(currentOrdersList.get(i));
                 }
             }
-            if(currentOrdersList !=null) {
 
+            if(currentOrdersList !=null) {
                 Collections.reverse(filteredCurruntOrderList);
                 currentOrdersAdapter = new CurrentOrdersAdapter(getActivity(), filteredCurruntOrderList);
                 currentOrdersListView.setAdapter(currentOrdersAdapter);
             }
+
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View convertView=inflater.inflate(R.layout.fragment_current_orders, container, false);
         currentOrdersListView=(ListView)convertView.findViewById(R.id.currentOrdersList);
-
-
         return convertView;
     }
 
@@ -131,6 +131,7 @@ public class CurrentOrdersFragment extends Fragment {
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_current_orders, parent, false);
                 holder = new ViewHolder();
+
                 holder.currentOrderCname=(TextView)convertView.findViewById(R.id.currentOrderCname);
                 holder.currentOrderDate=(TextView)convertView.findViewById(R.id.currentOrderDate);
                 holder.currentOrderPickupLocation=(TextView)convertView.findViewById(R.id.currentOrderPickupLocation);
@@ -140,22 +141,29 @@ public class CurrentOrdersFragment extends Fragment {
                 holder. mapView=(ImageView)convertView.findViewById(R.id.mapView);
 
                 convertView.setTag(holder);
+
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
             holder.currentOrderCname.setText(currentOrdersList.get(position).DriverName);
             holder.currentOrderDate.setText(getFormatedDate(currentOrdersList.get(position)));
             holder.currentOrderPickupLocation.setText("pickup: "+currentOrdersList.get(position).PickupAddress);
             holder.currentOrderDropoffLocation.setText("dropoff: "+currentOrdersList.get(position).DropOffAddress);
             holder.currentOrderFareAmount.setText(String.format("$ %.2f", getTotal(currentOrdersList.get(position)))+"");
             holder.currentOrderStatus.setText("status: "+currentOrdersList.get(position).TripStatus);
+
             if(currentOrdersList.get(position).isDriverFeedbackGiven.equalsIgnoreCase("false") && (!currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripInProgressStatus))) {
+
                 if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)) {
                     holder. mapView.setBackgroundResource(R.drawable.ic_feedback);
+
                 } else {
                     holder. mapView.setBackgroundResource(R.drawable.ic_maps_navigation);
                 }
+
                 holder. mapView.setVisibility(View.VISIBLE);
+
             } else {
                 holder. mapView.setVisibility(View.GONE);
             }
@@ -165,31 +173,39 @@ public class CurrentOrdersFragment extends Fragment {
                 public void onClick(View v) {
 
 
-                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
-                        complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
-                        complexPreferences.commit();
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                    complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
+                    complexPreferences.commit();
+
                     if(currentOrdersList.get(position).TripStatus.equalsIgnoreCase(AppConstants.tripSuccessStatus)){
                         FragmentManager manager = getActivity().getSupportFragmentManager();
 
                         FragmentTransaction ft = manager.beginTransaction();
                         ReceiptAndFeedbackFragment receiptAndFeedbackFragment = ReceiptAndFeedbackFragment.newInstance("", "");
+
                         if (manager.findFragmentByTag("ReceiptAndFeedbackFragment") == null) {
                             ft.replace(R.id.main_content, receiptAndFeedbackFragment, "ReceiptAndFeedbackFragment").commit();
                         }
+
                     } else {
+
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         FragmentTransaction ft = manager.beginTransaction();
                         FragmentCurrentTripMap currentTripFragment = FragmentCurrentTripMap.newInstance("", "");
+
                         if (manager.findFragmentByTag("CURRENT_TRIP") == null) {
                             ft.replace(R.id.main_content, currentTripFragment, "CURRENT_TRIP").commit();
                         }
+
                     }
 
                 }
             });
+
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
                     complexPreferences.putObject("current_trip_details", currentOrdersList.get(position));
                     complexPreferences.commit();
@@ -197,18 +213,15 @@ public class CurrentOrdersFragment extends Fragment {
                     Intent i = new Intent(getActivity(), OrderDetailActivity.class);
                     startActivity(i);
 
-
                 }
             });
-            return convertView;
 
+            return convertView;
 
         }
 
-
-
-
     }
+
     public String getFormatedDate(Trip currentTrip) {
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -216,6 +229,7 @@ public class CurrentOrdersFragment extends Fragment {
         Date date = float2Date(dateinFloat);
         return  format.format(date);
     }
+
     public  java.util.Date float2Date(float nbSeconds) {
         java.util.Date date_origine;
         java.util.Calendar date = java.util.Calendar.getInstance();
@@ -226,6 +240,7 @@ public class CurrentOrdersFragment extends Fragment {
         date.add(java.util.Calendar.SECOND, (int) nbSeconds);
         return date.getTime();
     }
+
     public double getTotal(Trip currentTrip) {
         Double total;
         String tripFareValue=String.format("%.2f", Double.parseDouble(currentTrip.TripDistance)*0.6214*Double.parseDouble(currentTrip.TripFare));
@@ -239,4 +254,5 @@ public class CurrentOrdersFragment extends Fragment {
         total=total+Double.parseDouble(currentTrip.TripFee);
         return total;
     }
+
 }

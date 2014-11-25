@@ -1,6 +1,10 @@
 package com.webmyne.rightway.Receipt_And_Feedback;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +26,7 @@ import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.MyApplication;
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
+import com.webmyne.rightway.Model.API;
 import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.MyBooking.MyBookingFragment;
@@ -30,6 +35,7 @@ import com.webmyne.rightway.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,12 +44,13 @@ import java.util.Date;
 public class ReceiptAndFeedbackFragment extends Fragment {
 
     private ProgressDialog progressDialog;
-    TextView txtTripComplete,txtDriverRatting,txtTripPaymentType,txtTripDriverName,txtTripPickupAddress,
+    private TextView txtTripComplete,txtDriverRatting,txtTripPaymentType,txtTripDriverName,txtTripPickupAddress,
             txtTripDropoffAddress,txtTripDistance,txtTripDate,txtTripFare,txtTripTip,txtTripFee,txtTotalAmount,paymentType;
-    RatingBar rattings;
-    EditText txtDriverComments;
-   Trip  currentTrip;
-    ArrayList<String> dateSelectionArray=new ArrayList<String>();
+    private RatingBar rattings;
+    private EditText txtDriverComments;
+    private Trip  currentTrip;
+    private ArrayList<String> dateSelectionArray=new ArrayList<String>();
+
     public static ReceiptAndFeedbackFragment newInstance(String param1, String param2) {
         ReceiptAndFeedbackFragment fragment = new ReceiptAndFeedbackFragment();
 
@@ -67,6 +74,13 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         // Inflate the layout for this fragment
         View convertView= inflater.inflate(R.layout.fragment_receipt_and_feedback, container, false);
 
+        initView(convertView);
+
+        return convertView;
+    }
+
+    private void initView(View convertView){
+
         txtTripPaymentType=(TextView)convertView.findViewById(R.id.txtTripPaymentType);
         paymentType=(TextView)convertView.findViewById(R.id.paymentType);
         txtTripDriverName=(TextView)convertView.findViewById(R.id.txtTripDriverName);
@@ -79,6 +93,21 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         txtTripFee=(TextView)convertView.findViewById(R.id.txtTripFee);
         txtTotalAmount=(TextView)convertView.findViewById(R.id.txtTotalAmount);
         rattings=(RatingBar)convertView.findViewById(R.id.rattings);
+        txtTripComplete=(TextView)convertView.findViewById(R.id.txtTripComplete);
+        txtDriverRatting=(TextView)convertView.findViewById(R.id.txtDriverRatting);
+        txtDriverComments=(EditText)convertView.findViewById(R.id.txtDriverComments);
+
+        txtTripComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isConnected()==true) {
+                    completTrip();
+                } else {
+                    Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         rattings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -86,24 +115,23 @@ public class ReceiptAndFeedbackFragment extends Fragment {
             }
         });
 
+    }
 
-        txtTripComplete=(TextView)convertView.findViewById(R.id.txtTripComplete);
-        txtDriverRatting=(TextView)convertView.findViewById(R.id.txtDriverRatting);
-        txtDriverComments=(EditText)convertView.findViewById(R.id.txtDriverComments);
-        txtTripComplete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                completTrip();
-            }
-        });
-        return convertView;
+    public  boolean isConnected() {
+
+        ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return  isConnected;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
         currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
+
         if(currentTrip.PaymentType !=null){
             txtTripPaymentType.setVisibility(View.VISIBLE);
             paymentType.setVisibility(View.VISIBLE);
@@ -119,67 +147,73 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         txtTripDistance.setText(currentTrip.TripDistance+" kms");
         txtTripDate.setText(getFormatedDate(currentTrip)+"");
         txtTripFare.setText("$ "+String.format("%.2f", Double.parseDouble(currentTrip.TripDistance)*0.6214*Double.parseDouble(currentTrip.TripFare)));
-//        txtTripFare.setText("$ "+currentTrip.TripFare+"");
         txtTripTip.setText(currentTrip.TipPercentage+" %");
         txtTripFee.setText("$ "+currentTrip.TripFee+"");
         txtTotalAmount.setText(String.format("$ %.2f", getTotal(currentTrip))+"");
 
-
     }
 
     public void completTrip(){
-        progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        JSONObject driverStatusObject = new JSONObject();
-        try {
 
-            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
-            Trip currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
-            driverStatusObject.put("DriverID", currentTrip.DriverID+"");
-            driverStatusObject.put("DriverComments", txtDriverComments.getText().toString()+"");
-            driverStatusObject.put("DriverRattings", txtDriverRatting.getText().toString()+"");
-            driverStatusObject.put("TripID", currentTrip.TripID+"");
-            driverStatusObject.put("isDriverFeedbackGiven", true);
-            Log.e("driverStatusObject: ", driverStatusObject + "");
-        }catch(JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.TripSuccessful, driverStatusObject, new Response.Listener<JSONObject>() {
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog=new ProgressDialog(getActivity());
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }
 
             @Override
-            public void onResponse(JSONObject jobj) {
-                String response = jobj.toString();
-                Log.e("response continue: ", response + "");
-                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
-                Log.e("Response: ",responseMessage.Response+"");
-                progressDialog.dismiss();
+            protected Void doInBackground(Void... params) {
 
-                    FragmentManager manager = getActivity().getSupportFragmentManager();
-                    Toast.makeText(getActivity(), "Trip completed Successfully", Toast.LENGTH_SHORT).show();
-                    FragmentTransaction ft = manager.beginTransaction();
-                    MyBookingFragment myOrdersFragment = MyBookingFragment.newInstance("", "");
-                    if (manager.findFragmentByTag("MyBooking") == null) {
-                        ft.replace(R.id.main_content, myOrdersFragment,"MyBooking").commit();
-                    }
+                JSONObject driverStatusObject = new JSONObject();
+                try {
 
+                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
+                    Trip currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
+                    driverStatusObject.put("DriverID", currentTrip.DriverID+"");
+                    driverStatusObject.put("DriverComments", txtDriverComments.getText().toString()+"");
+                    driverStatusObject.put("DriverRattings", txtDriverRatting.getText().toString()+"");
+                    driverStatusObject.put("TripID", currentTrip.TripID+"");
+                    driverStatusObject.put("isDriverFeedbackGiven", true);
+                    Log.e("driverStatusObject: ", driverStatusObject + "");
 
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Reader reader = API.callWebservicePost(AppConstants.TripSuccessful, driverStatusObject.toString());
+                ResponseMessage responseMessage = new GsonBuilder().create().fromJson(reader, ResponseMessage.class);
+                Log.e("responseMessage:",responseMessage.Response+"");
+                handlePostData();
+
+                return null;
 
             }
-        }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error response: ",error+"");
-            }
-        });
-        MyApplication.getInstance().addToRequestQueue(req);
-
-
+        }.execute();
 
     }
+    public void handlePostData() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
+                progressDialog.dismiss();
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                Toast.makeText(getActivity(), "Trip completed Successfully", Toast.LENGTH_SHORT).show();
+                FragmentTransaction ft = manager.beginTransaction();
+                MyBookingFragment myOrdersFragment = MyBookingFragment.newInstance("", "");
+
+                if (manager.findFragmentByTag("MyBooking") == null) {
+                    ft.replace(R.id.main_content, myOrdersFragment,"MyBooking").commit();
+                }
+
+            }
+        });
+    }
 
     public String getFormatedDate(Trip currentTrip) {
 
@@ -188,6 +222,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         Date date = float2Date(dateinFloat);
         return  format.format(date);
     }
+
     public  java.util.Date float2Date(float nbSeconds) {
         java.util.Date date_origine;
         java.util.Calendar date = java.util.Calendar.getInstance();
@@ -198,6 +233,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         date.add(java.util.Calendar.SECOND, (int) nbSeconds);
         return date.getTime();
     }
+
     public double getTotal(Trip currentTrip) {
         Double total;
         String tripFareValue=String.format("%.2f", Double.parseDouble(currentTrip.TripDistance)*0.6214*Double.parseDouble(currentTrip.TripFare));
@@ -211,4 +247,5 @@ public class ReceiptAndFeedbackFragment extends Fragment {
         total=total+Double.parseDouble(currentTrip.TripFee);
         return total;
     }
+
 }

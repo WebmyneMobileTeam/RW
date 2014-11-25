@@ -38,18 +38,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FragmentCurrentTripMap extends Fragment {
-    ProgressDialog progressDialog;
+
     private MapView mv;
     private MapController mc;
-//    TextView getReceipt;
     private LatLng driver_latlng;
-    LatLng pickup_latlng;
-    LatLng dropoff_latlng;
-    Trip currentTrip;
+    private LatLng pickup_latlng;
+    private LatLng dropoff_latlng;
+    private Trip currentTrip;
 
     public static FragmentCurrentTripMap newInstance(String param1, String param2) {
         FragmentCurrentTripMap fragment = new FragmentCurrentTripMap();
-
         return fragment;
     }
 
@@ -59,9 +57,10 @@ public class FragmentCurrentTripMap extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "current_trip_details", 0);
         currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
 
@@ -71,15 +70,7 @@ public class FragmentCurrentTripMap extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView= inflater.inflate(R.layout.fragment_current_trip, container, false);
-//        getReceipt =(TextView)rootView.findViewById(R.id.txtgetReceipt);
-//        getReceipt.setVisibility(View.VISIBLE);
-//        getReceipt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent i=new Intent(getActivity(), ReceiptAndFeedbackActivity.class);
-//                startActivity(i);
-//            }
-//        });
+
         mv = (MapView)rootView.findViewById(R.id.map);
 
             setView(savedInstanceState);
@@ -123,30 +114,25 @@ public class FragmentCurrentTripMap extends Fragment {
 
     }
 
-    private void addMarker(MarkerOptions opts) {
-
-        mc.addMarker(opts, new MapController.MarkerCallback() {
-            @Override
-            public void invokedMarker(GoogleMap map, Marker marker) {
-
-            }
-        });
-    }
-
     public void updateDriverLocation() {
         new CallWebService(AppConstants.DriverUpdatedLocation+currentTrip.DriverID, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
             public void response(String response) {
                 Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
+
                 Log.e("DriverID", availableDrivers.DriverID + "");
                 Log.e("FirstName", availableDrivers.FirstName+"");
                 Log.e("LastName", availableDrivers.LastName+"");
                 Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
                 Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
+
                 driver_latlng =new LatLng(Double.parseDouble(availableDrivers.Webmyne_Latitude),Double.parseDouble(availableDrivers.Webmyne_Longitude));
+
                 int zoom = (int)(mc.getMap().getMaxZoomLevel() - (mc.getMap().getMinZoomLevel()*2.5));
+
                 mc.clearMarkers();
+
                 if(driver_latlng != null) {
 
                     MarkerOptions opts = new MarkerOptions();
@@ -158,6 +144,7 @@ public class FragmentCurrentTripMap extends Fragment {
                     mc.animateTo(driver_latlng,zoom);
 
                 }
+
                 if(pickup_latlng != null) {
 
                     MarkerOptions opts = new MarkerOptions();
@@ -176,6 +163,7 @@ public class FragmentCurrentTripMap extends Fragment {
                     opts.snippet("");
                     addMarker(opts);
                 }
+
                 Navigator nav = new Navigator(mv.getMap(),pickup_latlng,dropoff_latlng);
                 nav.findDirections(false);
                 nav.setPathColor(Color.parseColor("#4285F4"),Color.BLUE,Color.BLUE);
@@ -188,6 +176,17 @@ public class FragmentCurrentTripMap extends Fragment {
         }.start();
 
     }
+
+    private void addMarker(MarkerOptions opts) {
+
+        mc.addMarker(opts, new MapController.MarkerCallback() {
+            @Override
+            public void invokedMarker(GoogleMap map, Marker marker) {
+
+            }
+        });
+    }
+
     @Override
     public void onPause() {
         mv.onPause();
