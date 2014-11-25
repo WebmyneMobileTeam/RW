@@ -524,7 +524,7 @@
         android:textStyle="bold"
         app:customTypeface="@string/bold"
         tools:ignore="MissingPrefix"
-        android:text="DONE"
+        android:text="SUBMIT FEEDBACK"
         android:background="@color/actionbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

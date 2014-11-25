@@ -444,7 +444,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             mc.animateTo(pickup_latlng);
         }
 
-        if(dropoff_latlng != null){
+        if(dropoff_latlng != null) {
 
             MarkerOptions opts_drop = new MarkerOptions();
             opts_drop.position(dropoff_latlng);
@@ -454,9 +454,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             addMarker(opts_drop);
             mc.animateTo(dropoff_latlng);
 
-            Navigator nav = new Navigator(mv.getMap(),pickup_latlng,dropoff_latlng);
+
+            Navigator nav = new Navigator(mv.getMap(), pickup_latlng, dropoff_latlng);
             nav.findDirections(false);
-            nav.setPathColor(Color.parseColor("#4285F4"),Color.BLUE,Color.BLUE);
+            nav.setPathColor(Color.parseColor("#4285F4"), Color.BLUE, Color.BLUE);
 
             Location lFrom = new Location("");
             lFrom.setLatitude(pickup_latlng.latitude);
@@ -466,16 +467,16 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             lTo.setLatitude(dropoff_latlng.latitude);
             lTo.setLongitude(dropoff_latlng.longitude);
 
-            distance= lFrom.distanceTo(lTo)/1000;
+            distance = lFrom.distanceTo(lTo) / 1000;
 
             // display distance to map
-            if(!txtDistance.isShown()){
+            if (!txtDistance.isShown()) {
                 txtDistance.setVisibility(View.VISIBLE);
             }
 
-            txtDistance.setText(String.format("%.2f kms",distance)+"\n"+String.format("$ %.2f", distance*0.6214*(Double.parseDouble(currentRate))));
-        }
+            txtDistance.setText(String.format("%.2f kms", distance) + "\n" + String.format("$ %.2f", distance * 0.6214 * (Double.parseDouble(currentRate))));
 
+        }
     }
 
     @Override
@@ -484,6 +485,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         inflater.inflate(R.menu.menu_bookcab,menu);
 
     }
+
     public  boolean isConnected() {
 
         ConnectivityManager cm =(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
