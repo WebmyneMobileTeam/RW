@@ -479,7 +479,13 @@ public class RegistrationActivity extends BaseActivity {
 
             try {
                 customerObject.put("CustomerID", "0");
-                customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
+
+                if(customer.CustomerIMEI_Number == null){
+                    // when imei number not found, insert email
+                    customerObject.put("CustomerIMEI_Number", customer.Email+"");
+                } else {
+                    customerObject.put("CustomerIMEI_Number", customer.CustomerIMEI_Number+"");
+                }
                 customerObject.put("NotificationID", customer.NotificationID+"");
                 customerObject.put("DeviceType", customer.DeviceType+"");
                 customerObject.put("Name", customer.Name+"");

@@ -81,6 +81,7 @@ public class CanceledOrdersFragment extends Fragment implements ListDialog.setSe
         // Inflate the layout for this fragment
         View  convertView= inflater.inflate(R.layout.fragment_canceled_orders, container, false);
         ordersCanceledListView =(ListView)convertView.findViewById(R.id.canceledOrdersList);
+        ordersCanceledListView.setEmptyView(convertView.findViewById(R.id.empty));
         txtDateSelectionForOrderCancel=(TextView)convertView.findViewById(R.id.txtDateSelectionForOrderCancel);
         txtDateSelectionForOrderCancel.setOnClickListener(new View.OnClickListener() {
             @Override

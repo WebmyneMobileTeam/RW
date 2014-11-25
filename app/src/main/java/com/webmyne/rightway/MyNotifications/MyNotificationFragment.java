@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,9 +20,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
+import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.CallWebService;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.ListDialog;
@@ -32,15 +31,18 @@ import com.webmyne.rightway.Model.ResponseMessage;
 import com.webmyne.rightway.Model.SharedPreferenceNotification;
 import com.webmyne.rightway.R;
 import com.webmyne.rightway.Registration.Customer;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 public class MyNotificationFragment extends Fragment implements ListDialog.setSelectedListner {
 
     private ArrayList<CustomerNotification> notificationList;
     private ListView lvCustomerNotifications;
     private NotificationAdapter notificationAdapter;
+    private ArrayList<CustomerNotification> filteredOrderList;
     private TextView txtDateSelectionForNotification;
     private SharedPreferenceNotification sharedPreferenceNotification;
     private ArrayList<String> dateSelectionArray=new ArrayList<String>();
@@ -76,7 +78,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             }
         });
         lvCustomerNotifications=(ListView)rootView.findViewById(R.id.lvCustomerNotifications);
-
+        lvCustomerNotifications.setEmptyView(rootView.findViewById(R.id.empty));
         return rootView;
     }
 
@@ -98,12 +100,16 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
         }
 
+
         try {
             sharedPreferenceNotification = new SharedPreferenceNotification();
             notificationList = sharedPreferenceNotification.loadNotification(getActivity());
-            Collections.reverse(notificationList);
-            if (notificationList != null) {
-                notificationAdapter = new NotificationAdapter(getActivity(), notificationList);
+            filteredOrderList=new ArrayList<CustomerNotification>();
+            filterData("Current Week");
+
+            if (filteredOrderList != null) {
+                Collections.reverse(filteredOrderList);
+                notificationAdapter = new NotificationAdapter(getActivity(), filteredOrderList);
                 lvCustomerNotifications.setAdapter(notificationAdapter);
             }
         } catch (Exception e) {
@@ -132,6 +138,85 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             }
         }.start();
 
+    }
+
+    private void filterData(String filterType){
+        try {
+
+            filteredOrderList.clear();
+            SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+
+            int day = Integer.parseInt(dayFormat.format(new Date()));
+            int month = Integer.parseInt(monthFormat.format(new Date()))-1;
+            int year = Integer.parseInt(yearFormat.format(new Date()));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(calendar.YEAR,year);
+            calendar.set(calendar.MONTH,month);
+            calendar.set(calendar.DAY_OF_MONTH,day);
+
+            int currentWeekOfyear=calendar.get(calendar.WEEK_OF_YEAR);
+            int lastWeekOfYear=currentWeekOfyear-1;
+            if(lastWeekOfYear<1){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastWeekOfYear=c.get(c.WEEK_OF_YEAR);
+            }
+            int currentMonth=calendar.get(calendar.MONTH);
+            int lastMonth=currentMonth-1;
+            if(lastMonth<0){
+                Calendar c = Calendar.getInstance();
+                c.set(c.YEAR,calendar.YEAR-1);
+                c.set(c.MONTH,11);
+                c.set(c.DAY_OF_MONTH,31);
+                lastMonth=c.get(c.MONTH);
+            }
+
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            for (int i = 0; i < notificationList.size(); i++) {
+                Date loopDate = format.parse(notificationList.get(i).Date);
+                int loopDay = Integer.parseInt(dayFormat.format(loopDate));
+                int loopMonth = Integer.parseInt(monthFormat.format(loopDate))-1;
+                int loopYear = Integer.parseInt(yearFormat.format(loopDate));
+
+                Calendar loopCalendar = Calendar.getInstance();
+                loopCalendar.set(loopCalendar.YEAR,loopYear);
+                loopCalendar.set(loopCalendar.MONTH,loopMonth);
+                loopCalendar.set(loopCalendar.DAY_OF_MONTH,loopDay);
+
+                int loopCurrentWeekOfyear=loopCalendar.get(loopCalendar.WEEK_OF_YEAR);
+                int loopCurrentMonth=loopCalendar.get(loopCalendar.MONTH);
+
+
+                    if (filterType.equalsIgnoreCase("Current Week")) {
+                        if (currentWeekOfyear == loopCurrentWeekOfyear) {
+                            filteredOrderList.add(notificationList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Week")) {
+                        if (lastWeekOfYear == loopCurrentWeekOfyear) {
+                            filteredOrderList.add(notificationList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Current Month")) {
+                        if (currentMonth == loopCurrentMonth) {
+                            filteredOrderList.add(notificationList.get(i));
+                        }
+                    } else if (filterType.equalsIgnoreCase("Last Month")) {
+                        if (lastMonth == loopCurrentMonth) {
+                            filteredOrderList.add(notificationList.get(i));
+                        }
+                    }
+
+            }
+            if(notificationAdapter != null) {
+                notificationAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public class NotificationAdapter extends BaseAdapter {
@@ -208,6 +293,6 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
     public void selected(String value) {
 
         txtDateSelectionForNotification.setText("Filtered By "+value);
-
+        filterData(value);
     }
 }

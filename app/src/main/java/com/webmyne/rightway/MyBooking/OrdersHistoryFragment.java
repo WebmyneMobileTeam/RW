@@ -93,6 +93,7 @@ public class OrdersHistoryFragment extends Fragment implements ListDialog.setSel
             }
         });
         ordersHistoryListView =(ListView)convertView.findViewById(R.id.ordersHistoryList);
+        ordersHistoryListView.setEmptyView(convertView.findViewById(R.id.empty));
         return convertView;
     }
 
