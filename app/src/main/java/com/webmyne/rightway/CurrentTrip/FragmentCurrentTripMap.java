@@ -121,11 +121,11 @@ public class FragmentCurrentTripMap extends Fragment {
             public void response(String response) {
                 Driver  availableDrivers= new GsonBuilder().create().fromJson(response, Driver.class);
 
-                Log.e("DriverID", availableDrivers.DriverID + "");
-                Log.e("FirstName", availableDrivers.FirstName+"");
-                Log.e("LastName", availableDrivers.LastName+"");
-                Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
-                Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
+//                Log.e("DriverID", availableDrivers.DriverID + "");
+//                Log.e("FirstName", availableDrivers.FirstName+"");
+//                Log.e("LastName", availableDrivers.LastName+"");
+//                Log.e("Webmyne_Latitude", availableDrivers.Webmyne_Latitude+"");
+//                Log.e("Webmyne_Longitude", availableDrivers.Webmyne_Longitude+"");
 
                 driver_latlng =new LatLng(Double.parseDouble(availableDrivers.Webmyne_Latitude),Double.parseDouble(availableDrivers.Webmyne_Longitude));
 

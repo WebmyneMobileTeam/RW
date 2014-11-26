@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="SKIP AND CONTINUE"
         android:textColor="#000"
-        android:background="@color/actionbar"
+        android:background="@drawable/button_selector"
         android:textSize="@dimen/text_size_medium"
         app:customTypeface="rbold"
         tools:ignore="MissingPrefix"

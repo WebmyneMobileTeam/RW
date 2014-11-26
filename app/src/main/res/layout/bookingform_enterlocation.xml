@@ -48,7 +48,7 @@
         app:customTypeface="@string/bold"
         tools:ignore="MissingPrefix"
         android:text="PICK UP HERE"
-        android:background="@color/actionbar"
+        android:background="@drawable/button_selector"
         android:textSize="@dimen/text_size_medium"
         android:gravity="center"
         android:padding="8dp" />

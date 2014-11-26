@@ -127,7 +127,7 @@ public class MyNotificationFragment extends Fragment implements ListDialog.setSe
             public void response(String response) {
 
                 ResponseMessage responseMessage = new GsonBuilder().create().fromJson(response, ResponseMessage.class);
-                Log.e("response message for unread all: ", responseMessage.Response + "");
+//                Log.e("response message for unread all: ", responseMessage.Response + "");
             }
 
             @Override

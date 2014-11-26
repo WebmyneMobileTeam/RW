@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.webmyne.rightway.Bookings.Trip;
 import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Registration.Customer;
 import com.webmyne.rightway.Model.AppConstants;
@@ -45,7 +46,8 @@ public class MyBookingFragment extends Fragment {
     private int badgeValue=0;
     private MyPagerAdapter adapter;
     public ArrayList<Trip> tripArrayList=new ArrayList<Trip>();
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
+    private CircleDialog circleDialog;
     private Customer customerDetails;
     private ArrayList<CustomerNotification> notificationList;
 
@@ -99,11 +101,10 @@ public class MyBookingFragment extends Fragment {
 
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerDetails =complexPreferences.getObject("customer_data", Customer.class);
-        progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        Log.e("Customer trip url: ",AppConstants.getTripList+customerDetails.CustomerID+"");
+        circleDialog=new CircleDialog(getActivity(),0);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
+//        Log.e("Customer trip url: ",AppConstants.getTripList+customerDetails.CustomerID+"");
         new CallWebService(AppConstants.getTripList+customerDetails.CustomerID , CallWebService.TYPE_JSONARRAY) {
 
             @Override
@@ -161,13 +162,13 @@ public class MyBookingFragment extends Fragment {
                     }
                 }
 
-                Log.e("Badge value: ",badgeValue+"");
+//                Log.e("Badge value: ",badgeValue+"");
                 SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("badge_value",getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor=preferencesTimeInterval.edit();
                 editor.putString("badge_value",badgeValue+"");
                 editor.commit();
 
-                progressDialog.dismiss();
+                circleDialog.dismiss();
             }
 
             @Override

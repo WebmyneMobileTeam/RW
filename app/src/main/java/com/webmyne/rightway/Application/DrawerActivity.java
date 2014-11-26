@@ -251,7 +251,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
                 holder = (ViewHolder) convertView.getTag();
             }
             if(position==4){
-                Log.e("badge value:.....",badgevalue+"");
+//                Log.e("badge value:.....",badgevalue+"");
                 if(badgevalue !=null && (!badgevalue.equalsIgnoreCase("0"))){
                     holder.txtBadgeValue.setVisibility(View.VISIBLE);
                     holder.txtBadgeValue.setText(badgevalue+"");

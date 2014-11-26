@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 
 import com.webmyne.rightway.Application.MyApplication;
 import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.API;
 import com.webmyne.rightway.Model.AppConstants;
@@ -43,7 +44,8 @@ import java.util.Date;
 
 public class ReceiptAndFeedbackFragment extends Fragment {
 
-    private ProgressDialog progressDialog;
+    private CircleDialog circleDialog;
+
     private TextView txtTripComplete,txtDriverRatting,txtTripPaymentType,txtTripDriverName,txtTripPickupAddress,
             txtTripDropoffAddress,txtTripDistance,txtTripDate,txtTripFare,txtTripTip,txtTripFee,txtTotalAmount,paymentType;
     private RatingBar rattings;
@@ -159,10 +161,9 @@ public class ReceiptAndFeedbackFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                circleDialog=new CircleDialog(getActivity(),0);
+                circleDialog.setCancelable(true);
+                circleDialog.show();
             }
 
             @Override
@@ -178,7 +179,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
                     driverStatusObject.put("DriverRattings", txtDriverRatting.getText().toString()+"");
                     driverStatusObject.put("TripID", currentTrip.TripID+"");
                     driverStatusObject.put("isDriverFeedbackGiven", true);
-                    Log.e("driverStatusObject: ", driverStatusObject + "");
+//                    Log.e("driverStatusObject: ", driverStatusObject + "");
 
                 }catch(JSONException e) {
                     e.printStackTrace();
@@ -186,7 +187,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
 
                 Reader reader = API.callWebservicePost(AppConstants.TripSuccessful, driverStatusObject.toString());
                 ResponseMessage responseMessage = new GsonBuilder().create().fromJson(reader, ResponseMessage.class);
-                Log.e("responseMessage:",responseMessage.Response+"");
+//                Log.e("responseMessage:",responseMessage.Response+"");
                 handlePostData();
 
                 return null;
@@ -201,7 +202,7 @@ public class ReceiptAndFeedbackFragment extends Fragment {
             @Override
             public void run() {
 
-                progressDialog.dismiss();
+                circleDialog.dismiss();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 Toast.makeText(getActivity(), "Trip completed Successfully", Toast.LENGTH_SHORT).show();
                 FragmentTransaction ft = manager.beginTransaction();

@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.MyApplication;
 
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.API;
 import com.webmyne.rightway.Model.ResponseMessage;
@@ -39,7 +40,8 @@ import java.io.Reader;
 
 public class ProfileFragment extends Fragment {
     private Customer customerProfile;
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
+    private CircleDialog circleDialog;
     private EditText txtCustomerName,txtCustomerMobile,txtCustomerEmail,txtCustomerCity,txtCustomerState,txtCustomerZipCode;
     private TextView txtUpdate;
 
@@ -126,10 +128,9 @@ public class ProfileFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                circleDialog=new CircleDialog(getActivity(),0);
+                circleDialog.setCancelable(true);
+                circleDialog.show();
             }
 
             @Override
@@ -168,23 +169,23 @@ public class ProfileFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
+                circleDialog.dismiss();
 
                 ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_profile", 0);
                 complexPreferences.putObject("customer_profile_data", customerResponse);
                 complexPreferences.commit();
 
-                Log.e("CustomerID",customerResponse.CustomerID+"");
-                Log.e("CustomerIMEI_Number",customerResponse.CustomerIMEI_Number+"");
-                Log.e("NotificationID",customerResponse.NotificationID+"");
-                Log.e("DeviceType",customerResponse.DeviceType+"");
-                Log.e("Name",customerResponse.Name+"");
-                Log.e("Mobile",customerResponse.Mobile+"");
-                Log.e("Email",customerResponse.Email+"");
-                Log.e("City",customerResponse.City+"");
-                Log.e("State",customerResponse.State+"");
-                Log.e("ZipCode",customerResponse.ZipCode+"");
-                Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
+//                Log.e("CustomerID",customerResponse.CustomerID+"");
+//                Log.e("CustomerIMEI_Number",customerResponse.CustomerIMEI_Number+"");
+//                Log.e("NotificationID",customerResponse.NotificationID+"");
+//                Log.e("DeviceType",customerResponse.DeviceType+"");
+//                Log.e("Name",customerResponse.Name+"");
+//                Log.e("Mobile",customerResponse.Mobile+"");
+//                Log.e("Email",customerResponse.Email+"");
+//                Log.e("City",customerResponse.City+"");
+//                Log.e("State",customerResponse.State+"");
+//                Log.e("ZipCode",customerResponse.ZipCode+"");
+//                Log.e("ProfilePicture",customerResponse.ProfilePicture+"");
 
                 Toast.makeText(getActivity(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
 

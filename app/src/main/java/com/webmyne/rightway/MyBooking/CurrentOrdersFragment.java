@@ -68,8 +68,8 @@ public class CurrentOrdersFragment extends Fragment {
             ArrayList<Trip> filteredCurruntOrderList=new ArrayList<Trip>();
 
             for(int i=0;i<currentOrdersList.size();i++){
-                Log.e("current date:",date+"");
-                Log.e("loop date:",getFormatedDate(currentOrdersList.get(i))+"");
+//                Log.e("current date:",date+"");
+//                Log.e("loop date:",getFormatedDate(currentOrdersList.get(i))+"");
                 if((!(currentOrdersList.get(i).TripStatus.contains(AppConstants.tripCancelledByCustomerStatus) || currentOrdersList.get(i).TripStatus.contains(AppConstants.tripCancelledByDriverStatus))) && date.equals(getFormatedDate(currentOrdersList.get(i)))){
                     filteredCurruntOrderList.add(currentOrdersList.get(i));
                 }

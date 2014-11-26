@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.webmyne.rightway.CustomComponents.CallWebService;
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.CustomTimePickerDialog;
 import com.webmyne.rightway.CustomComponents.FormValidator;
@@ -86,7 +87,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private ArrayList<CustomerNotification> notificationList;
     private ArrayList<String> driverNames = new ArrayList<String>();
     private ArrayList<LatLng> cabs = new ArrayList<LatLng>();
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
     private static final String LOG_TAG = "RiteWay Book Cab";
     private MapView mv;
     private MapController mc;
@@ -105,6 +106,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private EditText etPickupNote;
     private ArrayList<Driver> availableDrivers;
     private Customer customerProfile;
+    private CircleDialog circleDialog;
 
 
     public static BookCabFragment newInstance(String param1, String param2) {
@@ -121,7 +123,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         super.onCreate(savedInstanceState);
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
         customerProfile=complexPreferences.getObject("customer_data", Customer.class);
-        Log.e("customer ID: ",customerProfile.CustomerID+"");
+//        Log.e("customer ID: ",customerProfile.CustomerID+"");
 
     }
 
@@ -294,10 +296,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     public void getActiveDriversList() {
 
-        progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setCancelable(true);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
+        circleDialog=new CircleDialog(getActivity(),0);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
+
 
         new CallWebService(AppConstants.getActiveDrivers, CallWebService.TYPE_JSONARRAY) {
 
@@ -309,16 +311,16 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 availableDrivers= new GsonBuilder().create().fromJson(response, listType);
 
                 for(int i=0;i<availableDrivers.size();i++) {
-                    Log.e("DriverID", availableDrivers.get(i).DriverID+"");
-                    Log.e("DriverNotificationID", availableDrivers.get(i).DriverNotificationID+"");
-                    Log.e("FirstName", availableDrivers.get(i).FirstName+"");
-                    Log.e("LastName", availableDrivers.get(i).LastName+"");
-                    Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
-                    Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
+//                    Log.e("DriverID", availableDrivers.get(i).DriverID+"");
+//                    Log.e("DriverNotificationID", availableDrivers.get(i).DriverNotificationID+"");
+//                    Log.e("FirstName", availableDrivers.get(i).FirstName+"");
+//                    Log.e("LastName", availableDrivers.get(i).LastName+"");
+//                    Log.e("Webmyne_Latitude", availableDrivers.get(i).Webmyne_Latitude+"");
+//                    Log.e("Webmyne_Longitude", availableDrivers.get(i).Webmyne_Longitude+"");
                 }
 
                 try {
-                    Log.e("availableDrivers size ",availableDrivers.size()+"");
+//                    Log.e("availableDrivers size ",availableDrivers.size()+"");
 
                     for (int i = 0; i < availableDrivers.size(); i++) {
                         if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
@@ -354,8 +356,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                 CurrentRate currentRates= new GsonBuilder().create().fromJson(response, CurrentRate.class);
 
-                Log.e("Rate: ",currentRates.Rate+"");
-                Log.e("TripFee: ",currentRates.TripFee+"");
+//                Log.e("Rate: ",currentRates.Rate+"");
+//                Log.e("TripFee: ",currentRates.TripFee+"");
 
                 SharedPreferences preferences = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
@@ -401,12 +403,12 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                         sharedPreferenceNotification.saveNotification(getActivity(), notificationList.get(i));
                     }
                 }
-                Log.e("Badge value: ",badgeValue+"");
+//                Log.e("Badge value: ",badgeValue+"");
                 SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("badge_value",getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor=preferencesTimeInterval.edit();
                 editor.putString("badge_value",badgeValue+"");
                 editor.commit();
-                progressDialog.dismiss();
+                circleDialog.dismiss();
             }
 
             @Override
@@ -536,10 +538,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressDialog=new ProgressDialog(getActivity());
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                circleDialog=new CircleDialog(getActivity(),0);
+                circleDialog.setCancelable(true);
+                circleDialog.show();
             }
 
             @Override
@@ -567,7 +568,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
                     tripObject.put("TripDate", (date.getTime()/1000)+"");
                     tripObject.put("TipPercentage", selectedTip+"");
-                    Log.e("trip rate when send:  ",currentRate+"");
+//                    Log.e("trip rate when send:  ",currentRate+"");
                     tripObject.put("TripFare", currentRate+"");
                     tripObject.put("TripFee", currentFee+"");
                     tripObject.put("TripDistance", String.format("%.2f", distance)+"");
@@ -579,7 +580,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("DriverNotificationID", selectedDriverNotification);
                     tripObject.put("isCustomerFeedbackGiven", false);
                     tripObject.put("isDriverFeedbackGiven", false);
-                    Log.e("tripObject: ",tripObject+"");
+//                    Log.e("tripObject: ",tripObject+"");
 
                 }catch(JSONException e) {
                     e.printStackTrace();
@@ -589,7 +590,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                 Reader reader = API.callWebservicePost(AppConstants.bookTrip, tripObject.toString());
                 ResponseMessage responseMessage = new GsonBuilder().create().fromJson(reader, ResponseMessage.class);
-                Log.e("responseMessage:",responseMessage.Response+"");
+//                Log.e("responseMessage:",responseMessage.Response+"");
                 handlePostData();
 
                 return null;
@@ -602,7 +603,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
+                circleDialog.dismiss();
                 Toast.makeText(getActivity(), "Trip Requested Successfully", Toast.LENGTH_SHORT).show();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
@@ -913,7 +914,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             sb.append("&components=country:in");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
-            Log.e("Log Url PlaceAPI",sb.toString());
+//            Log.e("Log Url PlaceAPI",sb.toString());
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());

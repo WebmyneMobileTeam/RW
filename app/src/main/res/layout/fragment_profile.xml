@@ -331,7 +331,7 @@ android:layout_alignParentTop="true"
             tools:ignore="MissingPrefix"
             android:gravity="center"
             android:textStyle="bold"
-            android:background="@color/actionbar"
+            android:background="@drawable/button_selector"
             android:textSize="@dimen/text_size_medium"
             android:layout_height="wrap_content" />
     </RelativeLayout>

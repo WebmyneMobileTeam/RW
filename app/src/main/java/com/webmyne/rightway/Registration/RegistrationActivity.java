@@ -38,6 +38,7 @@ import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.Application.DrawerActivity;
 import com.webmyne.rightway.Application.MyApplication;
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.CustomComponents.FormValidator;
 import com.webmyne.rightway.Model.AppConstants;
@@ -47,9 +48,7 @@ import com.webmyne.rightway.R;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
+
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -204,7 +203,8 @@ public class RegistrationActivity extends BaseActivity {
      */
     public static class ImageFormFragment extends Fragment implements View.OnClickListener,ImageChooserListener{
 
-        private ProgressDialog progressDialog;
+//        private ProgressDialog progressDialog;
+        private CircleDialog circleDialog;
         private ImageChooserManager imageChooserManager;
         private ImageView imgProfilePic;
         private Button btnRegister;
@@ -370,7 +370,7 @@ public class RegistrationActivity extends BaseActivity {
            new AsyncTask<Void,Void,Void>(){
                @Override
                protected Void doInBackground(Void... params) {
-                   Log.e("file path: ",imageFilePath+"");
+//                   Log.e("file path: ",imageFilePath+"");
                    File imageFile = new File(imageFilePath);
                    uploadFile(imageFile);
                    return null;
@@ -381,19 +381,7 @@ public class RegistrationActivity extends BaseActivity {
 
         public void uploadFile(File fileName){
 
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpContext localContext = new BasicHttpContext();
-            HttpPost httpPost = new HttpPost(AppConstants.ftpPath);
 
-            try {
-                MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-                entity.addPart("image", new FileBody(fileName));
-                httpPost.setEntity(entity);
-                HttpResponse response = httpClient.execute(httpPost, localContext);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
 
 //            FTPClient client = new FTPClient();
@@ -456,10 +444,9 @@ public class RegistrationActivity extends BaseActivity {
 
         public void postRegistrationData() {
 
-            progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
+            circleDialog=new CircleDialog(getActivity(),0);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
 
             // Get customer form data from BasicFormFragment
             ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "customer_data", 0);
@@ -499,14 +486,14 @@ public class RegistrationActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            Log.e("Customer Info: ",customerObject+"");
+//            Log.e("Customer Info: ",customerObject+"");
 
             JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConstants.customerProfile, customerObject, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject jobj) {
                     String response = jobj.toString();
-                    Log.e("response continue: ", response + "");
+//                    Log.e("response continue: ", response + "");
                     customerResponse = new GsonBuilder().create().fromJson(response, Customer.class);
 
                     handleCustomerRegistrationData();
@@ -535,7 +522,7 @@ public class RegistrationActivity extends BaseActivity {
                     editor.putBoolean("registration", true);
                     editor.commit();
 
-                    progressDialog.dismiss();
+                    circleDialog.dismiss();
 
                     Intent i = new Intent(getActivity(), DrawerActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

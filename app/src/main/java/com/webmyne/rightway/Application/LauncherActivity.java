@@ -116,7 +116,7 @@ public class LauncherActivity extends Activity {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
                         }
                         regid = gcm.register(PROJECT_NUMBER);
-                        Log.e("GCM ID :", regid);
+//                        Log.e("GCM ID :", regid);
                         if(regid==null || regid==""){
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Error");

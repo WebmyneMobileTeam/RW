@@ -26,6 +26,7 @@ import com.google.gson.GsonBuilder;
 import com.webmyne.rightway.Application.BaseActivity;
 import com.webmyne.rightway.Application.MyApplication;
 import com.webmyne.rightway.Bookings.Trip;
+import com.webmyne.rightway.CustomComponents.CircleDialog;
 import com.webmyne.rightway.CustomComponents.ComplexPreferences;
 import com.webmyne.rightway.Model.API;
 import com.webmyne.rightway.Model.AppConstants;
@@ -89,7 +90,8 @@ public class OrderDetailActivity extends BaseActivity {
 
     public static class PlaceholderFragment extends Fragment {
 
-        ProgressDialog progressDialog;
+//        ProgressDialog progressDialog;
+        private CircleDialog circleDialog;
         Trip currentTrip;
 
         TextView currentTripDriverName, currentTripPickup, currentTripDropoff, currentTripPickupNote, currentTripDate, currentTripTime,
@@ -230,10 +232,9 @@ public class OrderDetailActivity extends BaseActivity {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
-                    progressDialog=new ProgressDialog(getActivity());
-                    progressDialog.setCancelable(false);
-                    progressDialog.setMessage("Loading...");
-                    progressDialog.show();
+                    circleDialog=new CircleDialog(getActivity(),0);
+                    circleDialog.setCancelable(true);
+                    circleDialog.show();
                 }
 
                 @Override
@@ -244,14 +245,14 @@ public class OrderDetailActivity extends BaseActivity {
                         tripObject.put("DriverNotificationID",currentTrip.DriverNotificationID+"");
                         tripObject.put("DriverID", currentTrip.DriverID+"");
                         tripObject.put("TripStatus", "Canceled By Customer");
-                        Log.e("tripObject: ",tripObject+"");
+//                        Log.e("tripObject: ",tripObject+"");
                     }catch(JSONException e) {
                         e.printStackTrace();
                     }
 
                     Reader reader = API.callWebservicePost(AppConstants.CancelTrip, tripObject.toString());
                     ResponseMessage responseMessage = new GsonBuilder().create().fromJson(reader, ResponseMessage.class);
-                    Log.e("responseMessage:",responseMessage.Response+"");
+//                    Log.e("responseMessage:",responseMessage.Response+"");
                     handlePostData();
 
                     return null;
@@ -265,7 +266,7 @@ public class OrderDetailActivity extends BaseActivity {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    progressDialog.dismiss();
+                    circleDialog.dismiss();
                     Toast.makeText(getActivity(), "Trip Canceled Successfully", Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
