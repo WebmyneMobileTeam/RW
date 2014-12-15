@@ -168,7 +168,7 @@ public class OrderDetailActivity extends BaseActivity {
             currentTripPickupNote.setText(currentTrip.PickupNote);
             currentTripDate.setText(getFormatedDate());
             currentTripTime.setText(currentTrip.PickupTime);
-            currentTripDistance.setText(currentTrip.TripDistance+" kms");
+            currentTripDistance.setText(Double.parseDouble(currentTrip.TripDistance)*0.6214+" miles");
 
             if(currentTrip.PaymentType !=null) {
                 currentTripPaymentType.setVisibility(View.VISIBLE);

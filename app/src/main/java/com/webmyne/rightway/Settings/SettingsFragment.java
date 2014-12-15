@@ -18,11 +18,11 @@ import com.webmyne.rightway.R;
 import java.util.ArrayList;
 
 
-public class SettingsFragment extends Fragment implements ListDialog.setSelectedListner{
+public class SettingsFragment extends Fragment {
 
-    private LinearLayout linearIntervalTime;
-    private TextView txtUpdateTime;
-    private ArrayList<String> timeList;
+//    private LinearLayout linearIntervalTime;
+//    private TextView txtUpdateTime;
+//    private ArrayList<String> timeList;
 
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
@@ -37,13 +37,13 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        timeList=new ArrayList<String>();
-        timeList.add("1");
-        timeList.add("2");
-        timeList.add("3");
-        timeList.add("5");
-        timeList.add("7");
-        timeList.add("10");
+//        timeList=new ArrayList<String>();
+//        timeList.add("1");
+//        timeList.add("2");
+//        timeList.add("3");
+//        timeList.add("5");
+//        timeList.add("7");
+//        timeList.add("10");
 
     }
 
@@ -52,42 +52,42 @@ public class SettingsFragment extends Fragment implements ListDialog.setSelected
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View convertView= inflater.inflate(R.layout.fragment_settings, container, false);
-        linearIntervalTime=(LinearLayout)convertView.findViewById(R.id.linearIntervalTime);
-        txtUpdateTime=(TextView)convertView.findViewById(R.id.txtUpdateTime);
+//        linearIntervalTime=(LinearLayout)convertView.findViewById(R.id.linearIntervalTime);
+//        txtUpdateTime=(TextView)convertView.findViewById(R.id.txtUpdateTime);
 
-        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
-        txtUpdateTime.setText(preferencesTimeInterval.getString("driver_time_interval", "5")+" minutes");
+//        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+//        txtUpdateTime.setText(preferencesTimeInterval.getString("driver_time_interval", "5")+" minutes");
 
-        linearIntervalTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog();
-            }
-        });
+//        linearIntervalTime.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialog();
+//            }
+//        });
 
         return convertView;
     }
 
-    public void showDialog() {
+//    public void showDialog() {
+//
+//        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+//        listDialog.setCancelable(true);
+//        listDialog.setCanceledOnTouchOutside(true);
+//        listDialog.title("SELECT TIME");
+//        listDialog.setItems(timeList);
+//        listDialog.setSelectedListner(this);
+//        listDialog.show();
+//    }
 
-        ListDialog listDialog = new ListDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
-        listDialog.setCancelable(true);
-        listDialog.setCanceledOnTouchOutside(true);
-        listDialog.title("SELECT TIME");
-        listDialog.setItems(timeList);
-        listDialog.setSelectedListner(this);
-        listDialog.show();
-    }
-
-    @Override
-    public void selected(String value) {
-
-        txtUpdateTime.setText(value);
-        txtUpdateTime.setText(value+" minutes");
-        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
-        SharedPreferences.Editor editor=preferencesTimeInterval.edit();
-        editor.putString("driver_time_interval",value);
-        editor.commit();
-    }
+//    @Override
+//    public void selected(String value) {
+//
+//        txtUpdateTime.setText(value);
+//        txtUpdateTime.setText(value+" minutes");
+//        SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+//        SharedPreferences.Editor editor=preferencesTimeInterval.edit();
+//        editor.putString("driver_time_interval",value);
+//        editor.commit();
+//    }
 
 }

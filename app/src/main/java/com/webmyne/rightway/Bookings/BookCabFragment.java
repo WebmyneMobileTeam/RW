@@ -476,7 +476,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 txtDistance.setVisibility(View.VISIBLE);
             }
 
-            txtDistance.setText(String.format("%.2f kms", distance) + "\n" + String.format("$ %.2f", distance * 0.6214 * (Double.parseDouble(currentRate))));
+            txtDistance.setText(String.format("%.2f miles", distance*0.6214) + "\n" + String.format("$ %.2f", distance * 0.6214 * (Double.parseDouble(currentRate))));
 
         }
     }
@@ -765,7 +765,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         CustomTimePickerDialog dialog = new CustomTimePickerDialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
-        dialog.title("SELECT TIME");
+        dialog.title("SELECT TIME FROM SCROLL DOWN BELOW");
         dialog.setSelectedListner(new CustomTimePickerDialog.setSelectedListner() {
             @Override
             public void selected(String value) {

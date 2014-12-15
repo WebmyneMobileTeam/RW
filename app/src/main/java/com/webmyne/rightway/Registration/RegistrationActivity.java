@@ -287,8 +287,7 @@ public class RegistrationActivity extends BaseActivity {
 
         private void takePicture() {
             chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
-            imageChooserManager = new ImageChooserManager(this,
-                    ChooserType.REQUEST_CAPTURE_PICTURE, "cabkab", true);
+            imageChooserManager = new ImageChooserManager(this,ChooserType.REQUEST_CAPTURE_PICTURE, "cabkab", true);
             imageChooserManager.setImageChooserListener(this);
             try {
                 filePath = imageChooserManager.choose();
@@ -305,9 +304,9 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
                 case R.id.btnRegister:
                     //TODO
-//                      postImage();
+                      postImage();
 
-                    postRegistrationData();
+//                    postRegistrationData();
                     break;
                 case R.id.imgProfilePic:
                    getActivity().openContextMenu(imgProfilePic);

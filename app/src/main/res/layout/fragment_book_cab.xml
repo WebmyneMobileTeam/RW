@@ -45,21 +45,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:paddingLeft="@dimen/activity_margin"
+            android:gravity="center"
+            android:text="Pickup: "
+            android:textSize="@dimen/text_size_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
         <AutoCompleteTextView
             android:id="@+id/edPickUpLocation"
             app:customTypeface="rnormal"
             tools:ignore="MissingPrefix"
             android:background="@null"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Pickup"
+            android:hint="Enter Pickup Location"
+            android:layout_weight="1"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:paddingRight="@dimen/activity_margin"
-            android:paddingLeft="@dimen/activity_margin"
+
             android:textSize="@dimen/text_size_medium"
             android:gravity="left"
             />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -67,29 +80,49 @@
             android:layout_marginLeft="@dimen/activity_margin"
             android:layout_marginRight="@dimen/activity_margin"
             android:background="@color/divider"></View>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:paddingLeft="@dimen/activity_margin"
+                android:gravity="center"
+                android:text="Pickup Note: "
+                android:textSize="@dimen/text_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
         <EditText
             app:customTypeface="rnormal"
             tools:ignore="MissingPrefix"
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Pickup at"
+            android:hint="Enter Pickup notes"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:paddingRight="@dimen/activity_margin"
-            android:paddingLeft="@dimen/activity_margin"
+
             android:textSize="@dimen/text_size_medium"
             android:gravity="left"
             android:id="@+id/etPickupNote" />
-
+</LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="@dimen/activity_margin"
             android:layout_marginRight="@dimen/activity_margin"
             android:background="@color/divider"></View>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:paddingLeft="@dimen/activity_margin"
+                android:gravity="center"
+                android:text="Dropoff: "
+                android:textSize="@dimen/text_size_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
         <AutoCompleteTextView
             android:id="@+id/edDropOffLocation"
             app:customTypeface="rnormal"
@@ -97,15 +130,15 @@
             android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Dropoff"
+            android:hint="Enter Dropoff Location"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:paddingRight="@dimen/activity_margin"
-            android:paddingLeft="@dimen/activity_margin"
+
             android:textSize="@dimen/text_size_medium"
             android:gravity="left"
             />
-
+</LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
