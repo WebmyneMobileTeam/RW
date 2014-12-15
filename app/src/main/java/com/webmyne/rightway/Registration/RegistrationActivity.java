@@ -304,9 +304,9 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
                 case R.id.btnRegister:
                     //TODO
-                      postImage();
+//                      postImage();
 
-//                    postRegistrationData();
+                    postRegistrationData();
                     break;
                 case R.id.imgProfilePic:
                    getActivity().openContextMenu(imgProfilePic);

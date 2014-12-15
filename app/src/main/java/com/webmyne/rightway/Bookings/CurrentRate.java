@@ -13,6 +13,11 @@ public class CurrentRate {
     @SerializedName("TripFee")
     public String TripFee;
 
+    @SerializedName("TimeInterval")
+    public String TimeInterval;
+
+
+
     public CurrentRate() {
     }
 

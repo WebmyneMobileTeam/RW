@@ -363,6 +363,11 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("rate", currentRates.Rate+"");
                 editor.putString("tripFee", currentRates.TripFee+"");
+                if(currentRates.TimeInterval !=null) {
+                    editor.putString("timeInterval", currentRates.TimeInterval + "");
+                } else {
+                    editor.putString("timeInterval", "3");
+                }
                 editor.commit();
 
                 SharedPreferences preferencesRate = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
