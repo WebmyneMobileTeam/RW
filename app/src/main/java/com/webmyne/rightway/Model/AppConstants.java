@@ -25,12 +25,18 @@ public class AppConstants {
     public static final String CurrentRate ="http://ws-srv-net.in.webmyne.com/Applications/Android/RiteWayServices/Driver.svc/json/CurrentRate";
 
     // FTP path
-    public static final String ftpPath="http://ws-srv-net.in.webmyne.com/RiteWay/Images/";
 
+    public static final String ftpPath="192.168.1.4";
+//    public static final String ftpPath="http://ws-srv-net.in.webmyne.com/applications/Android/RiteWayServices";
+//    http://ws-srv-net.in.webmyne.com/applications/Android/RiteWayServices/Images/User.png
     // FTP Username and Password
-    public static final String ftpUsername="riteway";
-    public static final String ftpPassword="riteway";
-
+//    public static final String ftpUsername="Chirag";
+//    public static final String ftpPassword="Chirag@123";
+//    public static final String ftpUsername="riteway";
+//    public static final String ftpPassword="riteway";
+    public static final String ftpUsername="androidftp";
+    public static final String ftpPassword="1234567890";
+    public static final String fileDownloadPath="http://ws-srv-net.in.webmyne.com/applications/Android/RiteWayServices/Images/";
     // Trip Status
     public static final String tripInProgressStatus="In Progress";
     public static final String tripOnTripStatus="On Trip";

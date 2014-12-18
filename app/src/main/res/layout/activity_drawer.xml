@@ -20,19 +20,52 @@
         >
 
         <ListView
+
             android:paddingLeft="@dimen/activity_margin"
             android:paddingRight="@dimen/activity_margin"
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+
             android:layout_alignParentTop="true"
             android:divider="#b1b1b1"
             android:listSelector="#50b1b1b1"
             android:background="@android:color/transparent"
             android:dividerHeight="1dp" />
 
+        <LinearLayout
 
+            android:id="@+id/txtLogout"
+
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:gravity="left"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_logout"/>
+            <TextView
+
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Logout"
+
+
+
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/actionbar"
+                android:textSize="@dimen/text_size_medium"
+                />
+        </LinearLayout>
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

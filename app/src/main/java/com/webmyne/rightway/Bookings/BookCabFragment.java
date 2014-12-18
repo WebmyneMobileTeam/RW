@@ -77,6 +77,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BookCabFragment extends Fragment implements View.OnClickListener,MapController.ClickCallback{
 
@@ -107,7 +109,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     private ArrayList<Driver> availableDrivers;
     private Customer customerProfile;
     private CircleDialog circleDialog;
-
+    private String updatedTimeInterval;
 
     public static BookCabFragment newInstance(String param1, String param2) {
         BookCabFragment fragment = new BookCabFragment();
@@ -281,7 +283,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         mv.onResume();
         sharedPreferenceNotification=new SharedPreferenceNotification();
         if(isConnected()==true) {
-            getActiveDriversList();
+
+            getCurrentRate();
         } else {
             Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
         }
@@ -296,9 +299,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     public void getActiveDriversList() {
 
-        circleDialog=new CircleDialog(getActivity(),0);
-        circleDialog.setCancelable(true);
-        circleDialog.show();
+
 
 
         new CallWebService(AppConstants.getActiveDrivers, CallWebService.TYPE_JSONARRAY) {
@@ -321,7 +322,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
                 try {
 //                    Log.e("availableDrivers size ",availableDrivers.size()+"");
-
+                    if(cabs !=null) {
+                        cabs.clear();
+                    }
                     for (int i = 0; i < availableDrivers.size(); i++) {
                         if (availableDrivers.get(i).Webmyne_Latitude != null && availableDrivers.get(i).Webmyne_Longitude != null) {
                             cabs.add(new LatLng(Double.parseDouble(availableDrivers.get(i).Webmyne_Latitude),Double.parseDouble(availableDrivers.get(i).Webmyne_Longitude)));
@@ -335,7 +338,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     e.printStackTrace();
                 }
 
-                getCurrentRate();
+
             }
 
             @Override
@@ -348,7 +351,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
     }
 
     public void getCurrentRate() {
-
+        circleDialog=new CircleDialog(getActivity(),0);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
         new CallWebService(AppConstants.CurrentRate, CallWebService.TYPE_JSONOBJECT) {
 
             @Override
@@ -373,8 +378,9 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 SharedPreferences preferencesRate = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
                 currentRate=preferencesRate.getString("rate","");
                 currentFee=preferencesRate.getString("tripFee","");
-
+                updatedTimeInterval=preferencesRate.getString("timeInterval","");
                 getNotificationList();
+
             }
 
             @Override
@@ -414,11 +420,27 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                 editor.putString("badge_value",badgeValue+"");
                 editor.commit();
                 circleDialog.dismiss();
+
+
+                Timer timer=new Timer();
+
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            getActiveDriversList();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        // updatedTimeInterval from API
+
+                    }
+                },0,1000*60*Integer.parseInt(updatedTimeInterval));
             }
 
             @Override
             public void error(VolleyError error) {
-
+                circleDialog.dismiss();
                 Log.e("error: ",error+"");
 
             }
@@ -620,10 +642,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         });
     }
 
-
-
     public void displayAvailableDrivers() {
-
+        mc.clearMarkers();
         for(int i=0;i<cabs.size();i++){
             String[] splited = driverNames.get(i).split(",");
             MarkerOptions opts = new MarkerOptions();
@@ -631,9 +651,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             opts.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_taxi_driver));
             opts.title(splited[0] + " " + splited[1]);
             opts.snippet("");
-
             addMarker(opts);
-
         }
 
     }
@@ -644,15 +662,8 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     }
 
-
-
-
-
-
     @Override
     public void onPause() {
-
-
         mv.onPause();
         mc.stopTrackMyLocation();
         super.onPause();

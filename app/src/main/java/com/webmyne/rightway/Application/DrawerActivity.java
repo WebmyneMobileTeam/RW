@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -49,6 +51,7 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     public static String MYNOTIFICATION = "mynotification";
     public static String CURRENT_TRIP = "current_trip";
     public static String SETTINGS="settings";
+    private LinearLayout txtLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,21 @@ public class DrawerActivity extends BaseActivity implements AdapterView.OnItemCl
     private void initFields() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftDrawerList = (ListView) findViewById(R.id.left_drawer);
+        txtLogout=(LinearLayout) findViewById(R.id.txtLogout);
+        txtLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences preferences = getSharedPreferences("is_registered", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("registration", false);
+                editor.clear();
+                editor.commit();
+                Intent i=new Intent(DrawerActivity.this,LauncherActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
         leftDrawerList.setOnItemClickListener(this);
     }
 
