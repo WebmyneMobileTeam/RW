@@ -54,8 +54,6 @@ public class API {
             } else { // with json body parameters
                 e.setContentType("application/json");
             }
-
-
             post.setEntity(e);
 
             HttpResponse response = client.execute(post);

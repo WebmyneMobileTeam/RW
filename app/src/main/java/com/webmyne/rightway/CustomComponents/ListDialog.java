@@ -53,6 +53,7 @@ public  class ListDialog extends Dialog {
 
         txtTitle = (TextView)convertView.findViewById(R.id.titleDialog);
         listDialog = (ListView)convertView.findViewById(R.id.listDialog);
+
         parentDialog=(FrameLayout)convertView.findViewById(R.id.parentDialog);
         parentDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,24 +61,15 @@ public  class ListDialog extends Dialog {
                 dismiss();
             }
         });
-
     }
 
-
-
-
-
     public void title(String title){
-
         txtTitle.setText(title);
-
     }
 
     public void setItems(ArrayList items){
-
         TypeAdapter adapter = new TypeAdapter(ctx,android.R.layout.simple_list_item_1,items);
         listDialog.setAdapter(adapter);
-
     }
 
 

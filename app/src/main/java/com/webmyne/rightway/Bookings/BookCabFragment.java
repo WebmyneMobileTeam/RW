@@ -116,6 +116,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
     public BookCabFragment() {
         // Required empty public constructor
+
     }
 
     @Override
@@ -266,13 +267,10 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
             @Override
             public void onTick(long millisUntilFinished) {
 
-
             }
         }.start();
 
     }
-
-
 
     @Override
     public void onResume() {
@@ -280,11 +278,13 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
         super.onResume();
         mv.onResume();
         sharedPreferenceNotification=new SharedPreferenceNotification();
+
         if(isConnected()==true) {
             getActiveDriversList();
         } else {
             Toast.makeText(getActivity(), "Internet Connection Unavailable", Toast.LENGTH_SHORT).show();
         }
+
 
         mc.startTrackMyLocation(mc.getMap(),2000,0, MapController.TrackType.TRACK_TYPE_NONE,new MapController.ChangeMyLocation() {
             @Override
@@ -292,6 +292,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
 
             }
         });
+
     }
 
     public void getActiveDriversList() {
