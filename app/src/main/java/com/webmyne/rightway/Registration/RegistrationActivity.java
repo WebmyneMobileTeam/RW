@@ -45,6 +45,7 @@ import com.webmyne.rightway.Model.AppConstants;
 import com.webmyne.rightway.CustomComponents.CustomTypeface;
 import com.webmyne.rightway.R;
 
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -56,12 +57,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
+
 
 public class RegistrationActivity extends BaseActivity {
 
@@ -287,8 +295,7 @@ public class RegistrationActivity extends BaseActivity {
 
         private void takePicture() {
             chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
-            imageChooserManager = new ImageChooserManager(this,
-                    ChooserType.REQUEST_CAPTURE_PICTURE, "cabkab", true);
+            imageChooserManager = new ImageChooserManager(this,ChooserType.REQUEST_CAPTURE_PICTURE, "cabkab", true);
             imageChooserManager.setImageChooserListener(this);
             try {
                 filePath = imageChooserManager.choose();
@@ -305,7 +312,7 @@ public class RegistrationActivity extends BaseActivity {
             switch (v.getId()){
                 case R.id.btnRegister:
                     //TODO
-//                      postImage();
+
 
                     postRegistrationData();
                     break;
@@ -332,6 +339,7 @@ public class RegistrationActivity extends BaseActivity {
 
         @Override
         public void onError(String s) {
+
             displayNoneImage();
         }
 
@@ -370,9 +378,10 @@ public class RegistrationActivity extends BaseActivity {
            new AsyncTask<Void,Void,Void>(){
                @Override
                protected Void doInBackground(Void... params) {
-//                   Log.e("file path: ",imageFilePath+"");
+                   Log.e("file path: ",imageFilePath+"");
                    File imageFile = new File(imageFilePath);
                    uploadFile(imageFile);
+
                    return null;
                }
            } .execute();
@@ -381,28 +390,26 @@ public class RegistrationActivity extends BaseActivity {
 
         public void uploadFile(File fileName){
 
+            Log.e("filename",fileName+"");
+            FTPClient client = new FTPClient();
 
+            try {
+                client.connect(AppConstants.ftpPath,121);
+             client.login(AppConstants.ftpUsername, AppConstants.ftpPassword);
+                client.setType(FTPClient.TYPE_AUTO);
+                client.changeDirectory("/Images/");
 
+                client.upload(fileName, new MyTransferListener());
+                Log.e("filename",fileName+"");
+            } catch (Exception e) {
+                e.printStackTrace();
 
-//            FTPClient client = new FTPClient();
-//
-//            try {
-//                client.connect(AppConstants.ftpPath,121);
-//                client.login(AppConstants.ftpUsername, AppConstants.ftpPassword);
-//                client.setType(FTPClient.TYPE_BINARY);
-//                client.changeDirectory("/RiteWay/Images/");
-//
-//                client.upload(fileName, new MyTransferListener());
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//
-//                try {
-//                    client.disconnect(true);
-//                } catch (Exception e2) {
-//                    e2.printStackTrace();
-//                }
-//            }
+                try {
+                    client.disconnect(true);
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
 
         }
 
@@ -412,7 +419,7 @@ public class RegistrationActivity extends BaseActivity {
 
             public void started() {
 
-
+                Log.e("filename","Upload Started ");
                 // Transfer started
 //                Toast.makeText(getActivity(), " Upload Started ...", Toast.LENGTH_SHORT).show();
                 System.out.println(" Upload Started ...");
@@ -427,6 +434,12 @@ public class RegistrationActivity extends BaseActivity {
                 // Transfer completed
                 System.out.println(" completed ..." );
 //                Toast.makeText(getActivity(), " completed ...", Toast.LENGTH_SHORT).show();
+                circleDialog.dismiss();
+
+                Intent i = new Intent(getActivity(), DrawerActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                getActivity().finish();
             }
 
             public void aborted() {
@@ -459,8 +472,11 @@ public class RegistrationActivity extends BaseActivity {
             //Get GCM ID
             SharedPreferences sharedPreferences=getActivity().getSharedPreferences("GCM",getActivity().MODE_PRIVATE);
             customer.NotificationID=sharedPreferences.getString("GCM_ID","");
-
-            customer.ProfilePicture=telephonyManager.getDeviceId()+".jpg";
+            if(isProfilePicAdded==true) {
+                customer.ProfilePicture = imageFilePath.substring(imageFilePath.lastIndexOf("/") + 1);
+            } else {
+                customer.ProfilePicture = "";
+            }
             customer.DeviceType="Android";
             JSONObject customerObject=new JSONObject();
 
@@ -521,13 +537,17 @@ public class RegistrationActivity extends BaseActivity {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("registration", true);
                     editor.commit();
+                    if(isProfilePicAdded==true){
+                      postImage();
+                    } else {
+                        circleDialog.dismiss();
 
-                    circleDialog.dismiss();
+                        Intent i = new Intent(getActivity(), DrawerActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        getActivity().finish();
+                    }
 
-                    Intent i = new Intent(getActivity(), DrawerActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-                    getActivity().finish();
 
         }
     }// end of fragment

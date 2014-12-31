@@ -90,9 +90,10 @@ public class FragmentCurrentTripMap extends Fragment {
         currentTrip=complexPreferences.getObject("current_trip_details", Trip.class);
 
             mv.onResume();
-
-            SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
-            final String updatedTimeInterval=preferencesTimeInterval.getString("driver_time_interval", "5");
+        SharedPreferences preferencesRate = getActivity().getSharedPreferences("current_rate",getActivity().MODE_PRIVATE);
+        String updatedTimeInterval=preferencesRate.getString("timeInterval","2");
+//            SharedPreferences preferencesTimeInterval = getActivity().getSharedPreferences("driver_time_interval",getActivity().MODE_PRIVATE);
+//            final String updatedTimeInterval=preferencesTimeInterval.getString("driver_time_interval", "5");
 
 
             pickup_latlng=new LatLng(Double.parseDouble(currentTrip.PickupLatitude),Double.parseDouble(currentTrip.PickupLongitude));
@@ -109,6 +110,8 @@ public class FragmentCurrentTripMap extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    // updatedTimeInterval from API
+                    //TODO
                 }
             },0,1000*60*Integer.parseInt(updatedTimeInterval));
 

@@ -27,13 +27,13 @@ android:layout_alignParentTop="true"
             app:border_color="#EEEEEE"
             app:border_width="4dp"
             app:shadow="true"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/sample_profile"
 
        />
         <LinearLayout
 
-            android:paddingTop="@dimen/activity_margin"
+
             android:paddingBottom="@dimen/activity_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
