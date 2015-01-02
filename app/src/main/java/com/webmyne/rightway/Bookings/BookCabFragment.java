@@ -595,7 +595,14 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("DropOffAddress", edDropOffLocation.getText().toString().trim()+"");
                     tripObject.put("PickupTime", txtPickUpTime.getText().toString().trim()+"");
                     tripObject.put("TripDate", (date.getTime()/1000)+"");
-                    tripObject.put("TipPercentage", selectedTip+"");
+                    if(selectedTip==null){
+                        tripObject.put("TipPercentage", "0");
+                    } else {
+                        tripObject.put("TipPercentage", selectedTip+"");
+                    }
+
+
+
 //                    Log.e("trip rate when send:  ",currentRate+"");
                     tripObject.put("TripFare", currentRate+"");
                     tripObject.put("TripFee", currentFee+"");
@@ -608,7 +615,7 @@ public class BookCabFragment extends Fragment implements View.OnClickListener,Ma
                     tripObject.put("DriverNotificationID", selectedDriverNotification);
                     tripObject.put("isCustomerFeedbackGiven", false);
                     tripObject.put("isDriverFeedbackGiven", false);
-//                    Log.e("tripObject: ",tripObject+"");
+                    Log.e("tripObject: ",tripObject+"");
 
                 }catch(JSONException e) {
                     e.printStackTrace();

@@ -255,5 +255,4 @@ public class CurrentOrdersFragment extends Fragment {
         total=total+Double.parseDouble(currentTrip.TripFee);
         return total;
     }
-
 }
