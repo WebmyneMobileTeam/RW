@@ -42,7 +42,7 @@ public class LauncherActivity extends Activity {
 
         private GoogleCloudMessaging gcm;
         private String regid;
-        private String PROJECT_NUMBER = "92884720384";
+        private String PROJECT_NUMBER = "1022937822105";
 
         public PlaceholderFragment() {
         }
